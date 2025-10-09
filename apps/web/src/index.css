@@ -1,7 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-
-@custom-variant dark (&:where(.dark, .dark *));
+@custom-variant dark (&:where(.white, .white *));
 
 @theme {
   --font-sans: "Inter", "Geist", ui-sans-serif, system-ui, sans-serif,
@@ -27,7 +26,7 @@ body {
   --popover-foreground: oklch(0.145 0 0);
   --primary: oklch(0.205 0 0);
   --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
+  --secondary: oklch(75.857% 0.15525 77.872 / 0.678);
   --secondary-foreground: oklch(0.205 0 0);
   --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.556 0 0);
@@ -50,6 +49,12 @@ body {
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+
+  --hero-gradient-start: 0 154 68; /* rgba(0, 154, 68, 0.92) */
+  --hero-gradient-end: 254 203 0; /* rgba(254, 203, 0, 0.85) */
+
+  --royal-gradient-start: 240 100% 70%; /* More vibrant light mode royal blue */
+  --royal-gradient-end: 280 90% 80%; /* More vibrant light mode royal purple */
 }
 
 .dark {
@@ -84,6 +89,12 @@ body {
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+
+  --hero-gradient-start: 15 50 30; /* Forest Green */
+  --hero-gradient-end: 45 80 50; /* Antique Gold */
+
+  --royal-gradient-start: 240 60% 15%; /* Deeper dark mode royal blue */
+  --royal-gradient-end: 280 50% 25%; /* Deeper dark mode royal purple */
 }
 
 @theme inline {
@@ -131,4 +142,12 @@ body {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.bg-gradient-royal {
+  background-image: linear-gradient(
+    to right,
+    hsl(var(--royal-gradient-start)),
+    hsl(var(--royal-gradient-end))
+  );
 }
