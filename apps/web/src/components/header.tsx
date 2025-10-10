@@ -3,6 +3,8 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 import { useState } from "react";
+import { authClient } from "@/lib/auth-client";
+import UserMenu from "./user-menu";
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -43,16 +45,22 @@ const Header = () => {
             </Link>
           </div>
 
-          {/* CTA Buttons */}
+          {/* User Menu or CTA Buttons */}
           <div className="hidden md:flex items-center gap-4">
-            <Link href="/login">
-              <Button variant="ghost">Login</Button>
-            </Link>
-            <Link href="/signup">
-              <Button variant="default" size="lg">
-                Sign Up
-              </Button>
-            </Link>
+            {authClient.useSession().data?.user ? (
+              <UserMenu />
+            ) : (
+              <>
+                <Link href="/login">
+                  <Button variant="ghost">Login</Button>
+                </Link>
+                <Link href="/signup">
+                  <Button variant="default" size="lg">
+                    Sign Up
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -86,16 +94,22 @@ const Header = () => {
               Marketplace
             </Link>
             <div className="flex flex-col gap-3 pt-4 border-t">
-              <Link href="/login">
-                <Button variant="ghost" className="w-full">
-                  Login
-                </Button>
-              </Link>
-              <Link href="/signup">
-                <Button variant="default" className="w-full">
-                  Sign Up
-                </Button>
-              </Link>
+              {authClient.useSession().data?.user ? (
+                <UserMenu />
+              ) : (
+                <>
+                  <Link href="/login">
+                    <Button variant="ghost" className="w-full">
+                      Login
+                    </Button>
+                  </Link>
+                  <Link href="/signup">
+                    <Button variant="default" className="w-full">
+                      Sign Up
+                    </Button>
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         )}
