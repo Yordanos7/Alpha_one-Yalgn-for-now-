@@ -4,12 +4,14 @@ import { trpc } from "@/utils/trpc";
 import HeroPage from "@/components/HeroPage";
 import HowItWorks from "@/components/HowItWorks";
 import T from "@/components/T";
+import Footer from "@/components/Footer";
 export default function Home() {
   return (
     <>
       <HeroPage />
       <HowItWorks />
       <T />
+      <Footer />
     </>
   );
 }

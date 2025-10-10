@@ -1,14 +1,8 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-// We must avoid direct 'import "gsap"' as the environment failed to resolve it.
-// We will rely on window.gsap being available after the CDN script loads.
 import { MoveRight } from "lucide-react";
 
-// Register GSAP plugins (We must ensure it's registered only after GSAP loads)
-// We will handle registration inside the useEffect after checking window.gsap
-
 // --- Partner Logo Data ---
-// 1. Define the core list separately to avoid the 'partners is not iterable' error
 const corePartners = [
   {
     name: "Ethio Telecom",
@@ -42,12 +36,10 @@ const corePartners = [
   },
 ];
 
-// 2. Build the final array by spreading the core list and its duplicates
-const partners = [
-  ...corePartners,
-  // Duplicate the list for a longer, more impactful horizontal scroll
-  ...corePartners.map((p) => ({ ...p, name: p.name + " (2)" })),
-  ...corePartners.map((p) => ({ ...p, name: p.name + " (3)" })),
+// Row 2: Double the list for a shorter Left-to-Right (LTR) scroll
+const partnersRow2 = [
+  ...corePartners.map((p) => ({ ...p, name: p.name + " (A)" })),
+  ...corePartners.map((p) => ({ ...p, name: p.name + " (B)" })),
 ];
 
 // Helper to load external scripts dynamically
@@ -58,19 +50,25 @@ const loadScript = (src: string): Promise<void> => {
     script.onload = () => resolve();
     script.onerror = () => {
       console.error(`Failed to load script: ${src}`);
-      resolve(); // Resolve anyway so execution doesn't halt
+      resolve();
     };
     document.head.appendChild(script);
   });
 };
 
+interface Partner {
+  name: string;
+  logoUrl: string;
+  color: string;
+}
+
 const ToMembers = () => {
   const scrollSectionRef = useRef<HTMLElement>(null);
-  const wideContainerRef = useRef<HTMLDivElement>(null);
+  const wideContainerRef2 = useRef<HTMLDivElement>(null); // LTR Marquee
   const [isGsapReady, setIsGsapReady] = useState(false);
 
   useEffect(() => {
-    // 1. Load GSAP and ScrollTrigger via CDN if not already present
+    // 1. Load GSAP and ScrollTrigger via CDN
     if (typeof (window as any).gsap === "undefined") {
       Promise.all([
         loadScript(
@@ -80,7 +78,6 @@ const ToMembers = () => {
           "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"
         ),
       ]).then(() => {
-        // Scripts are loaded, now register and set ready state
         const gsap = (window as any).gsap;
         const ScrollTrigger = (window as any).ScrollTrigger;
         if (gsap && ScrollTrigger) {
@@ -89,7 +86,6 @@ const ToMembers = () => {
         }
       });
     } else {
-      // GSAP is already loaded, just register and set ready state
       const gsap = (window as any).gsap;
       const ScrollTrigger = (window as any).ScrollTrigger;
       if (gsap && ScrollTrigger) {
@@ -99,38 +95,104 @@ const ToMembers = () => {
     }
 
     // 2. Animation logic runs when GSAP is confirmed ready
-    if (isGsapReady && wideContainerRef.current && scrollSectionRef.current) {
+    if (isGsapReady && wideContainerRef2.current && scrollSectionRef.current) {
       const gsap = (window as any).gsap;
       const ScrollTrigger = (window as any).ScrollTrigger;
 
-      const wideContainer = wideContainerRef.current;
+      const wideContainer2 = wideContainerRef2.current;
 
-      // Calculate the required horizontal scroll distance.
-      // We need requestAnimationFrame to ensure the scrollWidth is calculated after initial render
       const calculateAndAnimate = () => {
-        if (!wideContainer) return;
+        if (!wideContainer2) return;
 
-        // Kill any existing ScrollTrigger instances before recalculating/creating new ones
+        // Kill any existing ScrollTrigger instances before creating new ones
         ScrollTrigger.getById("partnerScroll")?.kill();
 
-        // Recalculate dimensions
-        const totalWidth = wideContainer.scrollWidth;
-        const viewportWidth = wideContainer.offsetWidth;
-        const scrollDistance = totalWidth - viewportWidth;
+        const cardElements2 = Array.from(
+          wideContainer2.children
+        ) as HTMLElement[];
+        const allCardElements = [...cardElements2];
 
-        // Create the horizontal scroll animation.
-        gsap.to(wideContainer, {
-          x: -scrollDistance, // Animate the X position left by the required distance
-          ease: "none", // Keep it linear for a smooth scrubbing effect
+        // Recalculate dimensions for horizontal scroll
+        const totalWidth2 = wideContainer2.scrollWidth;
+        const viewportWidth = wideContainer2.offsetWidth;
+        const scrollDistance2 = totalWidth2 - viewportWidth;
 
+        // 1. Initial State Setup
+        // Card elements (from both rows)
+        allCardElements.forEach((card, index: number) => {
+          // Apply alternating vertical offset
+          const startY = index % 2 === 0 ? 80 : -80;
+          gsap.set(card, { opacity: 0, scale: 0.95, y: startY });
+        });
+        // Container 2 needs to be initialized far left for the LTR scroll
+        gsap.set(wideContainer2, { x: -scrollDistance2 });
+        // Header content
+        gsap.set(scrollSectionRef.current?.children[0], { opacity: 0, y: -20 });
+
+        // 2. Create the Master Scroll Timeline (Pinning remains the main effect)
+        const scrollTimeline = gsap.timeline({
           scrollTrigger: {
             id: "partnerScroll",
             trigger: scrollSectionRef.current,
-            pin: true, // PIN the entire section
-            start: "top top", // Start the pin when the section hits the top
-            end: "+=3000", // The animation lasts for 3000px of vertical scroll
-            scrub: 0.5, // SMOOTH: Links vertical scroll to horizontal movement with a slight lag
+            pin: true,
+            start: "top top",
+            end: "+=3500", // Long scroll duration
+            scrub: 0.5, // Very smooth lag
           },
+        });
+
+        // --- PHASE 1: Header Entry ---
+        scrollTimeline.to(
+          scrollSectionRef.current?.children[0],
+          { opacity: 1, y: 0, duration: 1.5, ease: "power2.out" },
+          0
+        );
+
+        // --- PHASE 2: Combined Vertical Entry & Continuous X/Y Flow ---
+        const combinedStartTime = 0.5; // Start both V and H motion simultaneously
+
+        // A. Cards smoothly move from initial y to y: 0 (resting place)
+        allCardElements.forEach((card, index: number) => {
+          // The vertical entry is given a short duration and smooth ease
+          scrollTimeline.to(
+            card,
+            {
+              y: 0, // Moves to the center line
+              opacity: 1,
+              scale: 1,
+              duration: 1.0,
+              ease: "power2.out",
+            },
+            combinedStartTime + index * 0.03
+          ); // Staggered start
+        });
+
+        const horizontalStartTime = 1.5; // Start the main horizontal and parallax flow after the initial entry
+
+        // C. ROW 2: Left-to-Right (LTR) movement (x: negative to 0)
+        scrollTimeline.to(
+          wideContainer2,
+          {
+            x: 0,
+            ease: "none",
+            duration: 10,
+          },
+          horizontalStartTime
+        );
+
+        // D. Continuous Y Parallax on ALL Cards (The COMBINED X/Y effect)
+        allCardElements.forEach((card, index: number) => {
+          const isOdd = index % 2 !== 0;
+          // Apply a subtle, opposite Y shift that runs for the duration of the horizontal scroll
+          scrollTimeline.to(
+            card,
+            {
+              y: isOdd ? 15 : -15, // Subtle float: up 15px or down 15px
+              ease: "none", // Linear motion linked to scroll
+              duration: 10, // Same duration as the X movement
+            },
+            horizontalStartTime
+          );
         });
       };
 
@@ -141,7 +203,7 @@ const ToMembers = () => {
       // --- Cleanup ---
       return () => {
         window.removeEventListener("resize", calculateAndAnimate);
-        ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+        ScrollTrigger.getAll().forEach((trigger: any) => trigger.kill());
       };
     }
   }, [isGsapReady]); // Re-run effect when GSAP is ready
@@ -155,7 +217,7 @@ const ToMembers = () => {
       style={{ minHeight: "100vh" }}
     >
       {/* Fixed Content (Title and Description) */}
-      <div className="absolute top-1/4 left-0 w-full z-20 pointer-events-none p-8 md:p-16">
+      <div className="absolute top-1/2 -translate-y-1/2 left-0 w-full z-20 pointer-events-none p-8 md:p-16">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-5xl md:text-7xl font-extrabold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-teal-400 dark:from-yellow-400 dark:to-gold">
             Our Members & Partners
@@ -168,35 +230,36 @@ const ToMembers = () => {
         </div>
       </div>
 
-      {/* Content Container - This moves horizontally */}
-      {/* We use flex and w-[max-content] to force all items onto a single, wide row */}
-      <div
-        ref={wideContainerRef}
-        className="flex h-full items-center py-48 will-change-transform"
-        style={{ width: "max-content" }} // Mandatory to enable horizontal scroll
-      >
-        {partners.map((partner, index) => (
-          <div
-            key={index}
-            className={`w-72 h-40 flex-shrink-0 mx-8 p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-xl transition-all duration-500 hover:shadow-2xl hover:scale-[1.02] border-2 border-transparent hover:border-blue-500/50 flex flex-col justify-center items-center`}
-          >
-            <img
-              src={partner.logoUrl}
-              alt={`${partner.name} Logo`}
-              className="w-full h-12 object-contain mb-3"
-              onError={(e) => {
-                // Fallback for placeholder images
-                const target = e.target as HTMLImageElement;
-                target.onerror = null;
-                target.src =
-                  "https://placehold.co/150x75/CCCCCC/000000?text=Logo";
-              }}
-            />
-            <p className={`text-sm font-semibold mt-2 ${partner.color}`}>
-              {partner.name}
-            </p>
-          </div>
-        ))}
+      {/* Scrollable Content Container */}
+      <div className="flex flex-col justify-center h-full absolute w-full top-0 left-0">
+        {/* ROW 2: Left-to-Right Marquee (Bottom Row) */}
+        <div
+          ref={wideContainerRef2}
+          className="flex h-40 items-center py-4 will-change-transform mt-5vh]"
+          style={{ width: "max-content" }} // Mandatory to enable horizontal scroll
+        >
+          {partnersRow2.map((partner: Partner, index: number) => (
+            <div
+              key={`row2-${index}`}
+              className={`w-72 h-40 flex-shrink-0 mx-8 p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-xl transition-all duration-500 hover:shadow-2xl hover:scale-[1.02] border-2 border-transparent hover:border-blue-500/50 flex flex-col justify-center items-center`}
+            >
+              <img
+                src={partner.logoUrl}
+                alt={`${partner.name} Logo`}
+                className="w-full h-12 object-contain mb-3"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.onerror = null;
+                  target.src =
+                    "https://placehold.co/150x75/CCCCCC/000000?text=Logo";
+                }}
+              />
+              <p className={`text-sm font-semibold mt-2 ${partner.color}`}>
+                {partner.name}
+              </p>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );

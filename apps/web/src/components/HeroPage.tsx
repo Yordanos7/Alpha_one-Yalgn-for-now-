@@ -1,7 +1,7 @@
 "use client";
 // here i have to come back to Know the Link is from react-router-dom or  next/link i think should be to next/link because its a nextjs app
 import React from "react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { fadeIn, staggerFadeIn } from "@/utils/gsap";
@@ -42,7 +42,7 @@ const HeroPage = () => {
             className="text-5xl md:text-7xl font-bold mb-6 leading-tight opacity-0"
           >
             Empowering Ethiopia's Youth with{" "}
-            <span className="text-gold">Jobs</span> and{" "}
+            <span className="text-gold-responsive">Jobs</span> and{" "}
             <span className="text-secondary">Opportunities</span>
           </h1>
 
@@ -58,13 +58,13 @@ const HeroPage = () => {
             ref={buttonsRef}
             className="flex flex-col sm:flex-row gap-4 justify-center opacity-0"
           >
-            <Link to="/signup">
+            <Link href="/signup">
               <Button variant="default" size="lg" className="text-lg group">
                 Get Started
                 <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
-            <Link to="/about">
+            <Link href="/about">
               <Button
                 variant="outline"
                 size="lg"
@@ -78,7 +78,7 @@ const HeroPage = () => {
           {/* Stats */}
           <div className="grid grid-cols-3 gap-8 mt-16 max-w-3xl mx-auto">
             <div className="text-center">
-              <div className="text-4xl md:text-5xl font-bold text-gold mb-2">
+              <div className="text-4xl md:text-5xl font-bold text-gold-responsive mb-2">
                 10K+
               </div>
               <div className="text-sm md:text-base text-white/80">
@@ -86,7 +86,7 @@ const HeroPage = () => {
               </div>
             </div>
             <div className="text-center">
-              <div className="text-4xl md:text-5xl font-bold text-gold mb-2">
+              <div className="text-4xl md:text-5xl font-bold text-gold-responsive mb-2">
                 5K+
               </div>
               <div className="text-sm md:text-base text-white/80">
@@ -94,7 +94,7 @@ const HeroPage = () => {
               </div>
             </div>
             <div className="text-center">
-              <div className="text-4xl md:text-5xl font-bold text-gold mb-2">
+              <div className="text-4xl md:text-5xl font-bold text-gold-responsive mb-2">
                 2K+
               </div>
               <div className="text-sm md:text-base text-white/80">

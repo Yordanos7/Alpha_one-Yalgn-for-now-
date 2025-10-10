@@ -87,7 +87,7 @@ const HowItWorks = () => {
         cardsRef.current[0],
         {
           y: -10,
-          x: -10, // Small horizontal shift for subtlety
+          x: -100, // Small horizontal shift for subtlety
           duration: parallaxDuration,
           ease: "none",
         },
@@ -111,7 +111,7 @@ const HowItWorks = () => {
         cardsRef.current[2],
         {
           y: -40,
-          x: 10,
+          x: 100,
           duration: parallaxDuration,
           ease: "none",
         },

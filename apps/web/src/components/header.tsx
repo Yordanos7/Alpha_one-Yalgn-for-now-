@@ -1,5 +1,5 @@
 "use client";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Menu } from "lucide-react";
 import { useState } from "react";
@@ -12,7 +12,7 @@ const Header = () => {
       <nav className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 group">
+          <Link href="/" className="flex items-center gap-2 group">
             <div className="w-10 h-10 rounded-lg bg-gradient-ethiopian flex items-center justify-center text-white font-bold text-xl transition-transform group-hover:scale-110">
               Y
             </div>
@@ -24,19 +24,19 @@ const Header = () => {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-8">
             <Link
-              to="/"
+              href="/"
               className="text-foreground hover:text-primary transition-colors font-medium"
             >
               Home
             </Link>
             <Link
-              to="/about"
+              href="/about"
               className="text-foreground hover:text-primary transition-colors font-medium"
             >
               How It Works
             </Link>
             <Link
-              to="/marketplace"
+              href="/marketplace"
               className="text-foreground hover:text-primary transition-colors font-medium"
             >
               Marketplace
@@ -45,10 +45,10 @@ const Header = () => {
 
           {/* CTA Buttons */}
           <div className="hidden md:flex items-center gap-4">
-            <Link to="/login">
+            <Link href="/login">
               <Button variant="ghost">Login</Button>
             </Link>
-            <Link to="/signup">
+            <Link href="/signup">
               <Button variant="default" size="lg">
                 Sign Up
               </Button>
@@ -68,30 +68,30 @@ const Header = () => {
         {mobileMenuOpen && (
           <div className="md:hidden mt-4 pb-4 flex flex-col gap-4 animate-fade-in">
             <Link
-              to="/"
+              href="/"
               className="text-foreground hover:text-primary transition-colors font-medium py-2"
             >
               Home
             </Link>
             <Link
-              to="/about"
+              href="/about"
               className="text-foreground hover:text-primary transition-colors font-medium py-2"
             >
               How It Works
             </Link>
             <Link
-              to="/marketplace"
+              href="/marketplace"
               className="text-foreground hover:text-primary transition-colors font-medium py-2"
             >
               Marketplace
             </Link>
             <div className="flex flex-col gap-3 pt-4 border-t">
-              <Link to="/login">
+              <Link href="/login">
                 <Button variant="ghost" className="w-full">
                   Login
                 </Button>
               </Link>
-              <Link to="/signup">
+              <Link href="/signup">
                 <Button variant="default" className="w-full">
                   Sign Up
                 </Button>

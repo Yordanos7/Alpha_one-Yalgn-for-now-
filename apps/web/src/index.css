@@ -55,6 +55,11 @@ body {
 
   --royal-gradient-start: 240 100% 70%; /* More vibrant light mode royal blue */
   --royal-gradient-end: 280 90% 80%; /* More vibrant light mode royal purple */
+
+  --ethiopian-green: 120 60% 30%; /* Dark green for light mode */
+  --ethiopian-yellow: 60 100% 50%; /* Vibrant yellow for light mode */
+  --ethiopian-red: 0 80% 40%; /* Deep red for light mode */
+  --gold: 45 100% 50%; /* Vibrant gold for light mode */
 }
 
 .dark {
@@ -95,6 +100,11 @@ body {
 
   --royal-gradient-start: 240 60% 15%; /* Deeper dark mode royal blue */
   --royal-gradient-end: 280 50% 25%; /* Deeper dark mode royal purple */
+
+  --ethiopian-green: 120 40% 20%; /* Darker green for dark mode */
+  --ethiopian-yellow: 60 80% 30%; /* Muted yellow for dark mode */
+  --ethiopian-red: 0 60% 25%; /* Muted red for dark mode */
+  --gold: 45 80% 30%; /* Muted gold for dark mode */
 }
 
 @theme inline {
@@ -150,4 +160,17 @@ body {
     hsl(var(--royal-gradient-start)),
     hsl(var(--royal-gradient-end))
   );
+}
+
+.bg-gradient-ethiopian {
+  background-image: linear-gradient(
+    to right,
+    hsl(var(--ethiopian-green)),
+    hsl(var(--ethiopian-yellow)),
+    hsl(var(--ethiopian-red))
+  );
+}
+
+.text-gold-responsive {
+  color: hsl(var(--gold));
 }
