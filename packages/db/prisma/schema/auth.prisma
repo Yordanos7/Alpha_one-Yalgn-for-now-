@@ -3,7 +3,8 @@ model User {
   name          String
   email         String
   emailVerified Boolean
-  image         String?
+  avatar        String?
+  profileImage  String?
   createdAt     DateTime
   updatedAt     DateTime
   sessions      Session[]
