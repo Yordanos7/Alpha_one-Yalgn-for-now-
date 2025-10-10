@@ -2,7 +2,7 @@
 
 import React, { useRef } from "react";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation"; // Import usePathname
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -26,6 +26,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { X } from "lucide-react";
+import { trpc } from "@/utils/trpc"; // Import trpc
 
 // Define colors for consistent use
 const COLORS = {
@@ -49,7 +50,8 @@ interface Step1Data {
     | "nonprofit_ngo"
     | "university_school"
     | "community_group"
-    | "other";
+    | "other"
+    | string; // Allow string for custom "other" values
 }
 
 function OnboardingStep1({
@@ -150,8 +152,8 @@ function OnboardingStep1({
             </Label>
             <RadioGroup
               value={individualFocus}
-              onValueChange={(value: Step1Data["individualFocus"]) =>
-                setIndividualFocus(value)
+              onValueChange={(value) =>
+                setIndividualFocus(value as Step1Data["individualFocus"])
               }
               className="space-y-3"
             >
@@ -185,8 +187,10 @@ function OnboardingStep1({
             </Label>
             <RadioGroup
               value={organizationPurpose}
-              onValueChange={(value: Step1Data["organizationPurpose"]) =>
-                setOrganizationPurpose(value)
+              onValueChange={(value) =>
+                setOrganizationPurpose(
+                  value as Step1Data["organizationPurpose"]
+                )
               }
               className="space-y-3"
             >
@@ -597,6 +601,18 @@ interface Step5Data {
   location: string;
 }
 
+// Define a type that matches the expected structure of session.user
+interface SessionUser {
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  email: string;
+  emailVerified: boolean;
+  name: string;
+  image?: string | null;
+  profileImage?: string | null; // Add profileImage here
+}
+
 function OnboardingStep5({
   onNext,
   onBack,
@@ -604,7 +620,47 @@ function OnboardingStep5({
   onNext: (data: Step5Data) => void;
   onBack: () => void;
 }) {
-  const { data: session } = authClient.useSession();
+  const { data: session, refetch: refetchSession } = authClient.useSession();
+  const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
+  const [profileImagePreview, setProfileImagePreview] = useState<string | null>(
+    (session?.user as SessionUser)?.profileImage ||
+      (session?.user as SessionUser)?.image ||
+      null
+  );
+
+  const uploadProfileImageMutation = trpc.user.uploadProfileImage.useMutation({
+    onSuccess: (data) => {
+      // Removed explicit type for data to match useMutation signature
+      toast.success("Profile image uploaded successfully!");
+      // Refetch the session to get the updated profile image
+      refetchSession();
+    },
+    onError: (error: any) => {
+      // TODO: Refine error type
+      toast.error(`Image upload failed: ${error.message}`);
+    },
+  });
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setProfileImageFile(file);
+      setProfileImagePreview(URL.createObjectURL(file));
+    } else {
+      setProfileImageFile(null);
+      setProfileImagePreview(
+        session?.user?.profileImage || session?.user?.image || null
+      );
+    }
+  };
+
+  const handleImageUpload = async () => {
+    if (profileImageFile) {
+      const formData = new FormData();
+      formData.append("profileImage", profileImageFile);
+      await uploadProfileImageMutation.mutateAsync(formData as any); // Cast to any due to tRPC/Multer type mismatch
+    }
+  };
 
   const form = useForm({
     defaultValues: {
@@ -613,13 +669,17 @@ function OnboardingStep5({
       location: "",
     },
     validators: {
-      onSubmit: z.object({
-        displayName: z.string().min(1, "Display name is required"),
-        bio: z.string().optional(),
-        location: z.string().optional(),
-      }),
+      onSubmit: ({ value }) =>
+        z
+          .object({
+            displayName: z.string().min(1, "Display name is required"),
+            bio: z.string().optional(),
+            location: z.string().optional(),
+          })
+          .parse(value),
     },
-    onSubmit: ({ value }) => {
+    onSubmit: async ({ value }) => {
+      await handleImageUpload(); // Upload image before proceeding
       onNext(value);
     },
   });
@@ -643,12 +703,21 @@ function OnboardingStep5({
       <CardContent className="space-y-6 px-6 pb-6">
         <div className="flex flex-col items-center mb-6">
           <Avatar className="h-24 w-24 ring-2 ring-offset-2 ring-accentBlue">
-            <AvatarImage src={session?.user?.image || ""} />
-            <AvatarFallback>{session?.user?.name?.[0] || "U"}</AvatarFallback>
+            <AvatarImage src={profileImagePreview || ""} />
+            <AvatarFallback>
+              {(session?.user as SessionUser)?.name?.[0] || "U"}
+            </AvatarFallback>
           </Avatar>
           <p className="mt-2 text-sm text-muted-foreground">
             Your profile picture
           </p>
+          <Input
+            id="profileImage"
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            className="mt-4 w-full max-w-xs"
+          />
         </div>
 
         <form.Field name="displayName">
@@ -732,6 +801,7 @@ function OnboardingStep5({
 // Main Onboarding Flow Component
 export default function OnboardingPage() {
   const router = useRouter();
+  const pathname = usePathname(); // Get pathname
   const { data: session, isPending } = authClient.useSession();
   const [step, setStep] = useState(1);
   const [onboardingData, setOnboardingData] = useState<{
@@ -743,10 +813,12 @@ export default function OnboardingPage() {
   }>({});
 
   useEffect(() => {
-    if (!isPending && !session) {
+    // Only redirect to login if there's no session AND we are not currently on the onboarding page
+    // This prevents a redirect loop or premature redirect during onboarding
+    if (!isPending && !session && pathname !== "/onboarding") {
       router.push("/login");
     }
-  }, [isPending, session, router]);
+  }, [isPending, session, router, pathname]); // Add pathname to dependency array
 
   const handleNext = (data: any) => {
     setOnboardingData((prev) => ({ ...prev, [`step${step}`]: data }));
@@ -765,6 +837,7 @@ export default function OnboardingPage() {
     // TODO: Send all onboardingData to backend API
     console.log("Onboarding data:", onboardingData);
     toast.success("Onboarding complete! Redirecting to dashboard...");
+    console.log("Attempting to redirect to: /dashboard"); // Added log
     router.push("/dashboard");
   };
 

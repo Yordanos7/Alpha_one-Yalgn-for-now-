@@ -25,6 +25,7 @@
   "dependencies": {
     "dotenv": "^17.2.2",
     "lucide-react": "^0.545.0",
+    "multer": "^2.0.2",
     "zod": "^4.1.11"
   },
   "devDependencies": {
