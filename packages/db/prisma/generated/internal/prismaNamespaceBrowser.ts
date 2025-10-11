@@ -77,6 +77,8 @@ export const UserScalarFieldEnum = {
   emailVerified: 'emailVerified',
   avatar: 'avatar',
   profileImage: 'profileImage',
+  bio: 'bio',
+  location: 'location',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

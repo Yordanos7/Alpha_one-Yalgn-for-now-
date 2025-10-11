@@ -27,6 +27,18 @@ import {
 import { useState } from "react";
 import { ModeToggle } from "./mode-toggle";
 
+// Define a type that matches the expected structure of session.user
+interface SessionUser {
+  id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  email: string;
+  emailVerified: boolean;
+  name: string;
+  image?: string | null;
+  profileImage?: string | null; // Add profileImage here
+}
+
 export default function UserMenu() {
   const router = useRouter();
   const { data: session, isPending } = authClient.useSession(); // this is to get the session of the user from THE AUTH CLIENT using the useSession hook
@@ -59,7 +71,11 @@ export default function UserMenu() {
         >
           <Avatar className="h-8 w-8">
             <AvatarImage
-              src={session.user.image || "/placeholder-avatar.jpg"}
+              src={
+                (session.user as SessionUser).profileImage ||
+                session.user.image ||
+                "/placeholder-avatar.jpg"
+              }
               alt={session.user.name || "User"}
             />
             <AvatarFallback>{session.user.name?.[0]}</AvatarFallback>
@@ -71,7 +87,11 @@ export default function UserMenu() {
           <div className="flex items-center gap-2">
             <Avatar className="h-9 w-9">
               <AvatarImage
-                src={session.user.image || "/placeholder-avatar.jpg"}
+                src={
+                  (session.user as SessionUser).profileImage ||
+                  session.user.image ||
+                  "/placeholder-avatar.jpg"
+                }
                 alt={session.user.name || "User"}
               />
               <AvatarFallback>{session.user.name?.[0]}</AvatarFallback>
@@ -100,25 +120,25 @@ export default function UserMenu() {
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link href="/profile" className="flex items-center">
+          <Link href={"/profile" as any} className="flex items-center">
             <User className="mr-2 h-4 w-4" />
             <span>Your profile</span>
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link href="/stats" className="flex items-center">
+          <Link href={"/stats" as any} className="flex items-center">
             <BarChart className="mr-2 h-4 w-4" />
             <span>Stats and trends</span>
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link href="/membership" className="flex items-center">
+          <Link href={"/membership" as any} className="flex items-center">
             <CreditCard className="mr-2 h-4 w-4" />
             <span>Membership plan</span>
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link href="/connects" className="flex items-center">
+          <Link href={"/connects" as any} className="flex items-center">
             <LinkIcon className="mr-2 h-4 w-4" />
             <span>Connects</span>
           </Link>
@@ -131,7 +151,7 @@ export default function UserMenu() {
           <ModeToggle />
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link href="/settings" className="flex items-center">
+          <Link href={"/settings" as any} className="flex items-center">
             <Settings className="mr-2 h-4 w-4" />
             <span>Account settings</span>
           </Link>

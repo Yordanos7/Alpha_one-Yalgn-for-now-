@@ -601,18 +601,6 @@ interface Step5Data {
   location: string;
 }
 
-// Define a type that matches the expected structure of session.user
-interface SessionUser {
-  id: string;
-  createdAt: Date;
-  updatedAt: Date;
-  email: string;
-  emailVerified: boolean;
-  name: string;
-  image?: string | null;
-  profileImage?: string | null; // Add profileImage here
-}
-
 function OnboardingStep5({
   onNext,
   onBack,
@@ -623,21 +611,26 @@ function OnboardingStep5({
   const { data: session, refetch: refetchSession } = authClient.useSession();
   const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
   const [profileImagePreview, setProfileImagePreview] = useState<string | null>(
-    (session?.user as SessionUser)?.profileImage ||
-      (session?.user as SessionUser)?.image ||
-      null
+    session?.user?.profileImage || session?.user?.image || null
   );
 
   const uploadProfileImageMutation = trpc.user.uploadProfileImage.useMutation({
     onSuccess: (data) => {
-      // Removed explicit type for data to match useMutation signature
       toast.success("Profile image uploaded successfully!");
-      // Refetch the session to get the updated profile image
       refetchSession();
     },
     onError: (error: any) => {
-      // TODO: Refine error type
       toast.error(`Image upload failed: ${error.message}`);
+    },
+  });
+
+  const updateProfileMutation = trpc.user.updateProfile.useMutation({
+    onSuccess: () => {
+      toast.success("Profile details updated successfully!");
+      refetchSession();
+    },
+    onError: (error: any) => {
+      toast.error(`Profile update failed: ${error.message}`);
     },
   });
 
@@ -658,15 +651,15 @@ function OnboardingStep5({
     if (profileImageFile) {
       const formData = new FormData();
       formData.append("profileImage", profileImageFile);
-      await uploadProfileImageMutation.mutateAsync(formData as any); // Cast to any due to tRPC/Multer type mismatch
+      await uploadProfileImageMutation.mutateAsync(formData as any);
     }
   };
 
   const form = useForm({
     defaultValues: {
       displayName: session?.user?.name || "",
-      bio: "",
-      location: "",
+      bio: session?.user?.bio || "",
+      location: session?.user?.location || "",
     },
     validators: {
       onSubmit: ({ value }) =>
@@ -679,7 +672,8 @@ function OnboardingStep5({
           .parse(value),
     },
     onSubmit: async ({ value }) => {
-      await handleImageUpload(); // Upload image before proceeding
+      await handleImageUpload();
+      await updateProfileMutation.mutateAsync(value);
       onNext(value);
     },
   });
@@ -704,9 +698,7 @@ function OnboardingStep5({
         <div className="flex flex-col items-center mb-6">
           <Avatar className="h-24 w-24 ring-2 ring-offset-2 ring-accentBlue">
             <AvatarImage src={profileImagePreview || ""} />
-            <AvatarFallback>
-              {(session?.user as SessionUser)?.name?.[0] || "U"}
-            </AvatarFallback>
+            <AvatarFallback>{session?.user?.name?.[0] || "U"}</AvatarFallback>
           </Avatar>
           <p className="mt-2 text-sm text-muted-foreground">
             Your profile picture
@@ -836,9 +828,9 @@ export default function OnboardingPage() {
   const handleFinishOnboarding = async () => {
     // TODO: Send all onboardingData to backend API
     console.log("Onboarding data:", onboardingData);
-    toast.success("Onboarding complete! Redirecting to dashboard...");
-    console.log("Attempting to redirect to: /dashboard"); // Added log
-    router.push("/dashboard");
+    toast.success("Onboarding complete! Redirecting to home page...");
+    console.log("Attempting to redirect to: /"); // Updated log
+    router.push("/");
   };
 
   const renderContent = () => {

@@ -79,4 +79,35 @@ export const userRouter = router({
         });
       });
     }),
+
+  updateProfile: protectedProcedure
+    .input(
+      z.object({
+        displayName: z.string().min(1),
+        bio: z.string().optional(),
+        location: z.string().optional(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const updatedUser = await ctx.prisma.user.update({
+          where: { id: ctx.session.user.id },
+          data: {
+            name: input.displayName,
+            bio: input.bio,
+            location: input.location,
+          },
+        });
+        return {
+          message: "Profile updated successfully",
+          user: updatedUser,
+        };
+      } catch (error) {
+        console.error("Database update error:", error);
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to update user profile",
+        });
+      }
+    }),
 });

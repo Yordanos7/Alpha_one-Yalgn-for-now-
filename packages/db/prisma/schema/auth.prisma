@@ -5,6 +5,8 @@ model User {
   emailVerified Boolean
   avatar        String?
   profileImage  String?
+  bio           String?
+  location      String?
   createdAt     DateTime
   updatedAt     DateTime
   sessions      Session[]

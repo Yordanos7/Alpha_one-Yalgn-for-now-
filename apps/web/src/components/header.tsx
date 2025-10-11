@@ -5,6 +5,7 @@ import { Menu } from "lucide-react";
 import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import UserMenu from "./user-menu";
+import logo from "@/../assets/logo.png";
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -15,12 +16,7 @@ const Header = () => {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 group">
-            <div className="w-10 h-10 rounded-lg bg-gradient-ethiopian flex items-center justify-center text-white font-bold text-xl transition-transform group-hover:scale-110">
-              Y
-            </div>
-            <span className="text-2xl font-bold bg-gradient-to-r from-primary via-gold to-secondary bg-clip-text text-transparent">
-              Yalegn
-            </span>
+            <img src={logo.src} alt="Yalegn Logo" className="h-20 w-20" />
           </Link>
 
           {/* Desktop Navigation */}
