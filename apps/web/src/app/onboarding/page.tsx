@@ -665,11 +665,14 @@ function OnboardingStep5({
   };
 
   const handleImageUpload = async (): Promise<string | null> => {
+    console.log("handleImageUpload called.");
     if (profileImageFile) {
+      console.log("Profile image file exists, preparing to upload.");
       const formData = new FormData();
       formData.append("profileImage", profileImageFile);
 
       try {
+        console.log("Sending fetch request to /api/upload-profile-image");
         const response = await fetch("/api/upload-profile-image", {
           method: "POST",
           body: formData,
@@ -677,20 +680,25 @@ function OnboardingStep5({
 
         if (!response.ok) {
           const errorData = await response.json();
+          console.error("Image upload failed on server:", errorData);
           throw new Error(errorData.message || "Image upload failed on server");
         }
 
         const data = await response.json();
+        console.log("Image upload successful, received data:", data);
         // Call the tRPC mutation to save the filePath to the database
         await uploadProfileImageMutation.mutateAsync({
           filePath: data.filePath,
         });
+        console.log("tRPC mutation for profile image path initiated.");
         return data.filePath;
       } catch (error: any) {
+        console.error("Error during image upload process:", error);
         toast.error(`Image upload failed: ${error.message}`);
         return null;
       }
     }
+    console.log("No profile image file selected for upload.");
     return null;
   };
 
@@ -701,19 +709,31 @@ function OnboardingStep5({
       location: currentUser?.location || "", // Use currentUser
     },
     validators: {
-      onSubmit: ({ value }) =>
-        z
+      onSubmit: ({ value }) => {
+        console.log("Form validation triggered.");
+        const result = z
           .object({
             displayName: z.string().min(1, "Display name is required"),
             bio: z.string().optional(),
             location: z.string().optional(),
           })
-          .parse(value),
+          .safeParse(value); // Use safeParse to catch validation errors gracefully
+        if (!result.success) {
+          console.error("Form validation errors:", result.error.issues); // Use .issues
+          result.error.issues.forEach((issue) => toast.error(issue.message)); // Use .issues and rename err to issue
+          throw new Error("Validation failed"); // Throw to prevent onSubmit from proceeding
+        }
+        return result.data;
+      },
     },
     onSubmit: async ({ value }) => {
+      console.log("Form onSubmit handler triggered with value:", value);
       const uploadedImagePath = await handleImageUpload(); // Wait for image upload
+      console.log("Image upload completed, path:", uploadedImagePath);
       await updateProfileMutation.mutateAsync(value); // Update other profile details
+      console.log("Profile details update mutation initiated.");
       onNext(value);
+      console.log("onNext called, finishing onboarding step.");
     },
   });
 

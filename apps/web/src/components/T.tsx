@@ -235,7 +235,7 @@ const ToMembers = () => {
         {/* ROW 2: Left-to-Right Marquee (Bottom Row) */}
         <div
           ref={wideContainerRef2}
-          className="flex h-40 items-center py-4 will-change-transform mt-5vh]"
+          className="flex h-40 items-center py-4 will-change-transform mt-[5vh]"
           style={{ width: "max-content" }} // Mandatory to enable horizontal scroll
         >
           {partnersRow2.map((partner: Partner, index: number) => (

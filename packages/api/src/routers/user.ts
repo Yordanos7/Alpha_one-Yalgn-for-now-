@@ -8,12 +8,16 @@ export const userRouter = router({
     .mutation(async ({ ctx: { session, prisma }, input }) => {
       // Destructure ctx to assert session is not null
       try {
+        console.log(
+          "tRPC uploadProfileImage mutation received filePath:",
+          input.filePath
+        );
         const updatedUser = await prisma.user.update({
           where: { id: session!.user.id }, // Add non-null assertion
           data: { profileImage: input.filePath },
         });
         console.log(
-          "Profile image path saved to DB:",
+          "Profile image path successfully saved to DB:",
           updatedUser.profileImage
         );
         return {
@@ -21,7 +25,7 @@ export const userRouter = router({
           profileImage: updatedUser.profileImage,
         };
       } catch (dbError) {
-        console.error("Database update error:", dbError);
+        console.error("Database update error in uploadProfileImage:", dbError);
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
           message: "Failed to update profile image in database",

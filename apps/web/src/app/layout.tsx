@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "../index.css";
 import Providers from "@/components/providers";
 import Header from "@/components/header";
+import { Toaster } from "@/components/ui/sonner"; // Import Toaster
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,12 +29,14 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        style={{ pointerEvents: "auto" }} // Explicitly set pointer-events to auto
       >
         <Providers>
           <div className="grid grid-rows-[auto_1fr] h-svh">
             <Header />
-            {children}
+            <main className="pt-[112px]">{children}</main>
           </div>
+          <Toaster /> {/* Add Toaster component here */}
         </Providers>
       </body>
     </html>

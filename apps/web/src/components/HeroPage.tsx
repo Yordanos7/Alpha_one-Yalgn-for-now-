@@ -24,7 +24,7 @@ const HeroPage = () => {
   return (
     <section
       ref={heroRef}
-      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden"
       style={{
         backgroundImage: `linear-gradient(135deg, rgb(var(--hero-gradient-start) / 0.92), rgb(var(--hero-gradient-end) / 0.85)), url(${heroImage.src})`,
         backgroundSize: "cover",
@@ -64,7 +64,7 @@ const HeroPage = () => {
                 <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
-            <Link href="/about">
+            <Link href={"/about"}>
               <Button
                 variant="outline"
                 size="lg"

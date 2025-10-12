@@ -50,15 +50,19 @@ app.post(
   "/api/upload-profile-image",
   upload.single("profileImage"),
   (req, res) => {
+    console.log("Received request to /api/upload-profile-image");
     if (!req.file) {
+      console.error("No file uploaded in the request.");
       return res.status(400).json({ message: "No file uploaded" });
     }
+    console.log("File received:", req.file);
     const filePath = `/uploads/${req.file.filename}`;
+    console.log("Generated filePath:", filePath);
     res.status(200).json({ message: "File uploaded successfully", filePath });
   }
 );
 
-app.all("/api/auth{/*path}", toNodeHandler(auth));
+app.all("/api/auth{/*path}", toNodeHandler(auth)); // Use toNodeHandler set by better-auth, the main purpose is to handle auth routes
 
 app.use(
   "/trpc",
