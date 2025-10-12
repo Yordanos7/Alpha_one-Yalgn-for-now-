@@ -27,18 +27,6 @@ import {
 import { useState } from "react";
 import { ModeToggle } from "./mode-toggle";
 
-// Define a type that matches the expected structure of session.user
-interface SessionUser {
-  id: string;
-  createdAt: Date;
-  updatedAt: Date;
-  email: string;
-  emailVerified: boolean;
-  name: string;
-  image?: string | null;
-  profileImage?: string | null; // Add profileImage here
-}
-
 export default function UserMenu() {
   const router = useRouter();
   const { data: session, isPending } = authClient.useSession(); // this is to get the session of the user from THE AUTH CLIENT using the useSession hook
@@ -72,7 +60,7 @@ export default function UserMenu() {
           <Avatar className="h-8 w-8">
             <AvatarImage
               src={
-                (session.user as SessionUser).profileImage ||
+                session.user.profileImage ||
                 session.user.image ||
                 "/placeholder-avatar.jpg"
               }
@@ -88,7 +76,7 @@ export default function UserMenu() {
             <Avatar className="h-9 w-9">
               <AvatarImage
                 src={
-                  (session.user as SessionUser).profileImage ||
+                  session.user.profileImage ||
                   session.user.image ||
                   "/placeholder-avatar.jpg"
                 }

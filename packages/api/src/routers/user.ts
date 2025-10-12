@@ -52,12 +52,18 @@ export const userRouter = router({
           }
 
           const filePath = `/uploads/${ctx.req.file.filename}`;
+          console.log("File uploaded to server:", ctx.req.file.path);
+          console.log("Attempting to save filePath to DB:", filePath);
 
           try {
             const updatedUser = await ctx.prisma.user.update({
               where: { id: ctx.session.user.id },
               data: { profileImage: filePath },
             });
+            console.log(
+              "Profile image path saved to DB:",
+              updatedUser.profileImage
+            );
             resolve({
               message: "Profile image uploaded successfully",
               profileImage: updatedUser.profileImage,
