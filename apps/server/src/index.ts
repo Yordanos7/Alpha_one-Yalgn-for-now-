@@ -1,4 +1,5 @@
 import "dotenv/config";
+import "dotenv/config";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { createContext } from "@Alpha/api/context";
 import { appRouter } from "@Alpha/api/routers/index";
@@ -6,6 +7,9 @@ import cors from "cors";
 import express from "express";
 import { auth } from "@Alpha/auth";
 import { toNodeHandler } from "better-auth/node";
+import multer from "multer";
+import path from "path";
+import fs from "fs";
 
 const app = express();
 
@@ -18,7 +22,41 @@ app.use(
   })
 );
 
+// Ensure the uploads directory exists
+const uploadDir = path.join(process.cwd(), "uploads");
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir);
+}
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, uploadDir);
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(
+      null,
+      file.fieldname + "-" + uniqueSuffix + path.extname(file.originalname)
+    );
+  },
+});
+
+const upload = multer({ storage: storage });
+
 app.use("/uploads", express.static("uploads")); // Serve static files from the 'uploads' directory
+
+// Dedicated endpoint for profile image uploads
+app.post(
+  "/api/upload-profile-image",
+  upload.single("profileImage"),
+  (req, res) => {
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded" });
+    }
+    const filePath = `/uploads/${req.file.filename}`;
+    res.status(200).json({ message: "File uploaded successfully", filePath });
+  }
+);
 
 app.all("/api/auth{/*path}", toNodeHandler(auth));
 

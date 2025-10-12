@@ -32,6 +32,11 @@ export type UserMinAggregateOutputType = {
   profileImage: string | null
   bio: string | null
   location: string | null
+  userType: string | null
+  individualFocus: string | null
+  organizationPurpose: string | null
+  howHear: string | null
+  howHearOther: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -45,6 +50,11 @@ export type UserMaxAggregateOutputType = {
   profileImage: string | null
   bio: string | null
   location: string | null
+  userType: string | null
+  individualFocus: string | null
+  organizationPurpose: string | null
+  howHear: string | null
+  howHearOther: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -58,6 +68,13 @@ export type UserCountAggregateOutputType = {
   profileImage: number
   bio: number
   location: number
+  userType: number
+  individualFocus: number
+  organizationPurpose: number
+  howHear: number
+  howHearOther: number
+  goals: number
+  skills: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -73,6 +90,11 @@ export type UserMinAggregateInputType = {
   profileImage?: true
   bio?: true
   location?: true
+  userType?: true
+  individualFocus?: true
+  organizationPurpose?: true
+  howHear?: true
+  howHearOther?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -86,6 +108,11 @@ export type UserMaxAggregateInputType = {
   profileImage?: true
   bio?: true
   location?: true
+  userType?: true
+  individualFocus?: true
+  organizationPurpose?: true
+  howHear?: true
+  howHearOther?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -99,6 +126,13 @@ export type UserCountAggregateInputType = {
   profileImage?: true
   bio?: true
   location?: true
+  userType?: true
+  individualFocus?: true
+  organizationPurpose?: true
+  howHear?: true
+  howHearOther?: true
+  goals?: true
+  skills?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -185,6 +219,13 @@ export type UserGroupByOutputType = {
   profileImage: string | null
   bio: string | null
   location: string | null
+  userType: string | null
+  individualFocus: string | null
+  organizationPurpose: string | null
+  howHear: string | null
+  howHearOther: string | null
+  goals: string[]
+  skills: string[]
   createdAt: Date
   updatedAt: Date
   _count: UserCountAggregateOutputType | null
@@ -219,6 +260,13 @@ export type UserWhereInput = {
   profileImage?: Prisma.StringNullableFilter<"User"> | string | null
   bio?: Prisma.StringNullableFilter<"User"> | string | null
   location?: Prisma.StringNullableFilter<"User"> | string | null
+  userType?: Prisma.StringNullableFilter<"User"> | string | null
+  individualFocus?: Prisma.StringNullableFilter<"User"> | string | null
+  organizationPurpose?: Prisma.StringNullableFilter<"User"> | string | null
+  howHear?: Prisma.StringNullableFilter<"User"> | string | null
+  howHearOther?: Prisma.StringNullableFilter<"User"> | string | null
+  goals?: Prisma.StringNullableListFilter<"User">
+  skills?: Prisma.StringNullableListFilter<"User">
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   sessions?: Prisma.SessionListRelationFilter
@@ -234,6 +282,13 @@ export type UserOrderByWithRelationInput = {
   profileImage?: Prisma.SortOrderInput | Prisma.SortOrder
   bio?: Prisma.SortOrderInput | Prisma.SortOrder
   location?: Prisma.SortOrderInput | Prisma.SortOrder
+  userType?: Prisma.SortOrderInput | Prisma.SortOrder
+  individualFocus?: Prisma.SortOrderInput | Prisma.SortOrder
+  organizationPurpose?: Prisma.SortOrderInput | Prisma.SortOrder
+  howHear?: Prisma.SortOrderInput | Prisma.SortOrder
+  howHearOther?: Prisma.SortOrderInput | Prisma.SortOrder
+  goals?: Prisma.SortOrder
+  skills?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   sessions?: Prisma.SessionOrderByRelationAggregateInput
@@ -252,6 +307,13 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   profileImage?: Prisma.StringNullableFilter<"User"> | string | null
   bio?: Prisma.StringNullableFilter<"User"> | string | null
   location?: Prisma.StringNullableFilter<"User"> | string | null
+  userType?: Prisma.StringNullableFilter<"User"> | string | null
+  individualFocus?: Prisma.StringNullableFilter<"User"> | string | null
+  organizationPurpose?: Prisma.StringNullableFilter<"User"> | string | null
+  howHear?: Prisma.StringNullableFilter<"User"> | string | null
+  howHearOther?: Prisma.StringNullableFilter<"User"> | string | null
+  goals?: Prisma.StringNullableListFilter<"User">
+  skills?: Prisma.StringNullableListFilter<"User">
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   sessions?: Prisma.SessionListRelationFilter
@@ -267,6 +329,13 @@ export type UserOrderByWithAggregationInput = {
   profileImage?: Prisma.SortOrderInput | Prisma.SortOrder
   bio?: Prisma.SortOrderInput | Prisma.SortOrder
   location?: Prisma.SortOrderInput | Prisma.SortOrder
+  userType?: Prisma.SortOrderInput | Prisma.SortOrder
+  individualFocus?: Prisma.SortOrderInput | Prisma.SortOrder
+  organizationPurpose?: Prisma.SortOrderInput | Prisma.SortOrder
+  howHear?: Prisma.SortOrderInput | Prisma.SortOrder
+  howHearOther?: Prisma.SortOrderInput | Prisma.SortOrder
+  goals?: Prisma.SortOrder
+  skills?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
@@ -286,6 +355,13 @@ export type UserScalarWhereWithAggregatesInput = {
   profileImage?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   bio?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   location?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  userType?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  individualFocus?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  organizationPurpose?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  howHear?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  howHearOther?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  goals?: Prisma.StringNullableListFilter<"User">
+  skills?: Prisma.StringNullableListFilter<"User">
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
 }
@@ -299,6 +375,13 @@ export type UserCreateInput = {
   profileImage?: string | null
   bio?: string | null
   location?: string | null
+  userType?: string | null
+  individualFocus?: string | null
+  organizationPurpose?: string | null
+  howHear?: string | null
+  howHearOther?: string | null
+  goals?: Prisma.UserCreategoalsInput | string[]
+  skills?: Prisma.UserCreateskillsInput | string[]
   createdAt: Date | string
   updatedAt: Date | string
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
@@ -314,6 +397,13 @@ export type UserUncheckedCreateInput = {
   profileImage?: string | null
   bio?: string | null
   location?: string | null
+  userType?: string | null
+  individualFocus?: string | null
+  organizationPurpose?: string | null
+  howHear?: string | null
+  howHearOther?: string | null
+  goals?: Prisma.UserCreategoalsInput | string[]
+  skills?: Prisma.UserCreateskillsInput | string[]
   createdAt: Date | string
   updatedAt: Date | string
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
@@ -329,6 +419,13 @@ export type UserUpdateInput = {
   profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  individualFocus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  organizationPurpose?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  howHear?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  howHearOther?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  goals?: Prisma.UserUpdategoalsInput | string[]
+  skills?: Prisma.UserUpdateskillsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
@@ -344,6 +441,13 @@ export type UserUncheckedUpdateInput = {
   profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  individualFocus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  organizationPurpose?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  howHear?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  howHearOther?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  goals?: Prisma.UserUpdategoalsInput | string[]
+  skills?: Prisma.UserUpdateskillsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -359,6 +463,13 @@ export type UserCreateManyInput = {
   profileImage?: string | null
   bio?: string | null
   location?: string | null
+  userType?: string | null
+  individualFocus?: string | null
+  organizationPurpose?: string | null
+  howHear?: string | null
+  howHearOther?: string | null
+  goals?: Prisma.UserCreategoalsInput | string[]
+  skills?: Prisma.UserCreateskillsInput | string[]
   createdAt: Date | string
   updatedAt: Date | string
 }
@@ -372,6 +483,13 @@ export type UserUpdateManyMutationInput = {
   profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  individualFocus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  organizationPurpose?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  howHear?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  howHearOther?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  goals?: Prisma.UserUpdategoalsInput | string[]
+  skills?: Prisma.UserUpdateskillsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -385,8 +503,23 @@ export type UserUncheckedUpdateManyInput = {
   profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  individualFocus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  organizationPurpose?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  howHear?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  howHearOther?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  goals?: Prisma.UserUpdategoalsInput | string[]
+  skills?: Prisma.UserUpdateskillsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type StringNullableListFilter<$PrismaModel = never> = {
+  equals?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel> | null
+  has?: string | Prisma.StringFieldRefInput<$PrismaModel> | null
+  hasEvery?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
+  hasSome?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
+  isEmpty?: boolean
 }
 
 export type UserCountOrderByAggregateInput = {
@@ -398,6 +531,13 @@ export type UserCountOrderByAggregateInput = {
   profileImage?: Prisma.SortOrder
   bio?: Prisma.SortOrder
   location?: Prisma.SortOrder
+  userType?: Prisma.SortOrder
+  individualFocus?: Prisma.SortOrder
+  organizationPurpose?: Prisma.SortOrder
+  howHear?: Prisma.SortOrder
+  howHearOther?: Prisma.SortOrder
+  goals?: Prisma.SortOrder
+  skills?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -411,6 +551,11 @@ export type UserMaxOrderByAggregateInput = {
   profileImage?: Prisma.SortOrder
   bio?: Prisma.SortOrder
   location?: Prisma.SortOrder
+  userType?: Prisma.SortOrder
+  individualFocus?: Prisma.SortOrder
+  organizationPurpose?: Prisma.SortOrder
+  howHear?: Prisma.SortOrder
+  howHearOther?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -424,6 +569,11 @@ export type UserMinOrderByAggregateInput = {
   profileImage?: Prisma.SortOrder
   bio?: Prisma.SortOrder
   location?: Prisma.SortOrder
+  userType?: Prisma.SortOrder
+  individualFocus?: Prisma.SortOrder
+  organizationPurpose?: Prisma.SortOrder
+  howHear?: Prisma.SortOrder
+  howHearOther?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -431,6 +581,14 @@ export type UserMinOrderByAggregateInput = {
 export type UserScalarRelationFilter = {
   is?: Prisma.UserWhereInput
   isNot?: Prisma.UserWhereInput
+}
+
+export type UserCreategoalsInput = {
+  set: string[]
+}
+
+export type UserCreateskillsInput = {
+  set: string[]
 }
 
 export type StringFieldUpdateOperationsInput = {
@@ -443,6 +601,16 @@ export type BoolFieldUpdateOperationsInput = {
 
 export type NullableStringFieldUpdateOperationsInput = {
   set?: string | null
+}
+
+export type UserUpdategoalsInput = {
+  set?: string[]
+  push?: string | string[]
+}
+
+export type UserUpdateskillsInput = {
+  set?: string[]
+  push?: string | string[]
 }
 
 export type DateTimeFieldUpdateOperationsInput = {
@@ -486,6 +654,13 @@ export type UserCreateWithoutSessionsInput = {
   profileImage?: string | null
   bio?: string | null
   location?: string | null
+  userType?: string | null
+  individualFocus?: string | null
+  organizationPurpose?: string | null
+  howHear?: string | null
+  howHearOther?: string | null
+  goals?: Prisma.UserCreategoalsInput | string[]
+  skills?: Prisma.UserCreateskillsInput | string[]
   createdAt: Date | string
   updatedAt: Date | string
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
@@ -500,6 +675,13 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   profileImage?: string | null
   bio?: string | null
   location?: string | null
+  userType?: string | null
+  individualFocus?: string | null
+  organizationPurpose?: string | null
+  howHear?: string | null
+  howHearOther?: string | null
+  goals?: Prisma.UserCreategoalsInput | string[]
+  skills?: Prisma.UserCreateskillsInput | string[]
   createdAt: Date | string
   updatedAt: Date | string
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
@@ -530,6 +712,13 @@ export type UserUpdateWithoutSessionsInput = {
   profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  individualFocus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  organizationPurpose?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  howHear?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  howHearOther?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  goals?: Prisma.UserUpdategoalsInput | string[]
+  skills?: Prisma.UserUpdateskillsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
@@ -544,6 +733,13 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  individualFocus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  organizationPurpose?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  howHear?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  howHearOther?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  goals?: Prisma.UserUpdategoalsInput | string[]
+  skills?: Prisma.UserUpdateskillsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
@@ -558,6 +754,13 @@ export type UserCreateWithoutAccountsInput = {
   profileImage?: string | null
   bio?: string | null
   location?: string | null
+  userType?: string | null
+  individualFocus?: string | null
+  organizationPurpose?: string | null
+  howHear?: string | null
+  howHearOther?: string | null
+  goals?: Prisma.UserCreategoalsInput | string[]
+  skills?: Prisma.UserCreateskillsInput | string[]
   createdAt: Date | string
   updatedAt: Date | string
   sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
@@ -572,6 +775,13 @@ export type UserUncheckedCreateWithoutAccountsInput = {
   profileImage?: string | null
   bio?: string | null
   location?: string | null
+  userType?: string | null
+  individualFocus?: string | null
+  organizationPurpose?: string | null
+  howHear?: string | null
+  howHearOther?: string | null
+  goals?: Prisma.UserCreategoalsInput | string[]
+  skills?: Prisma.UserCreateskillsInput | string[]
   createdAt: Date | string
   updatedAt: Date | string
   sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
@@ -602,6 +812,13 @@ export type UserUpdateWithoutAccountsInput = {
   profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  individualFocus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  organizationPurpose?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  howHear?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  howHearOther?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  goals?: Prisma.UserUpdategoalsInput | string[]
+  skills?: Prisma.UserUpdateskillsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
@@ -616,6 +833,13 @@ export type UserUncheckedUpdateWithoutAccountsInput = {
   profileImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userType?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  individualFocus?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  organizationPurpose?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  howHear?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  howHearOther?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  goals?: Prisma.UserUpdategoalsInput | string[]
+  skills?: Prisma.UserUpdateskillsInput | string[]
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -670,6 +894,13 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   profileImage?: boolean
   bio?: boolean
   location?: boolean
+  userType?: boolean
+  individualFocus?: boolean
+  organizationPurpose?: boolean
+  howHear?: boolean
+  howHearOther?: boolean
+  goals?: boolean
+  skills?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
@@ -686,6 +917,13 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   profileImage?: boolean
   bio?: boolean
   location?: boolean
+  userType?: boolean
+  individualFocus?: boolean
+  organizationPurpose?: boolean
+  howHear?: boolean
+  howHearOther?: boolean
+  goals?: boolean
+  skills?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -699,6 +937,13 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   profileImage?: boolean
   bio?: boolean
   location?: boolean
+  userType?: boolean
+  individualFocus?: boolean
+  organizationPurpose?: boolean
+  howHear?: boolean
+  howHearOther?: boolean
+  goals?: boolean
+  skills?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -712,11 +957,18 @@ export type UserSelectScalar = {
   profileImage?: boolean
   bio?: boolean
   location?: boolean
+  userType?: boolean
+  individualFocus?: boolean
+  organizationPurpose?: boolean
+  howHear?: boolean
+  howHearOther?: boolean
+  goals?: boolean
+  skills?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "emailVerified" | "avatar" | "profileImage" | "bio" | "location" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "emailVerified" | "avatar" | "profileImage" | "bio" | "location" | "userType" | "individualFocus" | "organizationPurpose" | "howHear" | "howHearOther" | "goals" | "skills" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   sessions?: boolean | Prisma.User$sessionsArgs<ExtArgs>
   accounts?: boolean | Prisma.User$accountsArgs<ExtArgs>
@@ -740,6 +992,13 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     profileImage: string | null
     bio: string | null
     location: string | null
+    userType: string | null
+    individualFocus: string | null
+    organizationPurpose: string | null
+    howHear: string | null
+    howHearOther: string | null
+    goals: string[]
+    skills: string[]
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["user"]>
@@ -1175,6 +1434,13 @@ export interface UserFieldRefs {
   readonly profileImage: Prisma.FieldRef<"User", 'String'>
   readonly bio: Prisma.FieldRef<"User", 'String'>
   readonly location: Prisma.FieldRef<"User", 'String'>
+  readonly userType: Prisma.FieldRef<"User", 'String'>
+  readonly individualFocus: Prisma.FieldRef<"User", 'String'>
+  readonly organizationPurpose: Prisma.FieldRef<"User", 'String'>
+  readonly howHear: Prisma.FieldRef<"User", 'String'>
+  readonly howHearOther: Prisma.FieldRef<"User", 'String'>
+  readonly goals: Prisma.FieldRef<"User", 'String[]'>
+  readonly skills: Prisma.FieldRef<"User", 'String[]'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
 }

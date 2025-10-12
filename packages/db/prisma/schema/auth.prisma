@@ -4,13 +4,20 @@ model User {
   email         String
   emailVerified Boolean
   avatar        String?
-  profileImage  String?
-  bio           String?
-  location      String?
-  createdAt     DateTime
-  updatedAt     DateTime
-  sessions      Session[]
-  accounts      Account[]
+  profileImage      String?
+  bio               String?
+  location          String?
+  userType          String? // Added for Step 1
+  individualFocus   String? // Added for Step 1
+  organizationPurpose String? // Added for Step 1
+  howHear           String? // Added for Step 2
+  howHearOther      String? // Added for Step 2 (for "other" option)
+  goals             String[] @default([]) // Added for Step 3, stored as array of strings
+  skills            String[] @default([]) // Added for Step 4, stored as array of strings
+  createdAt         DateTime
+  updatedAt         DateTime
+  sessions          Session[]
+  accounts          Account[]
 
   @@unique([email])
   @@map("user")

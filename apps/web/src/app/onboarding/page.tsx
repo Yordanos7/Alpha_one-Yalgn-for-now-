@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/select";
 import { X } from "lucide-react";
 import { trpc } from "@/utils/trpc"; // Import trpc
+import type { User as BetterAuthUser } from "better-auth"; // Import original User type
 
 // Define colors for consistent use
 const COLORS = {
@@ -608,10 +609,26 @@ function OnboardingStep5({
   onNext: (data: Step5Data) => void;
   onBack: () => void;
 }) {
+  // Define a comprehensive User type locally to resolve TypeScript errors
+  interface SessionUser {
+    id: string;
+    createdAt: Date;
+    updatedAt: Date;
+    email: string;
+    emailVerified: boolean;
+    name: string;
+    image?: string | null;
+    profileImage?: string | null; // Added
+    bio?: string | null; // Added
+    location?: string | null; // Added
+  }
+
   const { data: session, refetch: refetchSession } = authClient.useSession();
+  const currentUser = session?.user as SessionUser | undefined; // Cast session.user to SessionUser
+
   const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
   const [profileImagePreview, setProfileImagePreview] = useState<string | null>(
-    session?.user?.profileImage || session?.user?.image || null
+    currentUser?.profileImage || currentUser?.image || null
   );
 
   const uploadProfileImageMutation = trpc.user.uploadProfileImage.useMutation({
@@ -642,24 +659,46 @@ function OnboardingStep5({
     } else {
       setProfileImageFile(null);
       setProfileImagePreview(
-        session?.user?.profileImage || session?.user?.image || null
+        currentUser?.profileImage || currentUser?.image || null // Use currentUser
       );
     }
   };
 
-  const handleImageUpload = async () => {
+  const handleImageUpload = async (): Promise<string | null> => {
     if (profileImageFile) {
       const formData = new FormData();
       formData.append("profileImage", profileImageFile);
-      await uploadProfileImageMutation.mutateAsync(formData as any);
+
+      try {
+        const response = await fetch("/api/upload-profile-image", {
+          method: "POST",
+          body: formData,
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || "Image upload failed on server");
+        }
+
+        const data = await response.json();
+        // Call the tRPC mutation to save the filePath to the database
+        await uploadProfileImageMutation.mutateAsync({
+          filePath: data.filePath,
+        });
+        return data.filePath;
+      } catch (error: any) {
+        toast.error(`Image upload failed: ${error.message}`);
+        return null;
+      }
     }
+    return null;
   };
 
   const form = useForm({
     defaultValues: {
-      displayName: session?.user?.name || "",
-      bio: session?.user?.bio || "",
-      location: session?.user?.location || "",
+      displayName: currentUser?.name || "", // Use currentUser
+      bio: currentUser?.bio || "", // Use currentUser
+      location: currentUser?.location || "", // Use currentUser
     },
     validators: {
       onSubmit: ({ value }) =>
@@ -672,8 +711,8 @@ function OnboardingStep5({
           .parse(value),
     },
     onSubmit: async ({ value }) => {
-      await handleImageUpload();
-      await updateProfileMutation.mutateAsync(value);
+      const uploadedImagePath = await handleImageUpload(); // Wait for image upload
+      await updateProfileMutation.mutateAsync(value); // Update other profile details
       onNext(value);
     },
   });
@@ -825,12 +864,32 @@ export default function OnboardingPage() {
     setStep((prev) => Math.max(1, prev - 1));
   };
 
+  const completeOnboardingMutation = trpc.user.completeOnboarding.useMutation({
+    onSuccess: () => {
+      toast.success("Onboarding data saved successfully!");
+    },
+    onError: (error: any) => {
+      toast.error(`Failed to save onboarding data: ${error.message}`);
+    },
+  });
+
   const handleFinishOnboarding = async () => {
-    // TODO: Send all onboardingData to backend API
-    console.log("Onboarding data:", onboardingData);
-    toast.success("Onboarding complete! Redirecting to home page...");
-    console.log("Attempting to redirect to: /"); // Updated log
-    router.push("/");
+    try {
+      // Send all onboardingData (steps 1-4) to the backend API
+      await completeOnboardingMutation.mutateAsync({
+        step1: onboardingData.step1,
+        step2: onboardingData.step2,
+        step3: onboardingData.step3,
+        step4: onboardingData.step4,
+      });
+
+      toast.success("Onboarding complete! Redirecting to home page...");
+      console.log("Attempting to redirect to: /");
+      router.push("/");
+    } catch (error) {
+      console.error("Error during final onboarding step:", error);
+      toast.error("Failed to complete onboarding. Please try again.");
+    }
   };
 
   const renderContent = () => {

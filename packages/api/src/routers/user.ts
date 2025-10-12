@@ -1,89 +1,32 @@
 import { protectedProcedure, router } from "../index";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import multer from "multer";
-import path from "path";
-import fs from "fs";
-
-// Ensure the uploads directory exists
-const uploadDir = path.join(process.cwd(), "uploads");
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir);
-}
-
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, uploadDir);
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(
-      null,
-      file.fieldname + "-" + uniqueSuffix + path.extname(file.originalname)
-    );
-  },
-});
-
-const upload = multer({ storage: storage });
 
 export const userRouter = router({
   uploadProfileImage: protectedProcedure
-    .input(z.any()) // Multer handles the file, so input schema is flexible
-    .mutation(async ({ ctx, input }) => {
-      return new Promise((resolve, reject) => {
-        upload.single("profileImage")(ctx.req, ctx.res, async (err: any) => {
-          if (err) {
-            console.error("Multer error:", err);
-            return reject(
-              new TRPCError({
-                code: "INTERNAL_SERVER_ERROR",
-                message: "File upload failed",
-              })
-            );
-          }
-
-          if (!ctx.req.file) {
-            return reject(
-              new TRPCError({
-                code: "BAD_REQUEST",
-                message: "No file uploaded",
-              })
-            );
-          }
-
-          const filePath = `/uploads/${ctx.req.file.filename}`;
-          console.log("File uploaded to server:", ctx.req.file.path);
-          console.log("Attempting to save filePath to DB:", filePath);
-
-          try {
-            const updatedUser = await ctx.prisma.user.update({
-              where: { id: ctx.session.user.id },
-              data: { profileImage: filePath },
-            });
-            console.log(
-              "Profile image path saved to DB:",
-              updatedUser.profileImage
-            );
-            resolve({
-              message: "Profile image uploaded successfully",
-              profileImage: updatedUser.profileImage,
-            });
-          } catch (dbError) {
-            console.error("Database update error:", dbError);
-            // Clean up the uploaded file if database update fails
-            fs.unlink(ctx.req.file.path, (unlinkErr) => {
-              if (unlinkErr)
-                console.error("Error deleting uploaded file:", unlinkErr);
-            });
-            reject(
-              new TRPCError({
-                code: "INTERNAL_SERVER_ERROR",
-                message: "Failed to update profile image in database",
-              })
-            );
-          }
+    .input(z.object({ filePath: z.string() }))
+    .mutation(async ({ ctx: { session, prisma }, input }) => {
+      // Destructure ctx to assert session is not null
+      try {
+        const updatedUser = await prisma.user.update({
+          where: { id: session!.user.id }, // Add non-null assertion
+          data: { profileImage: input.filePath },
         });
-      });
+        console.log(
+          "Profile image path saved to DB:",
+          updatedUser.profileImage
+        );
+        return {
+          message: "Profile image uploaded successfully",
+          profileImage: updatedUser.profileImage,
+        };
+      } catch (dbError) {
+        console.error("Database update error:", dbError);
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to update profile image in database",
+        });
+      }
     }),
 
   updateProfile: protectedProcedure
@@ -94,10 +37,11 @@ export const userRouter = router({
         location: z.string().optional(),
       })
     )
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx: { session, prisma }, input }) => {
+      // Destructure ctx to assert session is not null
       try {
-        const updatedUser = await ctx.prisma.user.update({
-          where: { id: ctx.session.user.id },
+        const updatedUser = await prisma.user.update({
+          where: { id: session!.user.id }, // Add non-null assertion
           data: {
             name: input.displayName,
             bio: input.bio,
@@ -113,6 +57,97 @@ export const userRouter = router({
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
           message: "Failed to update user profile",
+        });
+      }
+    }),
+
+  completeOnboarding: protectedProcedure
+    .input(
+      z.object({
+        step1: z
+          .object({
+            userType: z.enum(["individual", "organization"]),
+            individualFocus: z
+              .enum(["freelancer", "student", "mentor", "job_seeker", "other"])
+              .optional(),
+            organizationPurpose: z.string().optional(),
+          })
+          .optional(),
+        step2: z
+          .object({
+            howHear: z.enum([
+              "social_media",
+              "friend",
+              "organization",
+              "search_engine",
+              "other",
+            ]),
+            otherText: z.string().optional(),
+          })
+          .optional(),
+        step3: z
+          .object({
+            goals: z.array(
+              z.enum([
+                "find_freelance_work",
+                "hire_professionals",
+                "apply_scholarships",
+                "offer_scholarships_mentorship",
+                "network_collaborate",
+              ])
+            ),
+          })
+          .optional(),
+        step4: z
+          .object({
+            skills: z.array(z.string()),
+          })
+          .optional(),
+      })
+    )
+    .mutation(async ({ ctx: { session, prisma }, input }) => {
+      try {
+        const updateData: any = {};
+
+        if (input.step1) {
+          updateData.userType = input.step1.userType;
+          if (input.step1.individualFocus) {
+            updateData.individualFocus = input.step1.individualFocus;
+          }
+          if (input.step1.organizationPurpose) {
+            updateData.organizationPurpose = input.step1.organizationPurpose;
+          }
+        }
+
+        if (input.step2) {
+          updateData.howHear = input.step2.howHear;
+          if (input.step2.otherText) {
+            updateData.howHearOther = input.step2.otherText; // Assuming a new field for other text
+          }
+        }
+
+        if (input.step3) {
+          updateData.goals = input.step3.goals; // Assuming goals can be stored as an array of strings
+        }
+
+        if (input.step4) {
+          updateData.skills = input.step4.skills; // Assuming skills can be stored as an array of strings
+        }
+
+        const updatedUser = await prisma.user.update({
+          where: { id: session!.user.id },
+          data: updateData,
+        });
+
+        return {
+          message: "Onboarding data saved successfully",
+          user: updatedUser,
+        };
+      } catch (error) {
+        console.error("Error saving onboarding data:", error);
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to save onboarding data",
         });
       }
     }),
