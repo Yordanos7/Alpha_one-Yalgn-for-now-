@@ -48,7 +48,7 @@ export default function Dashboard() {
             </li>
             <li className="mb-4">
               <a
-                href="#"
+                href="/messages"
                 className="flex items-center text-gray-400 hover:text-white"
               >
                 <MessageSquare className="mr-3" size={20} />
