@@ -42,14 +42,15 @@ export default function Sidebar({ currentPage }: SidebarProps) {
 
   const navItems = [
     { href: "/dashboard", icon: Home, label: "Dashboard (Home)" },
+    { href: "/marketplace", icon: Briefcase, label: "Marketplace" },
     { href: "/messages", icon: MessageSquare, label: "Messages" },
-    { href: "#", icon: Wallet, label: "Wallet" },
-    { href: "#", icon: List, label: "My Listings" },
+    { href: "/wallet", icon: Wallet, label: "Wallet" },
+    { href: "/my-listings", icon: List, label: "My Listings" },
     { href: "/applications", icon: Briefcase, label: "Applications / Jobs" },
-    { href: "#", icon: BarChart, label: "Analytics" },
-    { href: "#", icon: Settings, label: "Settings" },
-    { href: "#", icon: HelpCircle, label: "Help / Support" },
-    { href: "#", icon: LogOut, label: "Logout" },
+    { href: "/analytics", icon: BarChart, label: "Analytics" },
+    { href: "/settings", icon: Settings, label: "Settings" },
+    { href: "/help-support", icon: HelpCircle, label: "Help / Support" },
+    { href: "/logout", icon: LogOut, label: "Logout" },
   ];
 
   return (
@@ -66,7 +67,10 @@ export default function Sidebar({ currentPage }: SidebarProps) {
       {currentPage === "messages" && (
         <>
           <div className="relative mb-6">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+            <Search
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+              size={20}
+            />
             <Input
               type="text"
               placeholder="Search"
@@ -77,7 +81,10 @@ export default function Sidebar({ currentPage }: SidebarProps) {
           <nav className="flex-1">
             <ul>
               <li className="mb-4">
-                <Link href="#" className="flex items-center text-gray-400 hover:text-white">
+                <Link
+                  href="/messages"
+                  className="flex items-center text-gray-400 hover:text-white"
+                >
                   <MessageSquare className="mr-3" size={20} />
                   Conversations
                 </Link>
@@ -85,7 +92,10 @@ export default function Sidebar({ currentPage }: SidebarProps) {
               <li className="mb-4 bg-[#3A3A3A] rounded-lg p-2 flex items-center justify-between">
                 <div className="flex items-center">
                   <Avatar className="h-10 w-10 mr-3">
-                    <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+                    <AvatarImage
+                      src="https://github.com/shadcn.png"
+                      alt="@shadcn"
+                    />
                     <AvatarFallback>AC</AvatarFallback>
                   </Avatar>
                   <div>
@@ -98,7 +108,10 @@ export default function Sidebar({ currentPage }: SidebarProps) {
               <li className="mb-4 p-2 flex items-center justify-between">
                 <div className="flex items-center">
                   <Avatar className="h-10 w-10 mr-3">
-                    <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+                    <AvatarImage
+                      src="https://github.com/shadcn.png"
+                      alt="@shadcn"
+                    />
                     <AvatarFallback>NE</AvatarFallback>
                   </Avatar>
                   <div>
@@ -106,12 +119,15 @@ export default function Sidebar({ currentPage }: SidebarProps) {
                     <p className="text-sm text-gray-400">Offline</p>
                   </div>
                 </div>
-                <span className="text-gray-400">></span>
+                <span className="text-gray-400"></span>
               </li>
               <li className="mb-4 p-2 flex items-center justify-between">
                 <div className="flex items-center">
                   <Avatar className="h-10 w-10 mr-3">
-                    <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+                    <AvatarImage
+                      src="https://github.com/shadcn.png"
+                      alt="@shadcn"
+                    />
                     <AvatarFallback>NE</AvatarFallback>
                   </Avatar>
                   <div>
@@ -119,12 +135,15 @@ export default function Sidebar({ currentPage }: SidebarProps) {
                     <p className="text-sm text-gray-400">Offline</p>
                   </div>
                 </div>
-                <span className="text-gray-400">></span>
+                <span className="text-gray-400"></span>
               </li>
               <li className="mb-4 p-2 flex items-center justify-between">
                 <div className="flex items-center">
                   <Avatar className="h-10 w-10 mr-3">
-                    <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+                    <AvatarImage
+                      src="https://github.com/shadcn.png"
+                      alt="@shadcn"
+                    />
                     <AvatarFallback>CF</AvatarFallback>
                   </Avatar>
                   <div>
@@ -132,12 +151,15 @@ export default function Sidebar({ currentPage }: SidebarProps) {
                     <p className="text-sm text-gray-400">Online</p>
                   </div>
                 </div>
-                <span className="text-gray-400">></span>
+                <span className="text-gray-400"></span>
               </li>
               <li className="mb-4 p-2 flex items-center justify-between">
                 <div className="flex items-center">
                   <Avatar className="h-10 w-10 mr-3">
-                    <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+                    <AvatarImage
+                      src="https://github.com/shadcn.png"
+                      alt="@shadcn"
+                    />
                     <AvatarFallback>LO</AvatarFallback>
                   </Avatar>
                   <div>
@@ -145,7 +167,7 @@ export default function Sidebar({ currentPage }: SidebarProps) {
                     <p className="text-sm text-gray-400"></p>
                   </div>
                 </div>
-                <span className="text-gray-400">></span>
+                <span className="text-gray-400"></span>
               </li>
             </ul>
           </nav>
@@ -159,10 +181,19 @@ export default function Sidebar({ currentPage }: SidebarProps) {
               const Icon = item.icon;
               const isActive = pathname === item.href;
               return (
-                <li key={item.href} className={`mb-4 ${isActive ? "border-l-4 border-yellow-500 pl-2" : ""}`}>
+                <li
+                  key={item.href}
+                  className={`mb-4 ${
+                    isActive ? "border-l-4 border-yellow-500 pl-2" : ""
+                  }`}
+                >
                   <Link
                     href={item.href}
-                    className={`flex items-center ${isActive ? "text-white font-semibold" : "text-gray-400 hover:text-white"}`}
+                    className={`flex items-center ${
+                      isActive
+                        ? "text-white font-semibold"
+                        : "text-gray-400 hover:text-white"
+                    }`}
                   >
                     <Icon className="mr-3" size={20} />
                     {item.label}

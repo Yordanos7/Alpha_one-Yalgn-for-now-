@@ -24,104 +24,12 @@ import {
   TrendingUp,
   Star,
 } from "lucide-react"; // Assuming lucide-react is installed
+import Sidebar from "@/components/sidebar";
 
 export default function Dashboard() {
   return (
     <div className="flex min-h-screen bg-[#202020] text-white">
-      {/* Sidebar */}
-      <aside className="w-64 bg-[#2C2C2C] p-6 flex flex-col">
-        <div className="flex items-center mb-8">
-          <img src="/assets/logo.png" alt="Logo" className="h-8 mr-2" />{" "}
-          {/* Placeholder for logo */}
-          <span className="text-xl font-bold">Dashboard</span>
-        </div>
-        <nav className="flex-1">
-          <ul>
-            <li className="mb-4">
-              <a
-                href="#"
-                className="flex items-center text-gray-400 hover:text-white"
-              >
-                <Home className="mr-3" size={20} />
-                Dashboard (Home)
-              </a>
-            </li>
-            <li className="mb-4">
-              <a
-                href="/messages"
-                className="flex items-center text-gray-400 hover:text-white"
-              >
-                <MessageSquare className="mr-3" size={20} />
-                Messages
-              </a>
-            </li>
-            <li className="mb-4">
-              <a
-                href="#"
-                className="flex items-center text-gray-400 hover:text-white"
-              >
-                <Wallet className="mr-3" size={20} />
-                Wallet
-              </a>
-            </li>
-            <li className="mb-4 border-l-4 border-yellow-500 pl-2">
-              <a
-                href="#"
-                className="flex items-center text-white font-semibold"
-              >
-                <List className="mr-3" size={20} />
-                My Listings
-              </a>
-            </li>
-            <li className="mb-4">
-              <a
-                href="/applications"
-                className="flex items-center text-gray-400 hover:text-white"
-              >
-                <Briefcase className="mr-3" size={20} />
-                Applications / Jobs
-              </a>
-            </li>
-            <li className="mb-4">
-              <a
-                href="#"
-                className="flex items-center text-gray-400 hover:text-white"
-              >
-                <BarChart className="mr-3" size={20} />
-                Analytics
-              </a>
-            </li>
-            <li className="mb-4">
-              <a
-                href="#"
-                className="flex items-center text-gray-400 hover:text-white"
-              >
-                <Settings className="mr-3" size={20} />
-                Settings
-              </a>
-            </li>
-            <li className="mb-4">
-              <a
-                href="#"
-                className="flex items-center text-gray-400 hover:text-white"
-              >
-                <HelpCircle className="mr-3" size={20} />
-                Help / Support
-              </a>
-            </li>
-            <li className="mb-4">
-              <a
-                href="#"
-                className="flex items-center text-gray-400 hover:text-white"
-              >
-                <LogOut className="mr-3" size={20} />
-                Logout
-              </a>
-            </li>
-          </ul>
-        </nav>
-      </aside>
-
+      <Sidebar currentPage="dashboard" />
       {/* Main Content */}
       <main className="flex-1 p-8 bg-[#202020] flex">
         <div className="flex-1">
