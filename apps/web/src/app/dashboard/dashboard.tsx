@@ -75,7 +75,7 @@ export default function Dashboard() {
             </li>
             <li className="mb-4">
               <a
-                href="#"
+                href="/applications"
                 className="flex items-center text-gray-400 hover:text-white"
               >
                 <Briefcase className="mr-3" size={20} />
