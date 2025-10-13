@@ -24,3 +24,6 @@ export const protectedProcedure: typeof t.procedure = t.procedure.use(
     });
   }
 );
+
+// talking about this code file it is for the api and  the main work for this is to create the tRPC router all the procedures over the api calls
+// by the way this project is gone finish this day by the way I am hard to day

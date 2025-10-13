@@ -1,4 +1,4 @@
-import { QueryCache, QueryClient } from "@tanstack/react-query";
+import { QueryCache, QueryClient } from "@tanstack/react-query"; // Core tools for managing, caching, and synchronizing server state in your React application.
 import { createTRPCClient, httpBatchLink } from "@trpc/client"; // Re-import createTRPCClient
 import { createTRPCReact } from "@trpc/react-query";
 import type { AppRouter } from "@Alpha/api/routers/index";

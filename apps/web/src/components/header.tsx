@@ -11,7 +11,7 @@ const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-background/5 backdrop-blur-md border-b border-border shadow-sm min-h-[112px]">
+    <header className="fixed top-0 left-0 right-0 z-50  backdrop-blur-md border-b border-border shadow-sm min-h-[112px] bg-background/5">
       <nav className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
@@ -22,10 +22,10 @@ const Header = () => {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-8">
             <Link
-              href="/"
+              href="/dashboard"
               className="text-foreground hover:text-primary transition-colors font-medium"
             >
-              Home
+              Dashboard
             </Link>
             <Link
               href="/about"

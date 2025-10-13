@@ -29,7 +29,9 @@ export default function SignInForm({
         },
         {
           onSuccess: () => {
-            router.push("/");
+            // Removed authClient.useSession() from here to fix "Invalid hook call" error
+            // The session will be available via the top-level useSession hook in UserMenu and other components
+            router.push("/dashboard"); // Redirect to dashboard after successful login
             toast.success("Sign in successful");
           },
           onError: (error) => {

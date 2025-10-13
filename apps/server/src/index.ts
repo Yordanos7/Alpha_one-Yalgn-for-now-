@@ -62,7 +62,7 @@ app.post(
   }
 );
 
-app.all("/api/auth{/*path}", toNodeHandler(auth)); // Use toNodeHandler set by better-auth, the main purpose is to handle auth routes
+app.all("/api/auth{/*path}", toNodeHandler(auth)); // Use toNodeHandler set by better-auth, the main purpose is to handle auth routes this route should be before trpc middleware and it is important to use app.all to handle all methods
 
 app.use(
   "/trpc",

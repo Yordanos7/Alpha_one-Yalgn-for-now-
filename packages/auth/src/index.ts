@@ -10,9 +10,13 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
   },
+  session: {
+    // Add session configuration
+    freshAge: 60 * 60 * 24 * 7, // 7 days
+  },
   advanced: {
     defaultCookieAttributes: {
-      sameSite: "none",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       secure: process.env.NODE_ENV === "production",
       httpOnly: true,
     },

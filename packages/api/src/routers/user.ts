@@ -110,6 +110,13 @@ export const userRouter = router({
       })
     )
     .mutation(async ({ ctx: { session, prisma }, input }) => {
+      if (!session?.user) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Authentication required",
+        });
+      }
+
       try {
         const updateData: any = {};
 
@@ -126,20 +133,31 @@ export const userRouter = router({
         if (input.step2) {
           updateData.howHear = input.step2.howHear;
           if (input.step2.otherText) {
-            updateData.howHearOther = input.step2.otherText; // Assuming a new field for other text
+            updateData.howHearOther = input.step2.otherText;
           }
         }
 
         if (input.step3) {
-          updateData.goals = input.step3.goals; // Assuming goals can be stored as an array of strings
+          updateData.goals = input.step3.goals;
         }
 
         if (input.step4) {
-          updateData.skills = input.step4.skills; // Assuming skills can be stored as an array of strings
+          updateData.skills = input.step4.skills;
+        }
+
+        const user = await prisma.user.findUnique({
+          where: { id: session.user.id },
+        });
+
+        if (!user) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "User not found",
+          });
         }
 
         const updatedUser = await prisma.user.update({
-          where: { id: session!.user.id },
+          where: { id: session.user.id },
           data: updateData,
         });
 

@@ -33,7 +33,7 @@ export default function RootLayout({
         <Providers>
           <div className="grid grid-rows-[auto_1fr] h-svh">
             <Header />
-            <main className="pt-[112px]">{children}</main>
+            <main className="pt-[112px] bg-[#0D1B2A]">{children}</main>
           </div>
           <Toaster /> {/* Add Toaster component here */}
         </Providers>

@@ -14,7 +14,7 @@ export default function SignUpForm({
   onSwitchToSignIn: () => void;
 }) {
   const router = useRouter();
-  const { isPending } = authClient.useSession();
+  const { isPending, refetch } = authClient.useSession(); // Destructure refetch here
 
   const form = useForm({
     defaultValues: {
@@ -31,6 +31,7 @@ export default function SignUpForm({
         },
         {
           onSuccess: () => {
+            refetch(); // Call refetch from the hook
             router.push("/onboarding");
             toast.success("Sign up successful");
           },
@@ -89,11 +90,13 @@ export default function SignUpForm({
                   className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all duration-200 bg-gray-50 text-gray-800 placeholder-gray-400"
                   placeholder="Enter your full name"
                 />
-                {field.state.meta.errors.map((error) => (
-                  <p key={error} className="text-sm text-red-500 font-medium">
-                    {error}
-                  </p>
-                ))}
+                {field.state.meta.errors.map((error, index) =>
+                  error ? (
+                    <p key={index} className="text-sm text-red-500 font-medium">
+                      {error.message}
+                    </p>
+                  ) : null
+                )}
               </div>
             )}
           </form.Field>
@@ -119,11 +122,13 @@ export default function SignUpForm({
                   className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all duration-200 bg-gray-50 text-gray-800 placeholder-gray-400"
                   placeholder="Enter your email"
                 />
-                {field.state.meta.errors.map((error) => (
-                  <p key={error} className="text-sm text-red-500 font-medium">
-                    {error}
-                  </p>
-                ))}
+                {field.state.meta.errors.map((error, index) =>
+                  error ? (
+                    <p key={index} className="text-sm text-red-500 font-medium">
+                      {error.message}
+                    </p>
+                  ) : null
+                )}
               </div>
             )}
           </form.Field>
@@ -149,11 +154,13 @@ export default function SignUpForm({
                   className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-all duration-200 bg-gray-50 text-gray-800 placeholder-gray-400"
                   placeholder="Enter your password"
                 />
-                {field.state.meta.errors.map((error) => (
-                  <p key={error} className="text-sm text-red-500 font-medium">
-                    {error}
-                  </p>
-                ))}
+                {field.state.meta.errors.map((error, index) =>
+                  error ? (
+                    <p key={index} className="text-sm text-red-500 font-medium">
+                      {error.message}
+                    </p>
+                  ) : null
+                )}
               </div>
             )}
           </form.Field>
