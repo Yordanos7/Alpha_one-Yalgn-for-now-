@@ -150,11 +150,11 @@ export default function ProfilePage() {
         <div className="lg:col-span-2 flex items-center gap-6 bg-card p-6 rounded-lg shadow-sm">
           <div className="flex items-center gap-4">
             <Image
-              src="/assets/logo.png" // Assuming Faida logo is here
+              src="https://www.ethiotelecom.et/wp-content/uploads/2024/04/IMG_9415.jpg" // Assuming Faida logo is here
               alt="Faida Logo"
-              width={40}
-              height={40}
-              className="rounded-full"
+              width={120}
+              height={120}
+              className=""
             />
             <div className="flex flex-col">
               <h1 className="text-2xl font-bold">Faida</h1>
