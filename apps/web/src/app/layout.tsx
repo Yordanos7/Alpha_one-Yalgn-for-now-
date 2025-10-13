@@ -29,7 +29,6 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        style={{ pointerEvents: "auto" }} // Explicitly set pointer-events to auto
       >
         <Providers>
           <div className="grid grid-rows-[auto_1fr] h-svh">

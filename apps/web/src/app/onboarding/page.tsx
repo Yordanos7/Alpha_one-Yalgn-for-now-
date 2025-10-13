@@ -1,33 +1,19 @@
 "use client";
 
-import React, { useRef } from "react";
-import { useState } from "react";
-import { useRouter, usePathname } from "next/navigation"; // Import usePathname
+import React, { useState, useEffect } from "react";
+import { useRouter, usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Textarea } from "@/components/ui/textarea";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { authClient } from "@/lib/auth-client";
-import { useForm } from "@tanstack/react-form";
 import { Badge } from "@/components/ui/badge";
-import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useEffect } from "react";
-import * as z from "zod";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { X } from "lucide-react";
-import { trpc } from "@/utils/trpc"; // Import trpc
-import type { User as BetterAuthUser } from "better-auth"; // Import original User type
+import { toast } from "sonner";
+import { trpc } from "@/utils/trpc";
+import { authClient } from "@/lib/auth-client";
 
 // Define colors for consistent use
 const COLORS = {
@@ -37,7 +23,7 @@ const COLORS = {
   accentBlue: "#4361EE",
 };
 
-// --- Step 1: Choose Role & Type ---
+// Define interfaces for each step's data
 interface Step1Data {
   userType: "individual" | "organization";
   individualFocus?:
@@ -52,17 +38,40 @@ interface Step1Data {
     | "university_school"
     | "community_group"
     | "other"
-    | string; // Allow string for custom "other" values
+    | string;
 }
 
+interface Step2Data {
+  howHear:
+    | "social_media"
+    | "friend"
+    | "organization"
+    | "search_engine"
+    | "other";
+  otherText?: string;
+}
+
+interface Step3Data {
+  goals: (
+    | "find_freelance_work"
+    | "hire_professionals"
+    | "apply_scholarships"
+    | "offer_scholarships_mentorship"
+    | "network_collaborate"
+  )[];
+}
+
+interface Step4Data {
+  skills: string[];
+}
+
+// --- Step 1: Choose Role & Type ---
 function OnboardingStep1({
   data,
   onNext,
-  onBack,
 }: {
   data: Step1Data;
   onNext: (data: Step1Data) => void;
-  onBack?: () => void;
 }) {
   const [userType, setUserType] = useState<"individual" | "organization">(
     data.userType || "individual"
@@ -245,16 +254,6 @@ function OnboardingStep1({
 }
 
 // --- Step 2: How did you hear about Yalegn? ---
-interface Step2Data {
-  howHear:
-    | "social_media"
-    | "friend"
-    | "organization"
-    | "search_engine"
-    | "other";
-  otherText?: string;
-}
-
 function OnboardingStep2({
   data,
   onNext,
@@ -374,16 +373,6 @@ function OnboardingStep2({
 }
 
 // --- Step 3: Interest & Goal Setup ---
-interface Step3Data {
-  goals: (
-    | "find_freelance_work"
-    | "hire_professionals"
-    | "apply_scholarships"
-    | "offer_scholarships_mentorship"
-    | "network_collaborate"
-  )[];
-}
-
 function OnboardingStep3({
   data,
   onNext,
@@ -428,14 +417,14 @@ function OnboardingStep3({
       <CardContent className="space-y-6 px-6 pb-6">
         <div className="space-y-3">
           {[
-            { id: "find-freelance-work", label: "Find freelance work" },
-            { id: "hire-professionals", label: "Hire professionals" },
-            { id: "apply-scholarships", label: "Apply for scholarships" },
+            { id: "find_freelance_work", label: "Find freelance work" },
+            { id: "hire_professionals", label: "Hire professionals" },
+            { id: "apply_scholarships", label: "Apply for scholarships" },
             {
-              id: "offer-scholarships-mentorship",
+              id: "offer_scholarships_mentorship",
               label: "Offer scholarships or mentorship",
             },
-            { id: "network-collaborate", label: "Network / collaborate" },
+            { id: "network_collaborate", label: "Network / collaborate" },
           ].map(({ id, label }) => (
             <div
               key={id}
@@ -479,18 +468,16 @@ function OnboardingStep3({
 }
 
 // --- Step 4: Skills / Category Selection ---
-interface Step4Data {
-  skills: string[];
-}
-
 function OnboardingStep4({
   data,
   onNext,
   onBack,
+  isPending,
 }: {
   data: Step4Data;
   onNext: (data: Step4Data) => void;
   onBack: () => void;
+  isPending: boolean;
 }) {
   const [currentSkill, setCurrentSkill] = useState("");
   const [skills, setSkills] = useState<string[]>(data.skills || []);
@@ -508,6 +495,10 @@ function OnboardingStep4({
   };
 
   const handleSubmit = () => {
+    if (skills.length === 0) {
+      toast.error("Please add at least one skill or interest.");
+      return;
+    }
     onNext({ skills });
   };
 
@@ -582,266 +573,13 @@ function OnboardingStep4({
           <Button
             onClick={handleSubmit}
             className="px-8"
-            style={{
-              backgroundColor: COLORS.accentBlue,
-              color: COLORS.lightBackground,
-            }}
-          >
-            Next
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
-
-// --- Step 5: Basic Profile Setup ---
-interface Step5Data {
-  displayName: string;
-  bio: string;
-  location: string;
-}
-
-function OnboardingStep5({
-  onNext,
-  onBack,
-}: {
-  onNext: (data: Step5Data) => void;
-  onBack: () => void;
-}) {
-  // Define a comprehensive User type locally to resolve TypeScript errors
-  interface SessionUser {
-    id: string;
-    createdAt: Date;
-    updatedAt: Date;
-    email: string;
-    emailVerified: boolean;
-    name: string;
-    image?: string | null;
-    profileImage?: string | null; // Added
-    bio?: string | null; // Added
-    location?: string | null; // Added
-  }
-
-  const { data: session, refetch: refetchSession } = authClient.useSession();
-  const currentUser = session?.user as SessionUser | undefined; // Cast session.user to SessionUser
-
-  const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
-  const [profileImagePreview, setProfileImagePreview] = useState<string | null>(
-    currentUser?.profileImage || currentUser?.image || null
-  );
-
-  const uploadProfileImageMutation = trpc.user.uploadProfileImage.useMutation({
-    onSuccess: (data) => {
-      toast.success("Profile image uploaded successfully!");
-      refetchSession();
-    },
-    onError: (error: any) => {
-      toast.error(`Image upload failed: ${error.message}`);
-    },
-  });
-
-  const updateProfileMutation = trpc.user.updateProfile.useMutation({
-    onSuccess: () => {
-      toast.success("Profile details updated successfully!");
-      refetchSession();
-    },
-    onError: (error: any) => {
-      toast.error(`Profile update failed: ${error.message}`);
-    },
-  });
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setProfileImageFile(file);
-      setProfileImagePreview(URL.createObjectURL(file));
-    } else {
-      setProfileImageFile(null);
-      setProfileImagePreview(
-        currentUser?.profileImage || currentUser?.image || null // Use currentUser
-      );
-    }
-  };
-
-  const handleImageUpload = async (): Promise<string | null> => {
-    console.log("handleImageUpload called.");
-    if (profileImageFile) {
-      console.log("Profile image file exists, preparing to upload.");
-      const formData = new FormData();
-      formData.append("profileImage", profileImageFile);
-
-      try {
-        console.log("Sending fetch request to /api/upload-profile-image");
-        const response = await fetch("/api/upload-profile-image", {
-          method: "POST",
-          body: formData,
-        });
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          console.error("Image upload failed on server:", errorData);
-          throw new Error(errorData.message || "Image upload failed on server");
-        }
-
-        const data = await response.json();
-        console.log("Image upload successful, received data:", data);
-        // Call the tRPC mutation to save the filePath to the database
-        await uploadProfileImageMutation.mutateAsync({
-          filePath: data.filePath,
-        });
-        console.log("tRPC mutation for profile image path initiated.");
-        return data.filePath;
-      } catch (error: any) {
-        console.error("Error during image upload process:", error);
-        toast.error(`Image upload failed: ${error.message}`);
-        return null;
-      }
-    }
-    console.log("No profile image file selected for upload.");
-    return null;
-  };
-
-  const form = useForm({
-    defaultValues: {
-      displayName: currentUser?.name || "", // Use currentUser
-      bio: currentUser?.bio || "", // Use currentUser
-      location: currentUser?.location || "", // Use currentUser
-    },
-    validators: {
-      onSubmit: ({ value }) => {
-        console.log("Form validation triggered.");
-        const result = z
-          .object({
-            displayName: z.string().min(1, "Display name is required"),
-            bio: z.string().optional(),
-            location: z.string().optional(),
-          })
-          .safeParse(value); // Use safeParse to catch validation errors gracefully
-        if (!result.success) {
-          console.error("Form validation errors:", result.error.issues); // Use .issues
-          result.error.issues.forEach((issue) => toast.error(issue.message)); // Use .issues and rename err to issue
-          throw new Error("Validation failed"); // Throw to prevent onSubmit from proceeding
-        }
-        return result.data;
-      },
-    },
-    onSubmit: async ({ value }) => {
-      console.log("Form onSubmit handler triggered with value:", value);
-      const uploadedImagePath = await handleImageUpload(); // Wait for image upload
-      console.log("Image upload completed, path:", uploadedImagePath);
-      await updateProfileMutation.mutateAsync(value); // Update other profile details
-      console.log("Profile details update mutation initiated.");
-      onNext(value);
-      console.log("onNext called, finishing onboarding step.");
-    },
-  });
-
-  return (
-    <Card
-      className="w-full max-w-md mx-auto shadow-lg rounded-xl"
-      style={{ border: `5px solid ${COLORS.primaryGold}` }}
-    >
-      <CardHeader>
-        <CardTitle
-          className="text-2xl font-bold text-center"
-          style={{ color: COLORS.darkBlue }}
-        >
-          Set Up Your Profile
-        </CardTitle>
-        <p className="text-center text-muted-foreground mt-2">
-          Complete your profile details to get started on Yalegn.
-        </p>
-      </CardHeader>
-      <CardContent className="space-y-6 px-6 pb-6">
-        <div className="flex flex-col items-center mb-6">
-          <Avatar className="h-24 w-24 ring-2 ring-offset-2 ring-accentBlue">
-            <AvatarImage src={profileImagePreview || ""} />
-            <AvatarFallback>{session?.user?.name?.[0] || "U"}</AvatarFallback>
-          </Avatar>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Your profile picture
-          </p>
-          <Input
-            id="profileImage"
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-            className="mt-4 w-full max-w-xs"
-          />
-        </div>
-
-        <form.Field name="displayName">
-          {(field) => (
-            <div className="space-y-2">
-              <Label htmlFor={field.name}>Display Name</Label>
-              <Input
-                id={field.name}
-                value={field.state.value}
-                onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(e.target.value)}
-                placeholder="Enter your display name"
-              />
-              {field.state.meta.errors && (
-                <p className="text-sm text-red-500">
-                  {field.state.meta.errors.join(", ")}
-                </p>
-              )}
-            </div>
-          )}
-        </form.Field>
-
-        <form.Field name="bio">
-          {(field) => (
-            <div className="space-y-2">
-              <Label htmlFor={field.name}>Bio</Label>
-              <Textarea
-                id={field.name}
-                value={field.state.value}
-                onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(e.target.value)}
-                placeholder="Tell us about yourself"
-                rows={4}
-              />
-            </div>
-          )}
-        </form.Field>
-
-        <form.Field name="location">
-          {(field) => (
-            <div className="space-y-2">
-              <Label htmlFor={field.name}>Location</Label>
-              <Input
-                id={field.name}
-                value={field.state.value}
-                onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(e.target.value)}
-                placeholder="e.g., New York, USA"
-              />
-            </div>
-          )}
-        </form.Field>
-
-        <div className="flex justify-between pt-4">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={onBack}
-            className="px-8"
-            style={{ borderColor: COLORS.accentBlue, color: COLORS.accentBlue }}
-          >
-            Back
-          </Button>
-          <Button
-            type="button"
-            onClick={form.handleSubmit}
-            className="px-8"
+            disabled={isPending}
             style={{
               backgroundColor: COLORS.primaryGold,
               color: COLORS.darkBlue,
             }}
           >
-            Finish Onboarding
+            {isPending ? "Finishing..." : "Finish Onboarding"}
           </Button>
         </div>
       </CardContent>
@@ -852,28 +590,47 @@ function OnboardingStep5({
 // Main Onboarding Flow Component
 export default function OnboardingPage() {
   const router = useRouter();
-  const pathname = usePathname(); // Get pathname
-  const { data: session, isPending } = authClient.useSession();
+  const pathname = usePathname();
+  const { data: session, isPending: sessionPending } = authClient.useSession();
   const [step, setStep] = useState(1);
+  const [isClient, setIsClient] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [onboardingData, setOnboardingData] = useState<{
     step1?: Step1Data;
     step2?: Step2Data;
     step3?: Step3Data;
     step4?: Step4Data;
-    step5?: Step5Data;
-  }>({});
+  }>({
+    step1: { userType: "individual" },
+    step2: { howHear: "social_media" },
+    step3: { goals: [] },
+    step4: { skills: [] },
+  });
 
   useEffect(() => {
-    // Only redirect to login if there's no session AND we are not currently on the onboarding page
-    // This prevents a redirect loop or premature redirect during onboarding
-    if (!isPending && !session && pathname !== "/onboarding") {
+    setIsClient(true);
+  }, []);
+
+  useEffect(() => {
+    if (!sessionPending && !session && pathname !== "/onboarding") {
       router.push("/login");
     }
-  }, [isPending, session, router, pathname]); // Add pathname to dependency array
+  }, [sessionPending, session, router, pathname]);
 
-  const handleNext = (data: any) => {
+  const completeOnboardingMutation = trpc.user.completeOnboarding.useMutation({
+    onSuccess: () => {
+      toast.success("Onboarding completed successfully!");
+      setTimeout(() => router.push("/profile"), 1000); // Delay to show success message
+    },
+    onError: (error) => {
+      toast.error(`Failed to save onboarding data: ${error.message}`);
+      setIsSubmitting(false);
+    },
+  });
+
+  const handleNext = (data: Step1Data | Step2Data | Step3Data | Step4Data) => {
     setOnboardingData((prev) => ({ ...prev, [`step${step}`]: data }));
-    if (step < 5) {
+    if (step < 4) {
       setStep((prev) => prev + 1);
     } else {
       handleFinishOnboarding();
@@ -884,36 +641,52 @@ export default function OnboardingPage() {
     setStep((prev) => Math.max(1, prev - 1));
   };
 
-  const completeOnboardingMutation = trpc.user.completeOnboarding.useMutation({
-    onSuccess: () => {
-      toast.success("Onboarding data saved successfully!");
-    },
-    onError: (error: any) => {
-      toast.error(`Failed to save onboarding data: ${error.message}`);
-    },
-  });
-
   const handleFinishOnboarding = async () => {
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
     try {
-      // Send all onboardingData (steps 1-4) to the backend API
+      // Validate all steps
+      if (!onboardingData.step1?.userType) {
+        toast.error("Please complete Step 1.");
+        setStep(1);
+        setIsSubmitting(false);
+        return;
+      }
+      if (!onboardingData.step2?.howHear) {
+        toast.error("Please complete Step 2.");
+        setStep(2);
+        setIsSubmitting(false);
+        return;
+      }
+      if (!onboardingData.step3?.goals?.length) {
+        toast.error("Please complete Step 3.");
+        setStep(3);
+        setIsSubmitting(false);
+        return;
+      }
+      if (!onboardingData.step4?.skills?.length) {
+        toast.error("Please complete Step 4.");
+        setStep(4);
+        setIsSubmitting(false);
+        return;
+      }
+
       await completeOnboardingMutation.mutateAsync({
         step1: onboardingData.step1,
         step2: onboardingData.step2,
         step3: onboardingData.step3,
         step4: onboardingData.step4,
       });
-
-      toast.success("Onboarding complete! Redirecting to home page...");
-      console.log("Attempting to redirect to: /");
-      router.push("/");
     } catch (error) {
-      console.error("Error during final onboarding step:", error);
-      toast.error("Failed to complete onboarding. Please try again.");
+      console.error("Error during onboarding completion:", error);
+      toast.error("An error occurred. Please try again.");
+      setIsSubmitting(false);
     }
   };
 
   const renderContent = () => {
-    if (isPending) {
+    if (!isClient || sessionPending) {
       return (
         <div className="w-full max-w-md mx-auto space-y-4">
           <Skeleton className="h-10 w-full" />
@@ -922,26 +695,15 @@ export default function OnboardingPage() {
       );
     }
 
-    if (!session) {
-      return null;
-    }
-
-    return renderStep();
-  };
-
-  const renderStep = () => {
     switch (step) {
       case 1:
         return (
-          <OnboardingStep1
-            data={onboardingData.step1 || { userType: "individual" }}
-            onNext={handleNext}
-          />
+          <OnboardingStep1 data={onboardingData.step1!} onNext={handleNext} />
         );
       case 2:
         return (
           <OnboardingStep2
-            data={onboardingData.step2 || { howHear: "social_media" }}
+            data={onboardingData.step2!}
             onNext={handleNext}
             onBack={handleBack}
           />
@@ -949,7 +711,7 @@ export default function OnboardingPage() {
       case 3:
         return (
           <OnboardingStep3
-            data={onboardingData.step3 || { goals: [] }}
+            data={onboardingData.step3!}
             onNext={handleNext}
             onBack={handleBack}
           />
@@ -957,13 +719,12 @@ export default function OnboardingPage() {
       case 4:
         return (
           <OnboardingStep4
-            data={onboardingData.step4 || { skills: [] }}
+            data={onboardingData.step4!}
             onNext={handleNext}
             onBack={handleBack}
+            isPending={isSubmitting || completeOnboardingMutation.isPending}
           />
         );
-      case 5:
-        return <OnboardingStep5 onNext={handleNext} onBack={handleBack} />;
       default:
         return null;
     }
