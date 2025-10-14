@@ -23,6 +23,8 @@
   "dependencies": {
     "@Alpha/auth": "*",
     "@Alpha/db": "*",
+    "@aws-sdk/client-s3": "^3.908.0",
+    "@aws-sdk/s3-request-presigner": "^3.908.0",
     "@trpc/client": "^11.5.0",
     "@trpc/server": "^11.5.0",
     "@types/multer": "^2.0.0",

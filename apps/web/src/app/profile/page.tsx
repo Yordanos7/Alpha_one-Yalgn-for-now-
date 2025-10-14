@@ -1,8 +1,9 @@
 "use client";
 
 import { authClient } from "@/lib/auth-client";
+import { trpc } from "@/utils/trpc";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -44,6 +45,43 @@ export default function ProfilePage() {
   const router = useRouter();
   const { data: session, isPending } = authClient.useSession();
   const [portfolioTab, setPortfolioTab] = useState("Published");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      setSelectedFile(event.target.files[0]);
+    }
+  };
+
+  const handleUploadClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const updateUserProfileImage = trpc.user.uploadProfileImage.useMutation();
+  const [isUploading, setIsUploading] = useState(false);
+
+  const handleSave = async () => {
+    setIsUploading(true);
+    if (selectedFile) {
+      const formData = new FormData();
+      formData.append("file", selectedFile);
+
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      const { filePath } = await response.json();
+
+      await updateUserProfileImage.mutateAsync({
+        filePath,
+      });
+
+      setSelectedFile(null);
+      setIsUploading(false);
+    }
+  };
 
   useEffect(() => {
     if (!isPending && !session) {
@@ -66,7 +104,7 @@ export default function ProfilePage() {
 
   // Updated Placeholder data for demonstration, matching the new design image
   const userProfile = {
-    name: "Yohannes",
+    name: session.user.name || "Yohannes",
     faidaIdVerified: true,
     profileCompletion: 75,
     rating: 4.8,
@@ -74,7 +112,7 @@ export default function ProfilePage() {
     joinedDate: "Jan 2023",
     responseRate: "98%",
     lastActive: "Addis Ababa, Ethiopia",
-    image: "/placeholder-avatar.jpg", // Replace with actual image path
+    image: session.user.image || "/placeholder-avatar.jpg", // Replace with actual image path
     about: {
       description: `UI/UX Designer & Web Developer, crafting user-centered digital experiences.`,
       specialization: "Figma, React, Node.js",
@@ -168,12 +206,39 @@ export default function ProfilePage() {
             <div className="flex items-center gap-4">
               <div className="relative">
                 <Avatar className="h-24 w-24 border-4 border-primary">
-                  <AvatarImage src={userProfile.image} alt={userProfile.name} />
+                  <AvatarImage
+                    src={
+                      updateUserProfileImage.data?.profileImage ||
+                      userProfile.image
+                    }
+                    alt={userProfile.name}
+                  />
                   <AvatarFallback>{userProfile.name[0]}</AvatarFallback>
                 </Avatar>
-                <span className="absolute bottom-0 right-0 bg-green-500 rounded-full p-1">
-                  <CheckCircle className="h-4 w-4 text-white" />
-                </span>
+                <button
+                  onClick={handleUploadClick}
+                  className="absolute bottom-0 right-0 bg-gray-700 rounded-full p-2 hover:bg-gray-600 transition-colors"
+                >
+                  <Edit className="h-4 w-4 text-white" />
+                </button>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                  className="hidden"
+                  accept="image/*"
+                />
+                {selectedFile && (
+                  <div className="absolute bottom-[-40px] left-1/2 -translate-x-1/2">
+                    <Button
+                      onClick={handleSave}
+                      size="sm"
+                      disabled={isUploading}
+                    >
+                      {isUploading ? "Saving..." : "Save"}
+                    </Button>
+                  </div>
+                )}
               </div>
               <div className="flex flex-col">
                 <h2 className="text-2xl font-bold flex items-center gap-2">
