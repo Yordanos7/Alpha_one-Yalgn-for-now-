@@ -11,6 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
 import {
   MapPin,
   Share2,
@@ -47,6 +48,7 @@ export default function ProfilePage() {
   const [portfolioTab, setPortfolioTab] = useState("Published");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [profileImage, setProfileImage] = useState<string | null>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -67,19 +69,37 @@ export default function ProfilePage() {
       const formData = new FormData();
       formData.append("file", selectedFile);
 
-      const response = await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
-      });
+      try {
+        const response = await fetch("/api/upload", {
+          method: "POST",
+          body: formData,
+        });
 
-      const { filePath } = await response.json();
+        const { filePath, message } = await response.json();
 
-      await updateUserProfileImage.mutateAsync({
-        filePath,
-      });
+        if (!response.ok) {
+          throw new Error(message || "Upload failed");
+        }
 
-      setSelectedFile(null);
-      setIsUploading(false);
+        await updateUserProfileImage.mutateAsync(
+          {
+            filePath,
+          },
+          {
+            onSuccess: (data) => {
+              toast.success("Profile image updated successfully!");
+              setSelectedFile(null);
+              setProfileImage(data.profileImage);
+              router.refresh();
+            },
+          }
+        );
+      } catch (error) {
+        console.error("Error uploading file:", error);
+        toast.error("Error uploading file. Please try again.");
+      } finally {
+        setIsUploading(false);
+      }
     }
   };
 
@@ -207,10 +227,7 @@ export default function ProfilePage() {
               <div className="relative">
                 <Avatar className="h-24 w-24 border-4 border-primary">
                   <AvatarImage
-                    src={
-                      updateUserProfileImage.data?.profileImage ||
-                      userProfile.image
-                    }
+                    src={profileImage || userProfile.image}
                     alt={userProfile.name}
                   />
                   <AvatarFallback>{userProfile.name[0]}</AvatarFallback>

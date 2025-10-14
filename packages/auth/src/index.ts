@@ -13,6 +13,14 @@ export const auth = betterAuth({
   session: {
     // Add session configuration
     freshAge: 60 * 60 * 24 * 7, // 7 days
+    callbacks: {
+      refresh: async (userId: string) => {
+        const user = await prisma.user.findUnique({
+          where: { id: userId },
+        });
+        return user;
+      },
+    },
   },
   advanced: {
     defaultCookieAttributes: {
