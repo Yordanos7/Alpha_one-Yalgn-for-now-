@@ -48,7 +48,6 @@ export default function ProfilePage() {
   const [portfolioTab, setPortfolioTab] = useState("Published");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [profileImage, setProfileImage] = useState<string | null>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -86,11 +85,10 @@ export default function ProfilePage() {
             filePath,
           },
           {
-            onSuccess: (data) => {
+            onSuccess: () => {
               toast.success("Profile image updated successfully!");
               setSelectedFile(null);
-              setProfileImage(data.profileImage);
-              router.refresh();
+              window.location.reload(); // Force a full page reload
             },
           }
         );
@@ -132,7 +130,7 @@ export default function ProfilePage() {
     joinedDate: "Jan 2023",
     responseRate: "98%",
     lastActive: "Addis Ababa, Ethiopia",
-    image: session.user.image || "/placeholder-avatar.jpg", // Replace with actual image path
+    image: session.user.image || "/placeholder-avatar.jpg", // Use session.user.image directly with fallback
     about: {
       description: `UI/UX Designer & Web Developer, crafting user-centered digital experiences.`,
       specialization: "Figma, React, Node.js",
@@ -212,7 +210,8 @@ export default function ProfilePage() {
               alt="Faida Logo"
               width={120}
               height={120}
-              className=""
+              priority
+              style={{ height: "auto" }}
             />
             <div className="flex flex-col">
               <h1 className="text-2xl font-bold">Faida</h1>
@@ -227,7 +226,11 @@ export default function ProfilePage() {
               <div className="relative">
                 <Avatar className="h-24 w-24 border-4 border-primary">
                   <AvatarImage
-                    src={profileImage || userProfile.image}
+                    src={
+                      session.user.image
+                        ? `/uploads/${session.user.image.split("/").pop()}`
+                        : "/placeholder-avatar.jpg"
+                    }
                     alt={userProfile.name}
                   />
                   <AvatarFallback>{userProfile.name[0]}</AvatarFallback>

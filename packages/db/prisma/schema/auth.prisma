@@ -3,11 +3,10 @@ model User {
   name          String
   email         String
   emailVerified Boolean
-  avatar        String?
-  profileImage      String? @default("/placeholder-avatar.jpg") // Set a default avatar image
-  bio               String?
-  location          String?
-  userType          String? // Added for Step 1
+  image         String? @default("/placeholder-avatar.jpg")
+  bio           String?
+  location      String?
+  userType      String?
   individualFocus   String? // Added for Step 1
   organizationPurpose String? // Added for Step 1
   howHear           String? // Added for Step 2
@@ -53,7 +52,7 @@ model Account {
   password              String?
   createdAt             DateTime
   updatedAt             DateTime
-
+  
   @@map("account")
 }
 

@@ -23,7 +23,7 @@ app.use(
 );
 
 // Ensure the uploads directory exists
-const uploadDir = path.join(process.cwd(), "uploads");
+const uploadDir = path.join(process.cwd(), "uploads"); // cwd is the current working directory
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir);
 }
@@ -31,7 +31,7 @@ if (!fs.existsSync(uploadDir)) {
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, uploadDir);
-  },
+  }, // cd mean current directory
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
     cb(
@@ -70,13 +70,13 @@ app.use(
     router: appRouter,
     createContext,
   })
-);
+); // this is the tRPC middleware for handling all tRPC requests mean like all requests to /trpc/* will be handled by tRPC
 
 app.use(express.json());
 
 app.get("/", (_req, res) => {
   res.status(200).send("OK");
-});
+}); // Health check endpoint
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {

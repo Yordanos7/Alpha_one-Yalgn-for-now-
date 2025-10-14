@@ -18,6 +18,12 @@ export const auth = betterAuth({
         const user = await prisma.user.findUnique({
           where: { id: userId },
         });
+        if (user) {
+          return {
+            ...user,
+            image: user.image,
+          };
+        }
         return user;
       },
     },

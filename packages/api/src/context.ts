@@ -1,6 +1,6 @@
 import type { CreateExpressContextOptions } from "@trpc/server/adapters/express";
 import { fromNodeHeaders } from "better-auth/node";
-import { auth } from "@Alpha/auth";
+import { auth } from "@Alpha/auth"; // Better-Auth instance
 import prisma from "@Alpha/db"; // Import prisma as a value
 import type { Request, Response } from "express"; // Import Request and Response types
 

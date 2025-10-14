@@ -17,12 +17,12 @@ export const userRouter = router({
         // 1️⃣ Update the user's image in the database
         const updatedUser = await prisma.user.update({
           where: { id: session!.user.id },
-          data: { profileImage: input.filePath },
+          data: { image: input.filePath },
         });
 
         console.log(
           "Profile image successfully saved to DB:",
-          updatedUser.profileImage
+          updatedUser.image
         );
 
         // Re-fetch the session to ensure the cookie is updated with the latest user data
@@ -34,7 +34,7 @@ export const userRouter = router({
 
         return {
           message: "Profile image uploaded successfully",
-          profileImage: updatedUser.profileImage,
+          profileImage: updatedUser.image,
         };
       } catch (dbError) {
         console.error("Database update error in uploadProfileImage:", dbError);
