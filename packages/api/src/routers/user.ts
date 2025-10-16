@@ -5,6 +5,41 @@ import { auth } from "@Alpha/auth"; // Better-Auth instance
 import { fromNodeHeaders } from "better-auth/node";
 
 export const userRouter = router({
+  getUserProfile: protectedProcedure.query(
+    async ({ ctx: { session, prisma } }) => {
+      if (!session?.user?.id) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Not authenticated",
+        });
+      }
+
+      const user = await prisma.user.findUnique({
+        where: { id: session.user.id },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          image: true,
+          bio: true,
+          location: true,
+          skills: true,
+          createdAt: true,
+          updatedAt: true,
+        },
+      });
+
+      if (!user) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "User not found",
+        });
+      }
+
+      return user;
+    }
+  ),
+
   uploadProfileImage: protectedProcedure
     .input(z.object({ filePath: z.string() }))
     .mutation(async ({ ctx: { session, prisma, req, res }, input }) => {
@@ -80,6 +115,37 @@ export const userRouter = router({
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
           message: "Failed to update user profile",
+        });
+      }
+    }),
+
+  updateSkills: protectedProcedure
+    .input(z.object({ skills: z.array(z.string()) }))
+    .mutation(async ({ ctx: { session, prisma, req, res }, input }) => {
+      try {
+        const updatedUser = await prisma.user.update({
+          where: { id: session!.user.id },
+          data: {
+            skills: input.skills,
+          },
+        });
+
+        // Re-fetch the session to ensure the cookie is updated with the latest user data
+        await auth.api.getSession({
+          headers: fromNodeHeaders(req.headers),
+          req, // Pass req and res to ensure cookie is re-issued
+          res,
+        });
+
+        return {
+          message: "Skills updated successfully",
+          user: updatedUser,
+        };
+      } catch (error) {
+        console.error("Database update error:", error);
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to update user skills",
         });
       }
     }),
