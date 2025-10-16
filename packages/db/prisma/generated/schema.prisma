@@ -68,8 +68,9 @@ enum NotificationType {
 model User {
   id             String        @id @default(cuid()) @map("_id")
   email          String?       @unique
+  emailVerified  Boolean       @default(false)
   phone          String?       @unique
-  password       String? // null if OAuth-only
+  passwordHash   String? // null if OAuth-only
   role           Role          @default(PROVIDER)
   name           String
   username       String?       @unique
@@ -106,6 +107,7 @@ model User {
 
   // Auth-related models (from previous auth.prisma)
   sessions Session[]
+  accounts Account[]
 
   @@index([role])
   @@index([createdAt])
@@ -125,6 +127,24 @@ model Session {
 
   @@unique([token])
   @@map("session")
+}
+
+model Account {
+  id                   String  @id @default(cuid()) @map("_id")
+  userId               String
+  user                 User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type                 String?
+  providerId           String
+  accountId            String
+  refreshToken         String? @map("refresh_token") @db.Text
+  accessToken          String? @map("access_token") @db.Text
+  accessTokenExpiresAt Int?    @map("expires_at")
+  idToken              String? @map("id_token") @db.Text
+  scope                String?
+  sessionState         String? @map("session_state")
+
+  @@unique([providerId, accountId])
+  @@map("accounts")
 }
 
 model Profile {

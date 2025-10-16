@@ -123,8 +123,9 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
 exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
   email: 'email',
+  emailVerified: 'emailVerified',
   phone: 'phone',
-  password: 'password',
+  passwordHash: 'passwordHash',
   role: 'role',
   name: 'name',
   username: 'username',
@@ -151,6 +152,20 @@ exports.Prisma.SessionScalarFieldEnum = {
   ipAddress: 'ipAddress',
   userAgent: 'userAgent',
   userId: 'userId'
+};
+
+exports.Prisma.AccountScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  type: 'type',
+  providerId: 'providerId',
+  accountId: 'accountId',
+  refreshToken: 'refreshToken',
+  accessToken: 'accessToken',
+  accessTokenExpiresAt: 'accessTokenExpiresAt',
+  idToken: 'idToken',
+  scope: 'scope',
+  sessionState: 'sessionState'
 };
 
 exports.Prisma.ProfileScalarFieldEnum = {
@@ -459,6 +474,7 @@ exports.VerificationStatus = exports.$Enums.VerificationStatus = {
 exports.Prisma.ModelName = {
   User: 'User',
   Session: 'Session',
+  Account: 'Account',
   Profile: 'Profile',
   Skill: 'Skill',
   ProfileSkill: 'ProfileSkill',
