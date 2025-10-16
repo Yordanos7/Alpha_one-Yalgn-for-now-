@@ -18,12 +18,38 @@ export const userRouter = router({
         where: { id: session.user.id },
         select: {
           id: true,
-          name: true,
+          displayName: true,
           email: true,
-          image: true,
+          avatarUrl: true,
           bio: true,
           location: true,
-          skills: true,
+          profile: {
+            select: {
+              skills: {
+                select: {
+                  skill: {
+                    select: {
+                      name: true,
+                    },
+                  },
+                },
+              },
+              headline: true,
+              hourlyRate: true,
+              currency: true,
+              availability: true,
+              completedJobs: true,
+              successRate: true,
+              portfolio: true,
+              education: true,
+              experience: true,
+            },
+          },
+          verification: {
+            select: {
+              status: true,
+            },
+          },
           createdAt: true,
           updatedAt: true,
         },
@@ -49,27 +75,25 @@ export const userRouter = router({
           input.filePath
         );
 
-        // 1️⃣ Update the user's image in the database
+        // 1️⃣ Update the user's avatarUrl in the database
         const updatedUser = await prisma.user.update({
           where: { id: session!.user.id },
-          data: { image: input.filePath },
+          data: { avatarUrl: input.filePath }, // Changed from image to avatarUrl
         });
 
         console.log(
           "Profile image successfully saved to DB:",
-          updatedUser.image
+          updatedUser.avatarUrl
         );
 
         // Re-fetch the session to ensure the cookie is updated with the latest user data
         await auth.api.getSession({
           headers: fromNodeHeaders(req.headers),
-          req, // Pass req and res to ensure cookie is re-issued
-          res,
         });
 
         return {
           message: "Profile image uploaded successfully",
-          profileImage: updatedUser.image,
+          profileImage: updatedUser.avatarUrl,
         };
       } catch (dbError) {
         console.error("Database update error in uploadProfileImage:", dbError);
@@ -83,27 +107,70 @@ export const userRouter = router({
   updateProfile: protectedProcedure
     .input(
       z.object({
-        displayName: z.string().min(1),
+        displayName: z.string().min(1).optional(), // Made optional as it might be updated separately
         bio: z.string().optional(),
         location: z.string().optional(),
+        headline: z.string().optional(),
+        hourlyRate: z.number().optional(),
+        currency: z.enum(["ETB", "USD"]).optional(),
+        availability: z.string().optional(),
+        education: z.any().optional(), // Using z.any() for Json type
+        experience: z.any().optional(), // Using z.any() for Json type
       })
     )
     .mutation(async ({ ctx: { session, prisma, req, res }, input }) => {
       try {
+        // Update User model fields
+        const userUpdateData: {
+          displayName?: string;
+          bio?: string;
+          location?: string;
+        } = {};
+        if (input.displayName !== undefined)
+          userUpdateData.displayName = input.displayName;
+        if (input.bio !== undefined) userUpdateData.bio = input.bio;
+        if (input.location !== undefined)
+          userUpdateData.location = input.location;
+
         const updatedUser = await prisma.user.update({
           where: { id: session!.user.id },
-          data: {
-            name: input.displayName,
-            bio: input.bio,
-            location: input.location,
+          data: userUpdateData,
+        });
+
+        // Update Profile model fields (create if not exists)
+        const profileUpdateData: {
+          headline?: string;
+          hourlyRate?: number;
+          currency?: "ETB" | "USD";
+          availability?: string;
+          education?: any;
+          experience?: any;
+        } = {};
+        if (input.headline !== undefined)
+          profileUpdateData.headline = input.headline;
+        if (input.hourlyRate !== undefined)
+          profileUpdateData.hourlyRate = input.hourlyRate;
+        if (input.currency !== undefined)
+          profileUpdateData.currency = input.currency;
+        if (input.availability !== undefined)
+          profileUpdateData.availability = input.availability;
+        if (input.education !== undefined)
+          profileUpdateData.education = input.education;
+        if (input.experience !== undefined)
+          profileUpdateData.experience = input.experience;
+
+        await prisma.profile.upsert({
+          where: { userId: session!.user.id },
+          update: profileUpdateData,
+          create: {
+            userId: session!.user.id,
+            ...profileUpdateData,
           },
         });
 
         // Re-fetch the session to ensure the cookie is updated with the latest user data
         await auth.api.getSession({
           headers: fromNodeHeaders(req.headers),
-          req, // Pass req and res to ensure cookie is re-issued
-          res,
         });
 
         return {
@@ -123,23 +190,46 @@ export const userRouter = router({
     .input(z.object({ skills: z.array(z.string()) }))
     .mutation(async ({ ctx: { session, prisma, req, res }, input }) => {
       try {
-        const updatedUser = await prisma.user.update({
-          where: { id: session!.user.id },
-          data: {
-            skills: input.skills,
+        // Find or create skills and connect them to the user's profile
+        const skillConnects = await Promise.all(
+          input.skills.map(async (skillName) => {
+            const skill = await prisma.skill.upsert({
+              where: { name: skillName },
+              update: {},
+              create: {
+                name: skillName,
+                slug: skillName.toLowerCase().replace(/\s/g, "-"),
+              },
+            });
+            return { skillId: skill.id };
+          })
+        );
+
+        // Update the user's profile to connect the skills
+        await prisma.profile.upsert({
+          where: { userId: session!.user.id },
+          update: {
+            skills: {
+              set: skillConnects, // Set all skills, effectively replacing old ones
+            },
+          },
+          create: {
+            userId: session!.user.id,
+            skills: {
+              create: skillConnects.map((s) => ({
+                skill: { connect: { id: s.skillId } },
+              })),
+            },
           },
         });
 
         // Re-fetch the session to ensure the cookie is updated with the latest user data
         await auth.api.getSession({
           headers: fromNodeHeaders(req.headers),
-          req, // Pass req and res to ensure cookie is re-issued
-          res,
         });
 
         return {
           message: "Skills updated successfully",
-          user: updatedUser,
         };
       } catch (error) {
         console.error("Database update error:", error);

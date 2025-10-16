@@ -1,0 +1,500 @@
+generator client {
+  provider     = "prisma-client-js" // Changed to prisma-client-js
+  output       = "../src/generated" // Changed output path to be relative to packages/db/src/
+  moduleFormat = "esm"
+  runtime      = "nodejs"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  PROVIDER
+  SEEKER
+  ADMIN
+}
+
+enum Currency {
+  ETB
+  USD
+}
+
+enum JobType {
+  FIXED
+  HOURLY
+}
+
+enum JobStatus {
+  OPEN
+  CLOSED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum ProposalStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  WITHDRAWN
+  COMPLETED
+}
+
+enum PaymentStatus {
+  PENDING
+  HELD // escrow held
+  RELEASED
+  REFUNDED
+  FAILED
+}
+
+enum VerificationStatus {
+  NONE
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum NotificationType {
+  MESSAGE
+  PROPOSAL
+  PAYMENT
+  VERIFICATION
+  SYSTEM
+}
+
+model User {
+  id             String        @id @default(cuid()) @map("_id")
+  email          String?       @unique
+  phone          String?       @unique
+  passwordHash   String? // null if OAuth-only
+  role           Role          @default(PROVIDER)
+  displayName    String
+  username       String?       @unique
+  bio            String? // short about
+  avatarUrl      String?       @default("/placeholder-avatar.jpg")
+  location       String? // "Addis Ababa, Ethiopia"
+  languages      String[]      @default([]) // e.g. ["Amharic:Native","English:Fluent"]
+  isActive       Boolean       @default(true)
+  isVerified     Boolean       @default(false) // general user-level verified
+  verification   Verification? @relation("UserVerification", fields: [verificationId], references: [id])
+  verificationId String?       @unique // One-to-one relation with Verification
+  profile        Profile?      @relation("UserProfile")
+  profileId      String?       @unique // One-to-one relation with Profile
+  coins          Int           @default(0)
+  wallet         Wallet?       @relation("UserWallet")
+  walletId       String?       @unique // One-to-one relation with Wallet
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  // Relations
+  listings            Listing[]      @relation("ProviderListings")
+  jobsPosted          Job[]          @relation("JobsPosted")
+  proposals           Proposal[]     @relation("ProviderProposals") // Added opposite relation
+  reviewsReceived     Review[]       @relation("ReviewsAboutUser")
+  reviewsGiven        Review[]       @relation("ReviewsGivenByUser")
+  messagesSent        Message[]      @relation("MessagesFrom")
+  messagesRecvd       Message[]      @relation("MessagesTo")
+  conversations       Conversation[] @relation("ConversationParticipants")
+  contractsAsClient   Contract[]     @relation("ClientContracts") // Added opposite relation
+  contractsAsProvider Contract[]     @relation("ProviderContracts") // Added opposite relation
+  coinPurchases       CoinPurchase[]
+  notifications       Notification[]
+  adminNotes          AdminNote[]
+
+  // Auth-related models (from previous auth.prisma)
+  sessions Session[]
+  accounts Account[]
+
+  @@index([role])
+  @@index([createdAt])
+  @@map("users")
+}
+
+model Session {
+  id        String   @id @default(cuid()) @map("_id")
+  expiresAt DateTime
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@map("sessions")
+}
+
+model Account {
+  id                    String    @id @default(cuid()) @map("_id")
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@map("accounts")
+}
+
+model Profile {
+  id            String         @id @default(cuid()) @map("_id")
+  user          User           @relation("UserProfile", fields: [userId], references: [id])
+  userId        String         @unique
+  headline      String?
+  hourlyRate    Float?
+  currency      Currency?      @default(ETB)
+  availability  String? // e.g., "Full-time", "Part-time", "Not available"
+  skills        ProfileSkill[] // Changed to ProfileSkill for many-to-many
+  experience    Json? // structured experience data
+  education     Json? // structured education data
+  portfolio     Portfolio[]
+  completedJobs Int            @default(0)
+  successRate   Float? // 0..100
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  @@map("profiles")
+}
+
+/**
+ * Skills and Category join tables
+ */
+
+model Skill {
+  id        String         @id @default(cuid()) @map("_id")
+  name      String         @unique
+  slug      String         @unique
+  // many-to-many with Profile via ProfileSkill
+  profiles  ProfileSkill[]
+  listings  Listing[]
+  jobs      Job[]
+  createdAt DateTime       @default(now())
+
+  @@map("skills")
+}
+
+model ProfileSkill {
+  id        String   @id @default(cuid()) @map("_id")
+  profile   Profile  @relation(fields: [profileId], references: [id])
+  profileId String
+  skill     Skill    @relation(fields: [skillId], references: [id])
+  skillId   String
+  level     Int      @default(3) // 1..5
+  createdAt DateTime @default(now())
+
+  @@unique([profileId, skillId])
+  @@map("profile_skills")
+}
+
+model Category {
+  id        String    @id @default(cuid()) @map("_id")
+  name      String    @unique
+  slug      String    @unique
+  listings  Listing[]
+  createdAt DateTime  @default(now())
+
+  @@map("categories")
+}
+
+/**
+ * Marketplace / Listings and Jobs
+ */
+
+model Listing {
+  id           String    @id @default(cuid()) @map("_id")
+  provider     User      @relation("ProviderListings", fields: [providerId], references: [id])
+  providerId   String
+  title        String
+  slug         String    @unique
+  description  String // long description
+  price        Float
+  currency     Currency  @default(ETB)
+  deliveryDays Int? // for services
+  category     Category? @relation(fields: [categoryId], references: [id])
+  categoryId   String?
+  images       String[]  @default([])
+  tags         String[]  @default([])
+  isPublished  Boolean   @default(false)
+  rating       Float?    @default(0)
+  reviewCount  Int       @default(0)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  // relations
+  skills       Skill[]
+
+  @@index([providerId])
+  @@map("listings")
+}
+
+model Job {
+  id             String     @id @default(cuid()) @map("_id")
+  seeker         User       @relation("JobsPosted", fields: [seekerId], references: [id])
+  seekerId       String
+  title          String
+  slug           String     @unique
+  description    String
+  type           JobType    @default(FIXED)
+  budgetMin      Float?
+  budgetMax      Float?
+  currency       Currency   @default(ETB)
+  deadline       DateTime?
+  status         JobStatus  @default(OPEN)
+  attachments    String[]   @default([])
+  requiredSkills Skill[]
+  location       String?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+  proposals      Proposal[] @relation("JobProposals") // Added opposite relation
+  contract       Contract?  @relation("JobContract") // Added opposite relation
+
+  @@index([seekerId])
+  @@map("jobs")
+}
+
+model Proposal {
+  id            String         @id @default(cuid()) @map("_id")
+  job           Job            @relation("JobProposals", fields: [jobId], references: [id])
+  jobId         String
+  provider      User           @relation("ProviderProposals", fields: [providerId], references: [id])
+  providerId    String
+  coverLetter   String?
+  price         Float?
+  currency      Currency       @default(ETB)
+  estimatedDays Int?
+  status        ProposalStatus @default(PENDING)
+  attachments   String[]       @default([])
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  @@index([jobId])
+  @@index([providerId])
+  @@map("proposals")
+}
+
+/**
+ * Contracts, milestones, escrow & payments
+ */
+
+model Contract {
+  id          String        @id @default(cuid()) @map("_id")
+  job         Job           @relation("JobContract", fields: [jobId], references: [id])
+  jobId       String        @unique // One-to-one relation
+  client      User          @relation("ClientContracts", fields: [clientId], references: [id])
+  clientId    String
+  provider    User          @relation("ProviderContracts", fields: [providerId], references: [id])
+  providerId  String
+  totalAmount Float
+  currency    Currency      @default(ETB)
+  status      PaymentStatus @default(PENDING)
+  escrowId    String? // reference to escrow/payment record
+  startDate   DateTime?
+  endDate     DateTime?
+  milestones  Milestone[]
+  dispute     Dispute?      @relation("ContractDisputes") // Added opposite relation
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@index([jobId])
+  @@map("contracts")
+}
+
+model Milestone {
+  id          String    @id @default(cuid()) @map("_id")
+  contract    Contract  @relation(fields: [contractId], references: [id])
+  contractId  String
+  title       String
+  description String?
+  amount      Float
+  dueDate     DateTime?
+  isPaid      Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+
+  @@map("milestones")
+}
+
+/**
+ * Wallet & transactions
+ */
+
+model Wallet {
+  id           String        @id @default(cuid()) @map("_id")
+  user         User          @relation("UserWallet", fields: [userId], references: [id])
+  userId       String        @unique
+  balance      Float         @default(0)
+  currency     Currency      @default(ETB)
+  transactions Transaction[]
+  createdAt    DateTime      @default(now())
+
+  @@map("wallets")
+}
+
+model Transaction {
+  id        String   @id @default(cuid()) @map("_id")
+  wallet    Wallet   @relation(fields: [walletId], references: [id])
+  walletId  String
+  type      String // e.g., COIN_PURCHASE, ESCROW_HOLD, ESCROW_RELEASE, WITHDRAWAL, FEE
+  amount    Float
+  currency  Currency @default(ETB)
+  meta      Json? // store extra info (order id, external tx id)
+  createdAt DateTime @default(now())
+
+  @@index([walletId])
+  @@map("transactions")
+}
+
+model CoinPurchase {
+  id        String   @id @default(cuid()) @map("_id")
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  coins     Int
+  amount    Float
+  currency  Currency @default(ETB)
+  provider  String? // e.g., "telebirr", "chapa"
+  meta      Json?
+  createdAt DateTime @default(now())
+
+  @@map("coin_purchases")
+}
+
+/**
+ * Messaging (conversations & messages)
+ */
+
+model Conversation {
+  id           String    @id @default(cuid()) @map("_id")
+  title        String?
+  participants User[]    @relation("ConversationParticipants")
+  messages     Message[]
+  projectId    String? // optional link to Job or Contract
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@map("conversations")
+}
+
+model Message {
+  id             String       @id @default(cuid()) @map("_id")
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  conversationId String
+  fromUser       User         @relation("MessagesFrom", fields: [fromUserId], references: [id])
+  fromUserId     String
+  toUser         User         @relation("MessagesTo", fields: [toUserId], references: [id])
+  toUserId       String
+  body           String
+  attachments    String[]     @default([])
+  isRead         Boolean      @default(false)
+  createdAt      DateTime     @default(now())
+
+  @@index([conversationId])
+  @@index([fromUserId, toUserId])
+  @@map("messages")
+}
+
+/**
+ * Reviews & Ratings
+ */
+
+model Review {
+  id         String   @id @default(cuid()) @map("_id")
+  about      User     @relation("ReviewsAboutUser", fields: [aboutId], references: [id])
+  aboutId    String
+  by         User     @relation("ReviewsGivenByUser", fields: [byId], references: [id])
+  byId       String
+  rating     Int // 1..5
+  comment    String?
+  contractId String? // optional link to contract
+  createdAt  DateTime @default(now())
+
+  @@index([aboutId])
+  @@map("reviews")
+}
+
+/**
+ * Portfolio / Files
+ */
+
+model Portfolio {
+  id          String   @id @default(cuid()) @map("_id")
+  profile     Profile  @relation(fields: [profileId], references: [id])
+  profileId   String
+  title       String
+  description String?
+  media       String[] // URLs
+  link        String? // external link (demo / repo)
+  createdAt   DateTime @default(now())
+
+  @@map("portfolio")
+}
+
+/**
+ * Notifications & Admin
+ */
+
+model Notification {
+  id        String           @id @default(cuid()) @map("_id")
+  user      User             @relation(fields: [userId], references: [id])
+  userId    String
+  type      NotificationType
+  title     String
+  body      String?
+  payload   Json?
+  isRead    Boolean          @default(false)
+  createdAt DateTime         @default(now())
+
+  @@index([userId])
+  @@map("notifications")
+}
+
+model AdminNote {
+  id        String   @id @default(cuid()) @map("_id")
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  note      String
+  createdBy String? // admin id or name
+  createdAt DateTime @default(now())
+
+  @@map("admin_notes")
+}
+
+/**
+ * Verification & disputes
+ */
+
+model Verification {
+  id            String             @id @default(cuid()) @map("_id")
+  user          User?              @relation("UserVerification")
+  userId        String?            @unique
+  faidaIdNumber String?
+  documents     String[]           @default([]) // urls to uploaded docs
+  status        VerificationStatus @default(NONE)
+  reviewedBy    String?
+  reviewedAt    DateTime?
+  notes         String?
+  createdAt     DateTime           @default(now())
+
+  @@map("verifications")
+}
+
+model Dispute {
+  id         String    @id @default(cuid()) @map("_id")
+  contract   Contract? @relation("ContractDisputes", fields: [contractId], references: [id])
+  contractId String?   @unique
+  raisedBy   String // userId
+  reason     String
+  status     String    @default("OPEN")
+  resolution String?
+  createdAt  DateTime  @default(now())
+
+  @@map("disputes")
+}

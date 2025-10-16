@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client"
+  provider = "prisma-client-js" // Changed to prisma-client-js
+  output   = "../src/generated" // Changed output path to be relative to packages/db/src/
   moduleFormat = "esm"
   runtime = "nodejs"
 }
@@ -80,10 +81,10 @@ model User {
   isVerified      Boolean           @default(false) // general user-level verified
   verification    Verification?     @relation("UserVerification", fields: [verificationId], references: [id])
   verificationId  String?           @unique // One-to-one relation with Verification
-  profile         Profile?          @relation(fields: [profileId], references: [id])
+  profile         Profile?          @relation("UserProfile")
   profileId       String?           @unique // One-to-one relation with Profile
   coins           Int               @default(0)
-  wallet          Wallet?           @relation(fields: [walletId], references: [id])
+  wallet          Wallet?           @relation("UserWallet")
   walletId        String?           @unique // One-to-one relation with Wallet
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
@@ -91,19 +92,21 @@ model User {
   // Relations
   listings        Listing[]         @relation("ProviderListings")
   jobsPosted      Job[]             @relation("JobsPosted")
-  proposals       Proposal[]
+  proposals       Proposal[]        @relation("ProviderProposals") // Added opposite relation
   reviewsReceived Review[]          @relation("ReviewsAboutUser")
   reviewsGiven    Review[]          @relation("ReviewsGivenByUser")
   messagesSent    Message[]         @relation("MessagesFrom")
   messagesRecvd   Message[]         @relation("MessagesTo")
   conversations   Conversation[]    @relation("ConversationParticipants")
+  contractsAsClient Contract[]      @relation("ClientContracts") // Added opposite relation
+  contractsAsProvider Contract[]    @relation("ProviderContracts") // Added opposite relation
+  coinPurchases   CoinPurchase[]
+  notifications   Notification[]
+  adminNotes      AdminNote[]
 
   // Auth-related models (from previous auth.prisma)
   sessions          Session[]
   accounts          Account[]
-
-  // Admin/audit
-  adminNotes      AdminNote[]
 
   @@index([role])
   @@index([createdAt])
@@ -146,7 +149,7 @@ model Account {
 
 model Profile {
   id            String   @id @default(cuid()) @map("_id")
-  user          User     @relation(fields: [userId], references: [id])
+  user          User     @relation("UserProfile", fields: [userId], references: [id])
   userId        String   @unique
   headline      String?
   hourlyRate    Float?
@@ -174,7 +177,8 @@ model Skill {
   slug  String   @unique
   // many-to-many with Profile via ProfileSkill
   profiles ProfileSkill[]
-  listings Listing[]      @relation(references: [id])
+  listings Listing[]
+  jobs      Job[]
   createdAt DateTime @default(now())
 
   @@map("skills")
@@ -227,8 +231,7 @@ model Listing {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   // relations
-  proposals     Proposal[]
-  skills        Skill[]   @relation(references: [id])
+  skills        Skill[]
   @@index([providerId])
   @@map("listings")
 }
@@ -247,20 +250,21 @@ model Job {
   deadline      DateTime?
   status        JobStatus    @default(OPEN)
   attachments   String[]     @default([])
-  requiredSkills Skill[]     @relation(references: [id])
+  requiredSkills Skill[]
   location      String?
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
-  proposals     Proposal[]
+  proposals     Proposal[]   @relation("JobProposals") // Added opposite relation
+  contract      Contract?    @relation("JobContract") // Added opposite relation
   @@index([seekerId])
   @@map("jobs")
 }
 
 model Proposal {
   id            String          @id @default(cuid()) @map("_id")
-  job           Job             @relation(fields: [jobId], references: [id])
+  job           Job             @relation("JobProposals", fields: [jobId], references: [id])
   jobId         String
-  provider      User            @relation(fields: [providerId], references: [id])
+  provider      User            @relation("ProviderProposals", fields: [providerId], references: [id])
   providerId    String
   coverLetter   String?
   price         Float?
@@ -282,11 +286,11 @@ model Proposal {
 
 model Contract {
   id            String        @id @default(cuid()) @map("_id")
-  job           Job           @relation(fields: [jobId], references: [id])
-  jobId         String
-  client        User          @relation(fields: [clientId], references: [id])
+  job           Job           @relation("JobContract", fields: [jobId], references: [id])
+  jobId         String        @unique // One-to-one relation
+  client        User          @relation("ClientContracts", fields: [clientId], references: [id])
   clientId      String
-  provider      User          @relation(fields: [providerId], references: [id])
+  provider      User          @relation("ProviderContracts", fields: [providerId], references: [id])
   providerId    String
   totalAmount   Float
   currency      Currency      @default(ETB)
@@ -295,6 +299,7 @@ model Contract {
   startDate     DateTime?
   endDate       DateTime?
   milestones    Milestone[]
+  dispute       Dispute?      @relation("ContractDisputes") // Added opposite relation
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
 
@@ -322,7 +327,7 @@ model Milestone {
 
 model Wallet {
   id           String        @id @default(cuid()) @map("_id")
-  user         User          @relation(fields: [userId], references: [id])
+  user         User          @relation("UserWallet", fields: [userId], references: [id])
   userId       String        @unique
   balance      Float         @default(0)
   currency     Currency      @default(ETB)
@@ -466,7 +471,7 @@ model AdminNote {
 
 model Verification {
   id            String             @id @default(cuid()) @map("_id")
-  user          User?              @relation("UserVerification", fields: [userId], references: [id])
+  user          User?              @relation("UserVerification")
   userId        String?            @unique
   faidaIdNumber String?
   documents     String[]           @default([]) // urls to uploaded docs
@@ -481,8 +486,8 @@ model Verification {
 
 model Dispute {
   id            String   @id @default(cuid()) @map("_id")
-  contract      Contract? @relation(fields: [contractId], references: [id])
-  contractId    String?
+  contract      Contract? @relation("ContractDisputes", fields: [contractId], references: [id])
+  contractId    String? @unique
   raisedBy      String   // userId
   reason        String
   status        String   @default("OPEN")
