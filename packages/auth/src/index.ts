@@ -21,13 +21,14 @@ export const auth = betterAuth({
         if (user) {
           return {
             ...user,
-            image: user.image,
+            image: user.avatarUrl,
           };
         }
         return user;
       },
     },
   },
+
   advanced: {
     defaultCookieAttributes: {
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",

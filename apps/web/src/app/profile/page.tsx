@@ -73,9 +73,7 @@ export default function ProfilePage() {
     data: userProfileData,
     isPending: isProfilePending,
     refetch: refetchUserProfile,
-  } = trpc.user.getUserProfile.useQuery(undefined, {
-    enabled: !!session?.user?.id,
-  });
+  } = trpc.user.getUserProfile.useQuery();
 
   const [profileForm, setProfileForm] = useState({
     displayName: "",
@@ -249,7 +247,7 @@ export default function ProfilePage() {
         user.bio ||
         `UI/UX Designer & Web Developer, crafting user-centered digital experiences.`,
       specialization: profile?.headline || "Figma, React, Node.js", // Using headline for specialization
-      languages: user.languages?.join(", ") || "Amharic, English", // Use optional chaining
+      languages: user.languages.join(", ") || "Amharic, English", // Use optional chaining
       experienceLevel: "Mid", // Placeholder
       education:
         JSON.parse((profile?.education as string) || "{}").degree ||
@@ -286,7 +284,7 @@ export default function ProfilePage() {
     verification: {
       faidaIdVerified: verification?.status === "APPROVED",
       phoneVerified: false, // Placeholder
-      emailVerified: user.emailVerified,
+      emailVerified: !!user.email,
       portfolioVerified: false, // Placeholder
     },
   };
