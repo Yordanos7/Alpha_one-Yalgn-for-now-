@@ -62,6 +62,8 @@ app.post(
   }
 );
 
+app.use(express.json());
+
 app.all("/api/auth{/*path}", toNodeHandler(auth)); // Use toNodeHandler set by better-auth, the main purpose is to handle auth routes this route should be before trpc middleware and it is important to use app.all to handle all methods
 
 app.use(
@@ -71,8 +73,6 @@ app.use(
     createContext,
   })
 ); // this is the tRPC middleware for handling all tRPC requests mean like all requests to /trpc/* will be handled by tRPC
-
-app.use(express.json());
 
 app.get("/", (_req, res) => {
   res.status(200).send("OK");

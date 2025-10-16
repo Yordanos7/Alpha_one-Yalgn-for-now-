@@ -9,6 +9,12 @@ export const auth = betterAuth({
   trustedOrigins: [process.env.CORS_ORIGIN || ""],
   emailAndPassword: {
     enabled: true,
+    onSignUp: async (user: { email: any; password: any; name: any }) => {
+      console.log("onSignUp callback triggered:", user);
+      // This is where you can add custom logic before the user is created
+      // For now, we'll just log and return the user object
+      return user;
+    },
   },
   session: {
     // Add session configuration
@@ -18,12 +24,6 @@ export const auth = betterAuth({
         const user = await prisma.user.findUnique({
           where: { id: userId },
         });
-        if (user) {
-          return {
-            ...user,
-            image: user.avatarUrl,
-          };
-        }
         return user;
       },
     },

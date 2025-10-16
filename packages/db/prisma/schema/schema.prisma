@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client-js" // Changed to prisma-client-js
-  output   = "../src/generated" // Changed output path to be relative to packages/db/src/
+  output   = "../generated" // Corrected the output path
   moduleFormat = "esm"
   runtime = "nodejs"
 }
@@ -69,12 +69,12 @@ model User {
   id              String            @id @default(cuid()) @map("_id")
   email           String?           @unique
   phone           String?           @unique
-  passwordHash    String?           // null if OAuth-only
+  password        String?           // null if OAuth-only
   role            Role              @default(PROVIDER)
-  displayName     String
+  name            String
   username        String?           @unique
   bio             String?           // short about
-  avatarUrl       String?           @default("/placeholder-avatar.jpg")
+  image           String?           @default("/placeholder-avatar.jpg")
   location        String?           // "Addis Ababa, Ethiopia"
   languages       String[]          @default([]) // e.g. ["Amharic:Native","English:Fluent"]
   isActive        Boolean           @default(true)
@@ -106,11 +106,10 @@ model User {
 
   // Auth-related models (from previous auth.prisma)
   sessions          Session[]
-  accounts          Account[]
 
   @@index([role])
   @@index([createdAt])
-  @@map("users")
+  @@map("user")
 }
 
 model Session {
@@ -125,27 +124,9 @@ model Session {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([token])
-  @@map("sessions")
+  @@map("session")
 }
 
-model Account {
-  id                    String    @id @default(cuid()) @map("_id")
-  accountId             String
-  providerId            String
-  userId                String
-  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  accessToken           String?
-  refreshToken          String?
-  idToken               String?
-  accessTokenExpiresAt  DateTime?
-  refreshTokenExpiresAt DateTime?
-  scope                 String?
-  password              String?
-  createdAt             DateTime  @default(now())
-  updatedAt             DateTime  @updatedAt
-
-  @@map("accounts")
-}
 
 model Profile {
   id            String   @id @default(cuid()) @map("_id")

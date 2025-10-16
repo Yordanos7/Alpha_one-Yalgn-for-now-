@@ -1,33 +1,33 @@
-import { authClient } from "@/lib/auth-client";
-import { useForm } from "@tanstack/react-form";
+import { authClient } from "@/lib/auth-client"; // this is the client-side auth instance that interacts with the auth server
+import { useForm } from "@tanstack/react-form"; // this  is a form management library come from tanstack for handling form state and validation
 import { toast } from "sonner";
 import z from "zod";
 import Loader from "./loader";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation"; // Import useRouter from next/navigation for Next.js 13+ but i use next js 15 ( "next": "15.5.4",)
 
 export default function SignUpForm({
   onSwitchToSignIn,
 }: {
   onSwitchToSignIn: () => void;
 }) {
-  const router = useRouter();
+  const router = useRouter(); // for navigation
   const { isPending, refetch } = authClient.useSession(); // Destructure refetch here
 
   const form = useForm({
     defaultValues: {
       email: "",
       password: "",
-      displayName: "",
+      name: "",
     },
     onSubmit: async ({ value }) => {
       await authClient.signUp.email(
         {
           email: value.email,
           password: value.password,
-          displayName: value.displayName,
+          name: value.name,
         },
         {
           onSuccess: () => {
@@ -43,7 +43,7 @@ export default function SignUpForm({
     },
     validators: {
       onSubmit: z.object({
-        displayName: z.string().min(2, "Name must be at least 2 characters"),
+        name: z.string().min(2, "Name must be at least 2 characters"),
         email: z.string().email("Invalid email address"),
         password: z.string().min(8, "Password must be at least 8 characters"),
       }),
@@ -72,7 +72,7 @@ export default function SignUpForm({
         className="space-y-6"
       >
         <div>
-          <form.Field name="displayName">
+          <form.Field name="name">
             {(field) => (
               <div className="space-y-2">
                 <Label

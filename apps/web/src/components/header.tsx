@@ -9,6 +9,7 @@ import logo from "@/../assets/logo.png";
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { data: session } = authClient.useSession();
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50  backdrop-blur-md border-b border-border shadow-sm min-h-[112px] bg-background/5">
@@ -43,7 +44,7 @@ const Header = () => {
 
           {/* User Menu or CTA Buttons */}
           <div className="hidden md:flex items-center gap-4">
-            {authClient.useSession().data?.user ? (
+            {session?.user ? (
               <UserMenu />
             ) : (
               <>
@@ -90,7 +91,7 @@ const Header = () => {
               Marketplace
             </Link>
             <div className="flex flex-col gap-3 pt-4 border-t">
-              {authClient.useSession().data?.user ? (
+              {session?.user ? (
                 <UserMenu />
               ) : (
                 <>

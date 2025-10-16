@@ -98,19 +98,17 @@ export default function ProfilePage() {
   useEffect(() => {
     if (userProfileData) {
       setProfileForm({
-        displayName: userProfileData.displayName || "",
+        displayName: userProfileData.name || "",
         bio: userProfileData.bio || "",
         location: userProfileData.location || "",
-        headline: userProfileData.profile?.headline || "",
-        hourlyRate: userProfileData.profile?.hourlyRate || 0,
-        currency: userProfileData.profile?.currency || "ETB",
-        availability: userProfileData.profile?.availability || "",
-        education: JSON.stringify(userProfileData.profile?.education || {}),
-        experience: JSON.stringify(userProfileData.profile?.experience || {}),
+        headline: "",
+        hourlyRate: 0,
+        currency: "ETB",
+        availability: "",
+        education: "{}",
+        experience: "{}",
       });
-      setSkillsForm(
-        userProfileData.profile?.skills?.map((s) => s.skill.name) || []
-      );
+      setSkillsForm([]);
     }
   }, [userProfileData]);
 
@@ -233,7 +231,7 @@ export default function ProfilePage() {
 
   // Placeholder data for demonstration, matching the new design image
   const userProfile = {
-    name: user.displayName || "Yohannes",
+    name: user.name || "Yohannes",
     faidaIdVerified: verification?.status === "APPROVED",
     profileCompletion: 75, // This will need to be calculated dynamically
     rating: 4.8, // Placeholder
@@ -241,13 +239,13 @@ export default function ProfilePage() {
     joinedDate: new Date(user.createdAt).toLocaleDateString(),
     responseRate: "98%", // Placeholder
     lastActive: user.location || "Addis Ababa, Ethiopia",
-    image: user.avatarUrl || "/placeholder-avatar.jpg",
+    image: user.image || "/placeholder-avatar.jpg",
     about: {
       description:
         user.bio ||
         `UI/UX Designer & Web Developer, crafting user-centered digital experiences.`,
       specialization: profile?.headline || "Figma, React, Node.js", // Using headline for specialization
-      languages: user.languages.join(", ") || "Amharic, English", // Use optional chaining
+      languages: user.languages?.join(", ") || "Amharic, English", // Use optional chaining
       experienceLevel: "Mid", // Placeholder
       education:
         JSON.parse((profile?.education as string) || "{}").degree ||
