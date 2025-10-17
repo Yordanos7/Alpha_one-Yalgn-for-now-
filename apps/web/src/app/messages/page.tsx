@@ -1,124 +1,217 @@
+// apps/web/src/app/messages/page.tsx
 "use client";
 
-import Sidebar from "@/components/sidebar";
-import { Button } from "@/components/ui/button";
+import { useState, useEffect } from "react";
+import { trpc } from "@/utils/trpc";
+import { getSocket } from "@/utils/socket";
+import { useSession } from "@/components/providers"; // Assuming you have a useSession hook
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
-import { Card } from "@/components/ui/card";
-import {
-  Search,
-  MessageSquare,
-  Send,
-  Paperclip,
-  Smile,
-  Calendar,
-  Check,
-  MoreVertical,
-  Plus,
-} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area"; // Assuming you have a ScrollArea component
+import { formatDistanceToNow } from "date-fns"; // You might need to install date-fns: npm install date-fns
+
+type Conversation = Awaited<
+  ReturnType<typeof trpc.conversation.list.query>
+>[number];
+type Message = Awaited<ReturnType<typeof trpc.message.list.query>>[number];
 
 export default function MessagesPage() {
+  const { session } = useSession();
+  const userId = session?.user?.id;
+
+  const [selectedConversationId, setSelectedConversationId] = useState<
+    string | null
+  >(null);
+  const [newMessage, setNewMessage] = useState("");
+
+  const { data: conversations, refetch: refetchConversations } =
+    trpc.conversation.list.useQuery(undefined, {
+      enabled: !!userId,
+    });
+  const { data: messages, refetch: refetchMessages } =
+    trpc.message.list.useQuery(
+      { conversationId: selectedConversationId! },
+      {
+        enabled: !!selectedConversationId,
+      }
+    );
+  const sendMessageMutation = trpc.message.send.useMutation({
+    onSuccess: () => {
+      setNewMessage("");
+      refetchMessages();
+      refetchConversations();
+    },
+  });
+
+  useEffect(() => {
+    const socket = getSocket();
+
+    if (selectedConversationId) {
+      socket.emit("joinConversation", selectedConversationId);
+
+      const handleNewMessage = (message: Message) => {
+        if (message.conversationId === selectedConversationId) {
+          refetchMessages();
+          refetchConversations();
+        }
+      };
+
+      socket.on("newMessage", handleNewMessage);
+
+      return () => {
+        socket.off("newMessage", handleNewMessage);
+        socket.emit("leaveConversation", selectedConversationId);
+      };
+    }
+  }, [selectedConversationId, refetchMessages, refetchConversations]);
+
+  const handleSendMessage = () => {
+    if (newMessage.trim() === "" || !selectedConversationId || !userId) return;
+
+    const participant = conversations
+      ?.find((c) => c.id === selectedConversationId)
+      ?.participants.find((p) => p.id !== userId);
+
+    if (participant) {
+      sendMessageMutation.mutate({
+        conversationId: selectedConversationId,
+        toUserId: participant.id,
+        body: newMessage,
+      });
+    }
+  };
+
   return (
-    <div className="flex min-h-screen bg-[#202020] text-white">
-      <Sidebar currentPage="messages" />
-
-      {/* Main Chat Content */}
-      <main className="flex-1 p-8 bg-[#202020] flex flex-col">
-        {/* Chat Header */}
-        <header className="flex items-center justify-between mb-8 bg-[#2C2C2C] p-4 rounded-lg">
-          <div className="flex items-center">
-            <Avatar className="h-10 w-10 mr-4">
-              <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-              <AvatarFallback>SM</AvatarFallback>
-            </Avatar>
-            <div>
-              <p className="text-lg font-semibold">Sara M</p>
-              <p className="text-sm text-gray-400">Open Job 20b</p>
+    <div className="flex h-[calc(100vh-64px)]">
+      {" "}
+      {/* Adjust height as needed */}
+      {/* Conversation List */}
+      <div className="w-1/4 border-r">
+        <h2 className="p-4 text-lg font-semibold">Conversations</h2>
+        <ScrollArea className="h-[calc(100%-60px)]">
+          {conversations?.map((conversation) => {
+            const otherParticipant = conversation.participants.find(
+              (p) => p.id !== userId
+            );
+            const lastMessage = conversation.messages[0];
+            return (
+              <div
+                key={conversation.id}
+                className={`flex items-center gap-3 p-4 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 ${
+                  selectedConversationId === conversation.id
+                    ? "bg-gray-100 dark:bg-gray-800"
+                    : ""
+                }`}
+                onClick={() => setSelectedConversationId(conversation.id)}
+              >
+                <Avatar>
+                  <AvatarImage
+                    src={otherParticipant?.image || "/placeholder-avatar.jpg"}
+                  />
+                  <AvatarFallback>{otherParticipant?.name?.[0]}</AvatarFallback>
+                </Avatar>
+                <div className="flex-1">
+                  <p className="font-medium">
+                    {otherParticipant?.name || "Unknown User"}
+                  </p>
+                  {lastMessage && (
+                    <p className="text-sm text-gray-500 dark:text-gray-400 truncate">
+                      {lastMessage.body} -{" "}
+                      {formatDistanceToNow(new Date(lastMessage.createdAt), {
+                        addSuffix: true,
+                      })}
+                    </p>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </ScrollArea>
+      </div>
+      {/* Message Area */}
+      <div className="flex-1 flex flex-col">
+        {selectedConversationId ? (
+          <>
+            <div className="flex items-center gap-3 p-4 border-b">
+              <Avatar>
+                <AvatarImage
+                  src={
+                    conversations
+                      ?.find((c) => c.id === selectedConversationId)
+                      ?.participants.find((p) => p.id !== userId)?.image ||
+                    "/placeholder-avatar.jpg"
+                  }
+                />
+                <AvatarFallback>
+                  {
+                    conversations
+                      ?.find((c) => c.id === selectedConversationId)
+                      ?.participants.find((p) => p.id !== userId)?.name?.[0]
+                  }
+                </AvatarFallback>
+              </Avatar>
+              <h2 className="text-lg font-semibold">
+                {conversations
+                  ?.find((c) => c.id === selectedConversationId)
+                  ?.participants.find((p) => p.id !== userId)?.name ||
+                  "Unknown User"}
+              </h2>
             </div>
-          </div>
-          <div className="flex items-center space-x-4">
-            <Button className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold rounded-lg px-4 py-2">
-              Open Job
-            </Button>
-            <MoreVertical className="text-gray-400" size={24} />
-          </div>
-        </header>
-
-        {/* Chat Messages */}
-        <div className="flex-1 overflow-y-auto p-4 bg-[#2C2C2C] rounded-lg mb-4">
-          {/* Example incoming message */}
-          <div className="flex items-start mb-4">
-            <Avatar className="h-8 w-8 mr-3">
-              <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-              <AvatarFallback>SM</AvatarFallback>
-            </Avatar>
-            <div className="bg-[#3A3A3A] p-3 rounded-lg max-w-xs">
-              <p>He is aue wouh aurk ou siarcestd to this bile tate.</p>
+            <ScrollArea className="flex-1 p-4">
+              <div className="space-y-4">
+                {messages?.map((message) => (
+                  <div
+                    key={message.id}
+                    className={`flex ${
+                      message.fromUserId === userId
+                        ? "justify-end"
+                        : "justify-start"
+                    }`}
+                  >
+                    <div
+                      className={`max-w-[70%] p-3 rounded-lg ${
+                        message.fromUserId === userId
+                          ? "bg-blue-500 text-white"
+                          : "bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                      }`}
+                    >
+                      <p className="text-sm">{message.body}</p>
+                      <p className="text-xs opacity-75 mt-1">
+                        {formatDistanceToNow(new Date(message.createdAt), {
+                          addSuffix: true,
+                        })}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </ScrollArea>
+            <div className="p-4 border-t flex items-center gap-2">
+              <Input
+                placeholder="Type your message..."
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                onKeyPress={(e) => {
+                  if (e.key === "Enter") {
+                    handleSendMessage();
+                  }
+                }}
+              />
+              <Button
+                onClick={handleSendMessage}
+                disabled={sendMessageMutation.isLoading}
+              >
+                Send
+              </Button>
             </div>
+          </>
+        ) : (
+          <div className="flex items-center justify-center h-full text-gray-500 dark:text-gray-400">
+            Select a conversation to start chatting
           </div>
-
-          {/* Example outgoing message with file */}
-          <div className="flex justify-end mb-4">
-            <div className="bg-yellow-500 text-black p-3 rounded-lg max-w-xs flex items-center">
-              <Paperclip className="mr-2" size={16} />
-              <span>design.brief.pdf</span>
-            </div>
-          </div>
-
-          {/* Example incoming message */}
-          <div className="flex items-start mb-4">
-            <Avatar className="h-8 w-8 mr-3">
-              <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-              <AvatarFallback>SM</AvatarFallback>
-            </Avatar>
-            <div className="bg-[#3A3A3A] p-3 rounded-lg max-w-xs">
-              <p>
-                To sdhue thet time boage iath taat on we niire nd tnd shet grow
-                hy cislese.
-              </p>
-            </div>
-          </div>
-
-          {/* Example outgoing message */}
-          <div className="flex justify-end mb-4">
-            <div className="bg-yellow-500 text-black p-3 rounded-lg max-w-xs">
-              <p>design bried</p>
-              <Check className="inline-block ml-2" size={16} />
-            </div>
-          </div>
-
-          {/* Example incoming message with file */}
-          <div className="flex items-start mb-4">
-            <Avatar className="h-8 w-8 mr-3">
-              <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-              <AvatarFallback>SM</AvatarFallback>
-            </Avatar>
-            <div className="bg-[#3A3A3A] p-3 rounded-lg max-w-xs flex items-center">
-              <Paperclip className="mr-2" size={16} />
-              <span>Sele biup u htie cl.id pod</span>
-            </div>
-          </div>
-
-          <p className="text-sm text-gray-400 text-center">Sara is typing...</p>
-        </div>
-
-        {/* Chat Input */}
-        <div className="bg-[#2C2C2C] p-4 rounded-lg flex items-center">
-          <div className="flex items-center space-x-2 mr-4">
-            <Plus className="text-gray-400" size={24} />
-            <Paperclip className="text-gray-400" size={24} />
-            <Smile className="text-gray-400" size={24} />
-          </div>
-          <Input
-            type="text"
-            placeholder="Type your message..."
-            className="flex-1 pr-4 py-2 rounded-lg bg-[#3A3A3A] border-none text-white focus:ring-0 focus:outline-none"
-          />
-          <Button className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold rounded-lg px-6 py-2 ml-4">
-            Send
-          </Button>
-        </div>
-      </main>
+        )}
+      </div>
     </div>
   );
 }

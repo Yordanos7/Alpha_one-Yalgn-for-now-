@@ -1,4 +1,4 @@
-import "dotenv/config";
+// apps/server/src/index.ts
 import "dotenv/config";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { createContext } from "@Alpha/api/context";
@@ -10,17 +10,31 @@ import { toNodeHandler } from "better-auth/node";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
+import http from "http"; // Import http module
+import { Server } from "socket.io"; // Import Server from socket.io
 
 const app = express();
 
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN || "",
+    origin: process.env.CORS_ORIGIN || "*", // Allow all origins for now, refine in production
     methods: ["GET", "POST", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })
 );
+
+// Create HTTP server
+const server = http.createServer(app);
+
+// Initialize Socket.io
+const io = new Server(server, {
+  cors: {
+    origin: process.env.CORS_ORIGIN || "*", // Allow all origins for now, refine in production
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
+});
 
 // Ensure the uploads directory exists
 const uploadDir = path.join(process.cwd(), "uploads"); // cwd is the current working directory
@@ -31,7 +45,7 @@ if (!fs.existsSync(uploadDir)) {
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, uploadDir);
-  }, // cd mean current directory
+  },
   filename: function (req, file, cb) {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
     cb(
@@ -64,21 +78,43 @@ app.post(
 
 app.use(express.json());
 
-app.all("/api/auth{/*path}", toNodeHandler(auth)); // Use toNodeHandler set by better-auth, the main purpose is to handle auth routes this route should be before trpc middleware and it is important to use app.all to handle all methods
+app.all("/api/auth{/*path}", toNodeHandler(auth));
 
 app.use(
   "/trpc",
   createExpressMiddleware({
     router: appRouter,
-    createContext,
+    createContext: ({ req, res }) => createContext({ req, res }, io), // Pass io to context
   })
-); // this is the tRPC middleware for handling all tRPC requests mean like all requests to /trpc/* will be handled by tRPC
+);
 
 app.get("/", (_req, res) => {
   res.status(200).send("OK");
-}); // Health check endpoint
+});
 
 const port = process.env.PORT || 3000;
-app.listen(port, () => {
+server.listen(port, () => {
+  // Listen on the http server, not the express app
   console.log(`Server is running on port ${port}`);
+  console.log(`tRPC endpoint: http://localhost:${port}/trpc`);
+  console.log(`Socket.io listening on port ${port}`);
+});
+
+// Socket.io connection handling
+io.on("connection", (socket) => {
+  console.log("A user connected:", socket.id);
+
+  socket.on("joinConversation", (conversationId: string) => {
+    socket.join(conversationId);
+    console.log(`User ${socket.id} joined conversation ${conversationId}`);
+  });
+
+  socket.on("leaveConversation", (conversationId: string) => {
+    socket.leave(conversationId);
+    console.log(`User ${socket.id} left conversation ${conversationId}`);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("User disconnected:", socket.id);
+  });
 });

@@ -1,5 +1,6 @@
-import { QueryCache, QueryClient } from "@tanstack/react-query"; // Core tools for managing, caching, and synchronizing server state in your React application.
-import { createTRPCClient, httpBatchLink } from "@trpc/client"; // Re-import createTRPCClient
+// apps/web/src/utils/trpc.ts
+import { QueryCache, QueryClient } from "@tanstack/react-query";
+import { createTRPCClient, httpBatchLink } from "@trpc/client";
 import { createTRPCReact } from "@trpc/react-query";
 import type { AppRouter } from "@Alpha/api/routers/index";
 import { toast } from "sonner";
@@ -21,7 +22,6 @@ export const queryClient = new QueryClient({
 });
 
 export const trpcClient = createTRPCClient<AppRouter>({
-  // Create trpcClient instance
   links: [
     httpBatchLink({
       url: `${process.env.NEXT_PUBLIC_SERVER_URL}/trpc`,
