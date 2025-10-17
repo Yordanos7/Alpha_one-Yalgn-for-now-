@@ -5,72 +5,73 @@ import { auth } from "@Alpha/auth"; // Better-Auth instance
 import { fromNodeHeaders } from "better-auth/node";
 
 export const userRouter = router({
-  getUserProfile: protectedProcedure.query(
-    async ({ ctx: { session, prisma } }) => {
-      if (!session?.user?.id) {
-        throw new TRPCError({
-          code: "UNAUTHORIZED",
-          message: "Not authenticated",
-        });
-      }
+  getUserProfile: protectedProcedure.query(async ({ ctx: { session, db } }) => {
+    // Use ctx.db instead of ctx.prisma
+    if (!session?.user?.id) {
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "Not authenticated",
+      });
+    }
 
-      const user = await prisma.user.findUnique({
-        where: { id: session.user.id },
-        select: {
-          id: true,
-          name: true,
-          email: true,
-          image: true,
-          bio: true,
-          location: true,
-          profile: {
-            select: {
-              skills: {
-                select: {
-                  skill: {
-                    select: {
-                      name: true,
-                    },
+    const user = await db.user.findUnique({
+      // Use db.user
+      where: { id: session.user.id },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        image: true,
+        bio: true,
+        location: true,
+        profile: {
+          select: {
+            skills: {
+              select: {
+                skill: {
+                  select: {
+                    name: true,
                   },
                 },
               },
-              headline: true,
-              hourlyRate: true,
-              currency: true,
-              availability: true,
-              completedJobs: true,
-              successRate: true,
-              portfolio: true,
-              education: true,
-              experience: true,
             },
+            headline: true,
+            hourlyRate: true,
+            currency: true,
+            availability: true,
+            completedJobs: true,
+            successRate: true,
+            portfolio: true,
+            education: true,
+            experience: true,
           },
-          verification: {
-            select: {
-              status: true,
-            },
-          },
-          createdAt: true,
-          updatedAt: true,
-          languages: true,
-          coins: true,
         },
+        verification: {
+          select: {
+            status: true,
+          },
+        },
+        createdAt: true,
+        updatedAt: true,
+        languages: true,
+        coins: true,
+      },
+    });
+
+    if (!user) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "User not found",
       });
-
-      if (!user) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "User not found",
-        });
-      }
-
-      return user;
     }
-  ),
+
+    return user;
+  }),
 
   uploadProfileImage: protectedProcedure
     .input(z.object({ filePath: z.string() }))
-    .mutation(async ({ ctx: { session, prisma, req, res }, input }) => {
+    .mutation(async ({ ctx: { session, db, req, res }, input }) => {
+      // Use ctx.db, req, res
       try {
         console.log(
           "tRPC uploadProfileImage mutation received filePath:",
@@ -78,7 +79,8 @@ export const userRouter = router({
         );
 
         // 1️⃣ Update the user's avatarUrl in the database
-        const updatedUser = await prisma.user.update({
+        const updatedUser = await db.user.update({
+          // Use db.user
           where: { id: session!.user.id },
           data: { image: input.filePath },
         });
@@ -120,7 +122,8 @@ export const userRouter = router({
         experience: z.any().optional(), // Using z.any() for Json type
       })
     )
-    .mutation(async ({ ctx: { session, prisma, req, res }, input }) => {
+    .mutation(async ({ ctx: { session, db, req, res }, input }) => {
+      // Use ctx.db, req, res
       try {
         // Update User model fields
         const userUpdateData: {
@@ -133,7 +136,8 @@ export const userRouter = router({
         if (input.location !== undefined)
           userUpdateData.location = input.location;
 
-        const updatedUser = await prisma.user.update({
+        const updatedUser = await db.user.update({
+          // Use db.user
           where: { id: session!.user.id },
           data: userUpdateData,
         });
@@ -160,7 +164,8 @@ export const userRouter = router({
         if (input.experience !== undefined)
           profileUpdateData.experience = input.experience;
 
-        await prisma.profile.upsert({
+        await db.profile.upsert({
+          // Use db.profile
           where: { userId: session!.user.id },
           update: profileUpdateData,
           create: {
@@ -189,12 +194,14 @@ export const userRouter = router({
 
   updateSkills: protectedProcedure
     .input(z.object({ skills: z.array(z.string()) }))
-    .mutation(async ({ ctx: { session, prisma, req, res }, input }) => {
+    .mutation(async ({ ctx: { session, db, req, res }, input }) => {
+      // Use ctx.db, req, res
       try {
         // Find or create skills and connect them to the user's profile
         const skillConnects = await Promise.all(
           input.skills.map(async (skillName) => {
-            const skill = await prisma.skill.upsert({
+            const skill = await db.skill.upsert({
+              // Use db.skill
               where: { name: skillName },
               update: {},
               create: {
@@ -207,7 +214,8 @@ export const userRouter = router({
         );
 
         // Update the user's profile to connect the skills
-        await prisma.profile.update({
+        await db.profile.update({
+          // Use db.profile
           where: { userId: session!.user.id },
           data: {
             skills: {
@@ -235,4 +243,8 @@ export const userRouter = router({
         });
       }
     }),
+
+  getSession: protectedProcedure.query(({ ctx }) => {
+    return ctx.session;
+  }),
 });

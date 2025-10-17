@@ -1,6 +1,6 @@
 // packages/api/src/routers/message.ts
 import { z } from "zod";
-import { protectedProcedure, publicProcedure, router } from "../trpc";
+import { protectedProcedure, publicProcedure, router, t } from "..";
 
 export const messageRouter = router({
   list: protectedProcedure

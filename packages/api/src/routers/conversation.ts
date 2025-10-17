@@ -1,6 +1,5 @@
 import { includes, z } from "zod";
-import { router, publicProcedure, protectedProcedure } from "../trpc";
-import { t } from "..";
+import { router, publicProcedure, protectedProcedure, t } from "..";
 import { partial } from "zod/mini";
 
 export const conversationRouter = router({
@@ -52,16 +51,17 @@ export const conversationRouter = router({
               id: userId,
             },
           },
-          include: {
-            participants: {
-              select: {
-                id: true,
-                name: true,
-                image: true,
-              },
+        },
+        include: {
+          participants: {
+            select: {
+              id: true,
+              name: true,
+              image: true,
             },
           },
-          message: {
+          messages: {
+            // Assuming 'messages' is the correct relation name, not 'message'
             orderBy: {
               createdAt: "desc",
             },
@@ -80,7 +80,7 @@ export const conversationRouter = router({
         title: z.string().optional(),
       })
     )
-    .mutation(async (ctx, input) => {
+    .mutation(async ({ ctx, input }) => {
       const userId = ctx.session?.userId;
       if (!userId) {
         throw new Error("User not authenticated");
@@ -90,14 +90,14 @@ export const conversationRouter = router({
         where: {
           AND: [
             {
-              partialicipants: {
+              participants: {
                 every: {
                   id: { in: allParticipantIds },
                 },
               },
             },
             {
-              participatnts: {
+              participants: {
                 some: {
                   id: { in: allParticipantIds },
                 },
@@ -127,7 +127,7 @@ export const conversationRouter = router({
           },
         },
         include: {
-          partialicipants: {
+          participants: {
             select: {
               id: true,
               name: true,

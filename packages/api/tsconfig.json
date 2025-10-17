@@ -5,7 +5,19 @@
     "declarationMap": true,
     "sourceMap": true,
     "outDir": "dist",
-    "composite": true
+    "composite": true,
+    "rootDir": "src",
+    "paths": {
+      "@Alpha/auth": ["../../packages/auth/src"]
+    }
   },
-  "include": ["src/**/*.ts", "src/types/**/*.d.ts"]
+  "include": ["src/**/*.ts", "src/types/**/*.d.ts"],
+  "references": [
+    {
+      "path": "../auth"
+    },
+    {
+      "path": "../db"
+    }
+  ]
 }

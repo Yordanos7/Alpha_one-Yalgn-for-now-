@@ -84,7 +84,7 @@ app.use(
   "/trpc",
   createExpressMiddleware({
     router: appRouter,
-    createContext: ({ req, res }) => createContext({ req, res }, io), // Pass io to context
+    createContext: ({ req, res }) => createContext({ req, res, io }), // Pass io as a property of the context object
   })
 );
 
