@@ -76,7 +76,7 @@ export default function ProfilePage() {
   } = trpc.user.getUserProfile.useQuery();
 
   const [profileForm, setProfileForm] = useState({
-    displayName: "",
+    name: "",
     bio: "",
     location: "",
     headline: "",
@@ -98,7 +98,7 @@ export default function ProfilePage() {
   useEffect(() => {
     if (userProfileData) {
       setProfileForm({
-        displayName: userProfileData.name || "",
+        name: userProfileData.name || "",
         bio: userProfileData.bio || "",
         location: userProfileData.location || "",
         headline: "",
@@ -170,7 +170,7 @@ export default function ProfilePage() {
   const handleSaveProfile = async () => {
     try {
       await updateProfileMutation.mutateAsync({
-        displayName: profileForm.displayName,
+        name: profileForm.name,
         bio: profileForm.bio,
         location: profileForm.location,
         headline: profileForm.headline,
@@ -812,16 +812,16 @@ export default function ProfilePage() {
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="displayName" className="text-right">
-                Display Name
+              <Label htmlFor="name" className="text-right">
+                Name
               </Label>
               <Input
-                id="displayName"
-                value={profileForm.displayName}
+                id="name"
+                value={profileForm.name}
                 onChange={(e) =>
                   setProfileForm({
                     ...profileForm,
-                    displayName: e.target.value,
+                    name: e.target.value,
                   })
                 }
                 className="col-span-3"

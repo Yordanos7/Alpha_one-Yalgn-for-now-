@@ -131,21 +131,22 @@ model Session {
 }
 
 model Account {
-  id                   String  @id @default(cuid()) @map("_id")
-  userId               String
-  user                 User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  type                 String?
-  providerId           String
-  accountId            String
-  refreshToken         String? @map("refresh_token") @db.Text
-  accessToken          String? @map("access_token") @db.Text
-  accessTokenExpiresAt Int?    @map("expires_at")
-  idToken              String? @map("id_token") @db.Text
-  scope                String?
-  sessionState         String? @map("session_state")
-  
-  @@unique([providerId, accountId])
-  @@map("accounts")
+  id                    String    @id @map("_id")
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime
+  updatedAt             DateTime
+
+  @@map("account")
 }
 
 
