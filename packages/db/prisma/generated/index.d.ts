@@ -211,6 +211,14 @@ export const NotificationType: {
 
 export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType]
 
+
+export const AccountType: {
+  INDIVIDUAL: 'INDIVIDUAL',
+  ORGANIZATION: 'ORGANIZATION'
+};
+
+export type AccountType = (typeof AccountType)[keyof typeof AccountType]
+
 }
 
 export type Role = $Enums.Role
@@ -244,6 +252,10 @@ export const VerificationStatus: typeof $Enums.VerificationStatus
 export type NotificationType = $Enums.NotificationType
 
 export const NotificationType: typeof $Enums.NotificationType
+
+export type AccountType = $Enums.AccountType
+
+export const AccountType: typeof $Enums.AccountType
 
 /**
  * ##  Prisma Client ʲˢ
@@ -3454,6 +3466,8 @@ export namespace Prisma {
     phone: string | null
     passwordHash: string | null
     role: $Enums.Role | null
+    accountType: $Enums.AccountType | null
+    onboarded: boolean | null
     name: string | null
     username: string | null
     bio: string | null
@@ -3476,6 +3490,8 @@ export namespace Prisma {
     phone: string | null
     passwordHash: string | null
     role: $Enums.Role | null
+    accountType: $Enums.AccountType | null
+    onboarded: boolean | null
     name: string | null
     username: string | null
     bio: string | null
@@ -3498,6 +3514,8 @@ export namespace Prisma {
     phone: number
     passwordHash: number
     role: number
+    accountType: number
+    onboarded: number
     name: number
     username: number
     bio: number
@@ -3531,6 +3549,8 @@ export namespace Prisma {
     phone?: true
     passwordHash?: true
     role?: true
+    accountType?: true
+    onboarded?: true
     name?: true
     username?: true
     bio?: true
@@ -3553,6 +3573,8 @@ export namespace Prisma {
     phone?: true
     passwordHash?: true
     role?: true
+    accountType?: true
+    onboarded?: true
     name?: true
     username?: true
     bio?: true
@@ -3575,6 +3597,8 @@ export namespace Prisma {
     phone?: true
     passwordHash?: true
     role?: true
+    accountType?: true
+    onboarded?: true
     name?: true
     username?: true
     bio?: true
@@ -3685,6 +3709,8 @@ export namespace Prisma {
     phone: string | null
     passwordHash: string | null
     role: $Enums.Role
+    accountType: $Enums.AccountType | null
+    onboarded: boolean
     name: string
     username: string | null
     bio: string | null
@@ -3727,6 +3753,8 @@ export namespace Prisma {
     phone?: boolean
     passwordHash?: boolean
     role?: boolean
+    accountType?: boolean
+    onboarded?: boolean
     name?: boolean
     username?: boolean
     bio?: boolean
@@ -3769,6 +3797,8 @@ export namespace Prisma {
     phone?: boolean
     passwordHash?: boolean
     role?: boolean
+    accountType?: boolean
+    onboarded?: boolean
     name?: boolean
     username?: boolean
     bio?: boolean
@@ -3793,6 +3823,8 @@ export namespace Prisma {
     phone?: boolean
     passwordHash?: boolean
     role?: boolean
+    accountType?: boolean
+    onboarded?: boolean
     name?: boolean
     username?: boolean
     bio?: boolean
@@ -3817,6 +3849,8 @@ export namespace Prisma {
     phone?: boolean
     passwordHash?: boolean
     role?: boolean
+    accountType?: boolean
+    onboarded?: boolean
     name?: boolean
     username?: boolean
     bio?: boolean
@@ -3833,7 +3867,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "emailVerified" | "phone" | "passwordHash" | "role" | "name" | "username" | "bio" | "image" | "location" | "languages" | "isActive" | "isVerified" | "verificationId" | "profileId" | "coins" | "walletId" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "emailVerified" | "phone" | "passwordHash" | "role" | "accountType" | "onboarded" | "name" | "username" | "bio" | "image" | "location" | "languages" | "isActive" | "isVerified" | "verificationId" | "profileId" | "coins" | "walletId" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     verification?: boolean | User$verificationArgs<ExtArgs>
     profile?: boolean | User$profileArgs<ExtArgs>
@@ -3891,6 +3925,8 @@ export namespace Prisma {
       phone: string | null
       passwordHash: string | null
       role: $Enums.Role
+      accountType: $Enums.AccountType | null
+      onboarded: boolean
       name: string
       username: string | null
       bio: string | null
@@ -4352,6 +4388,8 @@ export namespace Prisma {
     readonly phone: FieldRef<"User", 'String'>
     readonly passwordHash: FieldRef<"User", 'String'>
     readonly role: FieldRef<"User", 'Role'>
+    readonly accountType: FieldRef<"User", 'AccountType'>
+    readonly onboarded: FieldRef<"User", 'Boolean'>
     readonly name: FieldRef<"User", 'String'>
     readonly username: FieldRef<"User", 'String'>
     readonly bio: FieldRef<"User", 'String'>
@@ -7489,6 +7527,10 @@ export namespace Prisma {
     availability: string | null
     completedJobs: number | null
     successRate: number | null
+    howHear: string | null
+    howHearOther: string | null
+    individualFocus: string | null
+    organizationPurpose: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -7502,6 +7544,10 @@ export namespace Prisma {
     availability: string | null
     completedJobs: number | null
     successRate: number | null
+    howHear: string | null
+    howHearOther: string | null
+    individualFocus: string | null
+    organizationPurpose: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -7517,6 +7563,11 @@ export namespace Prisma {
     education: number
     completedJobs: number
     successRate: number
+    howHear: number
+    howHearOther: number
+    goals: number
+    individualFocus: number
+    organizationPurpose: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -7544,6 +7595,10 @@ export namespace Prisma {
     availability?: true
     completedJobs?: true
     successRate?: true
+    howHear?: true
+    howHearOther?: true
+    individualFocus?: true
+    organizationPurpose?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -7557,6 +7612,10 @@ export namespace Prisma {
     availability?: true
     completedJobs?: true
     successRate?: true
+    howHear?: true
+    howHearOther?: true
+    individualFocus?: true
+    organizationPurpose?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -7572,6 +7631,11 @@ export namespace Prisma {
     education?: true
     completedJobs?: true
     successRate?: true
+    howHear?: true
+    howHearOther?: true
+    goals?: true
+    individualFocus?: true
+    organizationPurpose?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -7674,6 +7738,11 @@ export namespace Prisma {
     education: JsonValue | null
     completedJobs: number
     successRate: number | null
+    howHear: string | null
+    howHearOther: string | null
+    goals: string[]
+    individualFocus: string | null
+    organizationPurpose: string | null
     createdAt: Date
     updatedAt: Date
     _count: ProfileCountAggregateOutputType | null
@@ -7708,6 +7777,11 @@ export namespace Prisma {
     education?: boolean
     completedJobs?: boolean
     successRate?: boolean
+    howHear?: boolean
+    howHearOther?: boolean
+    goals?: boolean
+    individualFocus?: boolean
+    organizationPurpose?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -7727,6 +7801,11 @@ export namespace Prisma {
     education?: boolean
     completedJobs?: boolean
     successRate?: boolean
+    howHear?: boolean
+    howHearOther?: boolean
+    goals?: boolean
+    individualFocus?: boolean
+    organizationPurpose?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -7743,6 +7822,11 @@ export namespace Prisma {
     education?: boolean
     completedJobs?: boolean
     successRate?: boolean
+    howHear?: boolean
+    howHearOther?: boolean
+    goals?: boolean
+    individualFocus?: boolean
+    organizationPurpose?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -7759,11 +7843,16 @@ export namespace Prisma {
     education?: boolean
     completedJobs?: boolean
     successRate?: boolean
+    howHear?: boolean
+    howHearOther?: boolean
+    goals?: boolean
+    individualFocus?: boolean
+    organizationPurpose?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type ProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "headline" | "hourlyRate" | "currency" | "availability" | "experience" | "education" | "completedJobs" | "successRate" | "createdAt" | "updatedAt", ExtArgs["result"]["profile"]>
+  export type ProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "headline" | "hourlyRate" | "currency" | "availability" | "experience" | "education" | "completedJobs" | "successRate" | "howHear" | "howHearOther" | "goals" | "individualFocus" | "organizationPurpose" | "createdAt" | "updatedAt", ExtArgs["result"]["profile"]>
   export type ProfileInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     skills?: boolean | Profile$skillsArgs<ExtArgs>
@@ -7795,6 +7884,11 @@ export namespace Prisma {
       education: Prisma.JsonValue | null
       completedJobs: number
       successRate: number | null
+      howHear: string | null
+      howHearOther: string | null
+      goals: string[]
+      individualFocus: string | null
+      organizationPurpose: string | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["profile"]>
@@ -8233,6 +8327,11 @@ export namespace Prisma {
     readonly education: FieldRef<"Profile", 'Json'>
     readonly completedJobs: FieldRef<"Profile", 'Int'>
     readonly successRate: FieldRef<"Profile", 'Float'>
+    readonly howHear: FieldRef<"Profile", 'String'>
+    readonly howHearOther: FieldRef<"Profile", 'String'>
+    readonly goals: FieldRef<"Profile", 'String[]'>
+    readonly individualFocus: FieldRef<"Profile", 'String'>
+    readonly organizationPurpose: FieldRef<"Profile", 'String'>
     readonly createdAt: FieldRef<"Profile", 'DateTime'>
     readonly updatedAt: FieldRef<"Profile", 'DateTime'>
   }
@@ -30293,6 +30392,8 @@ export namespace Prisma {
     phone: 'phone',
     passwordHash: 'passwordHash',
     role: 'role',
+    accountType: 'accountType',
+    onboarded: 'onboarded',
     name: 'name',
     username: 'username',
     bio: 'bio',
@@ -30356,6 +30457,11 @@ export namespace Prisma {
     education: 'education',
     completedJobs: 'completedJobs',
     successRate: 'successRate',
+    howHear: 'howHear',
+    howHearOther: 'howHearOther',
+    goals: 'goals',
+    individualFocus: 'individualFocus',
+    organizationPurpose: 'organizationPurpose',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -30710,6 +30816,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'AccountType'
+   */
+  export type EnumAccountTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AccountType'>
+    
+
+
+  /**
+   * Reference to a field of type 'AccountType[]'
+   */
+  export type ListEnumAccountTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AccountType[]'>
+    
+
+
+  /**
    * Reference to a field of type 'Int'
    */
   export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
@@ -30876,6 +30996,8 @@ export namespace Prisma {
     phone?: StringNullableFilter<"User"> | string | null
     passwordHash?: StringNullableFilter<"User"> | string | null
     role?: EnumRoleFilter<"User"> | $Enums.Role
+    accountType?: EnumAccountTypeNullableFilter<"User"> | $Enums.AccountType | null
+    onboarded?: BoolFilter<"User"> | boolean
     name?: StringFilter<"User"> | string
     username?: StringNullableFilter<"User"> | string | null
     bio?: StringNullableFilter<"User"> | string | null
@@ -30917,6 +31039,8 @@ export namespace Prisma {
     phone?: SortOrderInput | SortOrder
     passwordHash?: SortOrderInput | SortOrder
     role?: SortOrder
+    accountType?: SortOrderInput | SortOrder
+    onboarded?: SortOrder
     name?: SortOrder
     username?: SortOrderInput | SortOrder
     bio?: SortOrderInput | SortOrder
@@ -30965,6 +31089,8 @@ export namespace Prisma {
     emailVerified?: BoolFilter<"User"> | boolean
     passwordHash?: StringNullableFilter<"User"> | string | null
     role?: EnumRoleFilter<"User"> | $Enums.Role
+    accountType?: EnumAccountTypeNullableFilter<"User"> | $Enums.AccountType | null
+    onboarded?: BoolFilter<"User"> | boolean
     name?: StringFilter<"User"> | string
     bio?: StringNullableFilter<"User"> | string | null
     image?: StringNullableFilter<"User"> | string | null
@@ -31002,6 +31128,8 @@ export namespace Prisma {
     phone?: SortOrderInput | SortOrder
     passwordHash?: SortOrderInput | SortOrder
     role?: SortOrder
+    accountType?: SortOrderInput | SortOrder
+    onboarded?: SortOrder
     name?: SortOrder
     username?: SortOrderInput | SortOrder
     bio?: SortOrderInput | SortOrder
@@ -31033,6 +31161,8 @@ export namespace Prisma {
     phone?: StringNullableWithAggregatesFilter<"User"> | string | null
     passwordHash?: StringNullableWithAggregatesFilter<"User"> | string | null
     role?: EnumRoleWithAggregatesFilter<"User"> | $Enums.Role
+    accountType?: EnumAccountTypeNullableWithAggregatesFilter<"User"> | $Enums.AccountType | null
+    onboarded?: BoolWithAggregatesFilter<"User"> | boolean
     name?: StringWithAggregatesFilter<"User"> | string
     username?: StringNullableWithAggregatesFilter<"User"> | string | null
     bio?: StringNullableWithAggregatesFilter<"User"> | string | null
@@ -31228,6 +31358,11 @@ export namespace Prisma {
     education?: JsonNullableFilter<"Profile">
     completedJobs?: IntFilter<"Profile"> | number
     successRate?: FloatNullableFilter<"Profile"> | number | null
+    howHear?: StringNullableFilter<"Profile"> | string | null
+    howHearOther?: StringNullableFilter<"Profile"> | string | null
+    goals?: StringNullableListFilter<"Profile">
+    individualFocus?: StringNullableFilter<"Profile"> | string | null
+    organizationPurpose?: StringNullableFilter<"Profile"> | string | null
     createdAt?: DateTimeFilter<"Profile"> | Date | string
     updatedAt?: DateTimeFilter<"Profile"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -31246,6 +31381,11 @@ export namespace Prisma {
     education?: SortOrderInput | SortOrder
     completedJobs?: SortOrder
     successRate?: SortOrderInput | SortOrder
+    howHear?: SortOrderInput | SortOrder
+    howHearOther?: SortOrderInput | SortOrder
+    goals?: SortOrder
+    individualFocus?: SortOrderInput | SortOrder
+    organizationPurpose?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
@@ -31267,6 +31407,11 @@ export namespace Prisma {
     education?: JsonNullableFilter<"Profile">
     completedJobs?: IntFilter<"Profile"> | number
     successRate?: FloatNullableFilter<"Profile"> | number | null
+    howHear?: StringNullableFilter<"Profile"> | string | null
+    howHearOther?: StringNullableFilter<"Profile"> | string | null
+    goals?: StringNullableListFilter<"Profile">
+    individualFocus?: StringNullableFilter<"Profile"> | string | null
+    organizationPurpose?: StringNullableFilter<"Profile"> | string | null
     createdAt?: DateTimeFilter<"Profile"> | Date | string
     updatedAt?: DateTimeFilter<"Profile"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -31285,6 +31430,11 @@ export namespace Prisma {
     education?: SortOrderInput | SortOrder
     completedJobs?: SortOrder
     successRate?: SortOrderInput | SortOrder
+    howHear?: SortOrderInput | SortOrder
+    howHearOther?: SortOrderInput | SortOrder
+    goals?: SortOrder
+    individualFocus?: SortOrderInput | SortOrder
+    organizationPurpose?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: ProfileCountOrderByAggregateInput
@@ -31308,6 +31458,11 @@ export namespace Prisma {
     education?: JsonNullableWithAggregatesFilter<"Profile">
     completedJobs?: IntWithAggregatesFilter<"Profile"> | number
     successRate?: FloatNullableWithAggregatesFilter<"Profile"> | number | null
+    howHear?: StringNullableWithAggregatesFilter<"Profile"> | string | null
+    howHearOther?: StringNullableWithAggregatesFilter<"Profile"> | string | null
+    goals?: StringNullableListFilter<"Profile">
+    individualFocus?: StringNullableWithAggregatesFilter<"Profile"> | string | null
+    organizationPurpose?: StringNullableWithAggregatesFilter<"Profile"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Profile"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Profile"> | Date | string
   }
@@ -32719,6 +32874,8 @@ export namespace Prisma {
     phone?: string | null
     passwordHash?: string | null
     role?: $Enums.Role
+    accountType?: $Enums.AccountType | null
+    onboarded?: boolean
     name: string
     username?: string | null
     bio?: string | null
@@ -32759,6 +32916,8 @@ export namespace Prisma {
     phone?: string | null
     passwordHash?: string | null
     role?: $Enums.Role
+    accountType?: $Enums.AccountType | null
+    onboarded?: boolean
     name: string
     username?: string | null
     bio?: string | null
@@ -32799,6 +32958,8 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    accountType?: NullableEnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType | null
+    onboarded?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     username?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
@@ -32839,6 +33000,8 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    accountType?: NullableEnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType | null
+    onboarded?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     username?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
@@ -32879,6 +33042,8 @@ export namespace Prisma {
     phone?: string | null
     passwordHash?: string | null
     role?: $Enums.Role
+    accountType?: $Enums.AccountType | null
+    onboarded?: boolean
     name: string
     username?: string | null
     bio?: string | null
@@ -32902,6 +33067,8 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    accountType?: NullableEnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType | null
+    onboarded?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     username?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
@@ -32924,6 +33091,8 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    accountType?: NullableEnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType | null
+    onboarded?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     username?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
@@ -33137,6 +33306,11 @@ export namespace Prisma {
     education?: NullableJsonNullValueInput | InputJsonValue
     completedJobs?: number
     successRate?: number | null
+    howHear?: string | null
+    howHearOther?: string | null
+    goals?: ProfileCreategoalsInput | string[]
+    individualFocus?: string | null
+    organizationPurpose?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutProfileInput
@@ -33155,6 +33329,11 @@ export namespace Prisma {
     education?: NullableJsonNullValueInput | InputJsonValue
     completedJobs?: number
     successRate?: number | null
+    howHear?: string | null
+    howHearOther?: string | null
+    goals?: ProfileCreategoalsInput | string[]
+    individualFocus?: string | null
+    organizationPurpose?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     skills?: ProfileSkillUncheckedCreateNestedManyWithoutProfileInput
@@ -33171,6 +33350,11 @@ export namespace Prisma {
     education?: NullableJsonNullValueInput | InputJsonValue
     completedJobs?: IntFieldUpdateOperationsInput | number
     successRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    howHear?: NullableStringFieldUpdateOperationsInput | string | null
+    howHearOther?: NullableStringFieldUpdateOperationsInput | string | null
+    goals?: ProfileUpdategoalsInput | string[]
+    individualFocus?: NullableStringFieldUpdateOperationsInput | string | null
+    organizationPurpose?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutProfileNestedInput
@@ -33189,6 +33373,11 @@ export namespace Prisma {
     education?: NullableJsonNullValueInput | InputJsonValue
     completedJobs?: IntFieldUpdateOperationsInput | number
     successRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    howHear?: NullableStringFieldUpdateOperationsInput | string | null
+    howHearOther?: NullableStringFieldUpdateOperationsInput | string | null
+    goals?: ProfileUpdategoalsInput | string[]
+    individualFocus?: NullableStringFieldUpdateOperationsInput | string | null
+    organizationPurpose?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     skills?: ProfileSkillUncheckedUpdateManyWithoutProfileNestedInput
@@ -33206,6 +33395,11 @@ export namespace Prisma {
     education?: NullableJsonNullValueInput | InputJsonValue
     completedJobs?: number
     successRate?: number | null
+    howHear?: string | null
+    howHearOther?: string | null
+    goals?: ProfileCreategoalsInput | string[]
+    individualFocus?: string | null
+    organizationPurpose?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -33220,6 +33414,11 @@ export namespace Prisma {
     education?: NullableJsonNullValueInput | InputJsonValue
     completedJobs?: IntFieldUpdateOperationsInput | number
     successRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    howHear?: NullableStringFieldUpdateOperationsInput | string | null
+    howHearOther?: NullableStringFieldUpdateOperationsInput | string | null
+    goals?: ProfileUpdategoalsInput | string[]
+    individualFocus?: NullableStringFieldUpdateOperationsInput | string | null
+    organizationPurpose?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -33235,6 +33434,11 @@ export namespace Prisma {
     education?: NullableJsonNullValueInput | InputJsonValue
     completedJobs?: IntFieldUpdateOperationsInput | number
     successRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    howHear?: NullableStringFieldUpdateOperationsInput | string | null
+    howHearOther?: NullableStringFieldUpdateOperationsInput | string | null
+    goals?: ProfileUpdategoalsInput | string[]
+    individualFocus?: NullableStringFieldUpdateOperationsInput | string | null
+    organizationPurpose?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -34770,6 +34974,13 @@ export namespace Prisma {
     not?: NestedEnumRoleFilter<$PrismaModel> | $Enums.Role
   }
 
+  export type EnumAccountTypeNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.AccountType | EnumAccountTypeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.AccountType[] | ListEnumAccountTypeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.AccountType[] | ListEnumAccountTypeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumAccountTypeNullableFilter<$PrismaModel> | $Enums.AccountType | null
+  }
+
   export type StringNullableListFilter<$PrismaModel = never> = {
     equals?: string[] | ListStringFieldRefInput<$PrismaModel> | null
     has?: string | StringFieldRefInput<$PrismaModel> | null
@@ -34947,6 +35158,8 @@ export namespace Prisma {
     phone?: SortOrder
     passwordHash?: SortOrder
     role?: SortOrder
+    accountType?: SortOrder
+    onboarded?: SortOrder
     name?: SortOrder
     username?: SortOrder
     bio?: SortOrder
@@ -34974,6 +35187,8 @@ export namespace Prisma {
     phone?: SortOrder
     passwordHash?: SortOrder
     role?: SortOrder
+    accountType?: SortOrder
+    onboarded?: SortOrder
     name?: SortOrder
     username?: SortOrder
     bio?: SortOrder
@@ -34996,6 +35211,8 @@ export namespace Prisma {
     phone?: SortOrder
     passwordHash?: SortOrder
     role?: SortOrder
+    accountType?: SortOrder
+    onboarded?: SortOrder
     name?: SortOrder
     username?: SortOrder
     bio?: SortOrder
@@ -35067,6 +35284,16 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumRoleFilter<$PrismaModel>
     _max?: NestedEnumRoleFilter<$PrismaModel>
+  }
+
+  export type EnumAccountTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AccountType | EnumAccountTypeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.AccountType[] | ListEnumAccountTypeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.AccountType[] | ListEnumAccountTypeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumAccountTypeNullableWithAggregatesFilter<$PrismaModel> | $Enums.AccountType | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumAccountTypeNullableFilter<$PrismaModel>
+    _max?: NestedEnumAccountTypeNullableFilter<$PrismaModel>
   }
 
   export type IntWithAggregatesFilter<$PrismaModel = never> = {
@@ -35282,6 +35509,11 @@ export namespace Prisma {
     education?: SortOrder
     completedJobs?: SortOrder
     successRate?: SortOrder
+    howHear?: SortOrder
+    howHearOther?: SortOrder
+    goals?: SortOrder
+    individualFocus?: SortOrder
+    organizationPurpose?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -35301,6 +35533,10 @@ export namespace Prisma {
     availability?: SortOrder
     completedJobs?: SortOrder
     successRate?: SortOrder
+    howHear?: SortOrder
+    howHearOther?: SortOrder
+    individualFocus?: SortOrder
+    organizationPurpose?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -35314,6 +35550,10 @@ export namespace Prisma {
     availability?: SortOrder
     completedJobs?: SortOrder
     successRate?: SortOrder
+    howHear?: SortOrder
+    howHearOther?: SortOrder
+    individualFocus?: SortOrder
+    organizationPurpose?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -36598,6 +36838,10 @@ export namespace Prisma {
     set?: $Enums.Role
   }
 
+  export type NullableEnumAccountTypeFieldUpdateOperationsInput = {
+    set?: $Enums.AccountType | null
+  }
+
   export type UserUpdatelanguagesInput = {
     set?: string[]
     push?: string | string[]
@@ -37115,6 +37359,10 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutAccountsInput, UserUpdateWithoutAccountsInput>, UserUncheckedUpdateWithoutAccountsInput>
   }
 
+  export type ProfileCreategoalsInput = {
+    set: string[]
+  }
+
   export type UserCreateNestedOneWithoutProfileInput = {
     create?: XOR<UserCreateWithoutProfileInput, UserUncheckedCreateWithoutProfileInput>
     connectOrCreate?: UserCreateOrConnectWithoutProfileInput
@@ -37159,6 +37407,11 @@ export namespace Prisma {
 
   export type NullableEnumCurrencyFieldUpdateOperationsInput = {
     set?: $Enums.Currency | null
+  }
+
+  export type ProfileUpdategoalsInput = {
+    set?: string[]
+    push?: string | string[]
   }
 
   export type UserUpdateOneRequiredWithoutProfileNestedInput = {
@@ -38236,6 +38489,13 @@ export namespace Prisma {
     not?: NestedEnumRoleFilter<$PrismaModel> | $Enums.Role
   }
 
+  export type NestedEnumAccountTypeNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.AccountType | EnumAccountTypeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.AccountType[] | ListEnumAccountTypeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.AccountType[] | ListEnumAccountTypeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumAccountTypeNullableFilter<$PrismaModel> | $Enums.AccountType | null
+  }
+
   export type NestedIntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -38319,6 +38579,16 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumRoleFilter<$PrismaModel>
     _max?: NestedEnumRoleFilter<$PrismaModel>
+  }
+
+  export type NestedEnumAccountTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.AccountType | EnumAccountTypeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.AccountType[] | ListEnumAccountTypeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.AccountType[] | ListEnumAccountTypeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumAccountTypeNullableWithAggregatesFilter<$PrismaModel> | $Enums.AccountType | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumAccountTypeNullableFilter<$PrismaModel>
+    _max?: NestedEnumAccountTypeNullableFilter<$PrismaModel>
   }
 
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
@@ -38644,6 +38914,11 @@ export namespace Prisma {
     education?: NullableJsonNullValueInput | InputJsonValue
     completedJobs?: number
     successRate?: number | null
+    howHear?: string | null
+    howHearOther?: string | null
+    goals?: ProfileCreategoalsInput | string[]
+    individualFocus?: string | null
+    organizationPurpose?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     skills?: ProfileSkillCreateNestedManyWithoutProfileInput
@@ -38660,6 +38935,11 @@ export namespace Prisma {
     education?: NullableJsonNullValueInput | InputJsonValue
     completedJobs?: number
     successRate?: number | null
+    howHear?: string | null
+    howHearOther?: string | null
+    goals?: ProfileCreategoalsInput | string[]
+    individualFocus?: string | null
+    organizationPurpose?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     skills?: ProfileSkillUncheckedCreateNestedManyWithoutProfileInput
@@ -39259,6 +39539,11 @@ export namespace Prisma {
     education?: NullableJsonNullValueInput | InputJsonValue
     completedJobs?: IntFieldUpdateOperationsInput | number
     successRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    howHear?: NullableStringFieldUpdateOperationsInput | string | null
+    howHearOther?: NullableStringFieldUpdateOperationsInput | string | null
+    goals?: ProfileUpdategoalsInput | string[]
+    individualFocus?: NullableStringFieldUpdateOperationsInput | string | null
+    organizationPurpose?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     skills?: ProfileSkillUpdateManyWithoutProfileNestedInput
@@ -39275,6 +39560,11 @@ export namespace Prisma {
     education?: NullableJsonNullValueInput | InputJsonValue
     completedJobs?: IntFieldUpdateOperationsInput | number
     successRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    howHear?: NullableStringFieldUpdateOperationsInput | string | null
+    howHearOther?: NullableStringFieldUpdateOperationsInput | string | null
+    goals?: ProfileUpdategoalsInput | string[]
+    individualFocus?: NullableStringFieldUpdateOperationsInput | string | null
+    organizationPurpose?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     skills?: ProfileSkillUncheckedUpdateManyWithoutProfileNestedInput
@@ -39743,6 +40033,8 @@ export namespace Prisma {
     phone?: string | null
     passwordHash?: string | null
     role?: $Enums.Role
+    accountType?: $Enums.AccountType | null
+    onboarded?: boolean
     name: string
     username?: string | null
     bio?: string | null
@@ -39782,6 +40074,8 @@ export namespace Prisma {
     phone?: string | null
     passwordHash?: string | null
     role?: $Enums.Role
+    accountType?: $Enums.AccountType | null
+    onboarded?: boolean
     name: string
     username?: string | null
     bio?: string | null
@@ -39837,6 +40131,8 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    accountType?: NullableEnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType | null
+    onboarded?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     username?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
@@ -39876,6 +40172,8 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    accountType?: NullableEnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType | null
+    onboarded?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     username?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
@@ -39915,6 +40213,8 @@ export namespace Prisma {
     phone?: string | null
     passwordHash?: string | null
     role?: $Enums.Role
+    accountType?: $Enums.AccountType | null
+    onboarded?: boolean
     name: string
     username?: string | null
     bio?: string | null
@@ -39954,6 +40254,8 @@ export namespace Prisma {
     phone?: string | null
     passwordHash?: string | null
     role?: $Enums.Role
+    accountType?: $Enums.AccountType | null
+    onboarded?: boolean
     name: string
     username?: string | null
     bio?: string | null
@@ -40009,6 +40311,8 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    accountType?: NullableEnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType | null
+    onboarded?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     username?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
@@ -40048,6 +40352,8 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    accountType?: NullableEnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType | null
+    onboarded?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     username?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
@@ -40087,6 +40393,8 @@ export namespace Prisma {
     phone?: string | null
     passwordHash?: string | null
     role?: $Enums.Role
+    accountType?: $Enums.AccountType | null
+    onboarded?: boolean
     name: string
     username?: string | null
     bio?: string | null
@@ -40126,6 +40434,8 @@ export namespace Prisma {
     phone?: string | null
     passwordHash?: string | null
     role?: $Enums.Role
+    accountType?: $Enums.AccountType | null
+    onboarded?: boolean
     name: string
     username?: string | null
     bio?: string | null
@@ -40233,6 +40543,8 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    accountType?: NullableEnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType | null
+    onboarded?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     username?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
@@ -40272,6 +40584,8 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    accountType?: NullableEnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType | null
+    onboarded?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     username?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
@@ -40530,6 +40844,11 @@ export namespace Prisma {
     education?: NullableJsonNullValueInput | InputJsonValue
     completedJobs?: number
     successRate?: number | null
+    howHear?: string | null
+    howHearOther?: string | null
+    goals?: ProfileCreategoalsInput | string[]
+    individualFocus?: string | null
+    organizationPurpose?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutProfileInput
@@ -40547,6 +40866,11 @@ export namespace Prisma {
     education?: NullableJsonNullValueInput | InputJsonValue
     completedJobs?: number
     successRate?: number | null
+    howHear?: string | null
+    howHearOther?: string | null
+    goals?: ProfileCreategoalsInput | string[]
+    individualFocus?: string | null
+    organizationPurpose?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     portfolio?: PortfolioUncheckedCreateNestedManyWithoutProfileInput
@@ -40601,6 +40925,11 @@ export namespace Prisma {
     education?: NullableJsonNullValueInput | InputJsonValue
     completedJobs?: IntFieldUpdateOperationsInput | number
     successRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    howHear?: NullableStringFieldUpdateOperationsInput | string | null
+    howHearOther?: NullableStringFieldUpdateOperationsInput | string | null
+    goals?: ProfileUpdategoalsInput | string[]
+    individualFocus?: NullableStringFieldUpdateOperationsInput | string | null
+    organizationPurpose?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutProfileNestedInput
@@ -40618,6 +40947,11 @@ export namespace Prisma {
     education?: NullableJsonNullValueInput | InputJsonValue
     completedJobs?: IntFieldUpdateOperationsInput | number
     successRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    howHear?: NullableStringFieldUpdateOperationsInput | string | null
+    howHearOther?: NullableStringFieldUpdateOperationsInput | string | null
+    goals?: ProfileUpdategoalsInput | string[]
+    individualFocus?: NullableStringFieldUpdateOperationsInput | string | null
+    organizationPurpose?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     portfolio?: PortfolioUncheckedUpdateManyWithoutProfileNestedInput
@@ -40723,6 +41057,8 @@ export namespace Prisma {
     phone?: string | null
     passwordHash?: string | null
     role?: $Enums.Role
+    accountType?: $Enums.AccountType | null
+    onboarded?: boolean
     name: string
     username?: string | null
     bio?: string | null
@@ -40762,6 +41098,8 @@ export namespace Prisma {
     phone?: string | null
     passwordHash?: string | null
     role?: $Enums.Role
+    accountType?: $Enums.AccountType | null
+    onboarded?: boolean
     name: string
     username?: string | null
     bio?: string | null
@@ -40859,6 +41197,8 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    accountType?: NullableEnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType | null
+    onboarded?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     username?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
@@ -40898,6 +41238,8 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    accountType?: NullableEnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType | null
+    onboarded?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     username?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
@@ -40988,6 +41330,8 @@ export namespace Prisma {
     phone?: string | null
     passwordHash?: string | null
     role?: $Enums.Role
+    accountType?: $Enums.AccountType | null
+    onboarded?: boolean
     name: string
     username?: string | null
     bio?: string | null
@@ -41027,6 +41371,8 @@ export namespace Prisma {
     phone?: string | null
     passwordHash?: string | null
     role?: $Enums.Role
+    accountType?: $Enums.AccountType | null
+    onboarded?: boolean
     name: string
     username?: string | null
     bio?: string | null
@@ -41178,6 +41524,8 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    accountType?: NullableEnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType | null
+    onboarded?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     username?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
@@ -41217,6 +41565,8 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    accountType?: NullableEnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType | null
+    onboarded?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     username?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
@@ -41376,6 +41726,8 @@ export namespace Prisma {
     phone?: string | null
     passwordHash?: string | null
     role?: $Enums.Role
+    accountType?: $Enums.AccountType | null
+    onboarded?: boolean
     name: string
     username?: string | null
     bio?: string | null
@@ -41415,6 +41767,8 @@ export namespace Prisma {
     phone?: string | null
     passwordHash?: string | null
     role?: $Enums.Role
+    accountType?: $Enums.AccountType | null
+    onboarded?: boolean
     name: string
     username?: string | null
     bio?: string | null
@@ -41521,6 +41875,8 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    accountType?: NullableEnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType | null
+    onboarded?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     username?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
@@ -41560,6 +41916,8 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    accountType?: NullableEnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType | null
+    onboarded?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     username?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
@@ -41644,6 +42002,8 @@ export namespace Prisma {
     phone?: string | null
     passwordHash?: string | null
     role?: $Enums.Role
+    accountType?: $Enums.AccountType | null
+    onboarded?: boolean
     name: string
     username?: string | null
     bio?: string | null
@@ -41683,6 +42043,8 @@ export namespace Prisma {
     phone?: string | null
     passwordHash?: string | null
     role?: $Enums.Role
+    accountType?: $Enums.AccountType | null
+    onboarded?: boolean
     name: string
     username?: string | null
     bio?: string | null
@@ -41727,6 +42089,8 @@ export namespace Prisma {
     phone?: string | null
     passwordHash?: string | null
     role?: $Enums.Role
+    accountType?: $Enums.AccountType | null
+    onboarded?: boolean
     name: string
     username?: string | null
     bio?: string | null
@@ -41766,6 +42130,8 @@ export namespace Prisma {
     phone?: string | null
     passwordHash?: string | null
     role?: $Enums.Role
+    accountType?: $Enums.AccountType | null
+    onboarded?: boolean
     name: string
     username?: string | null
     bio?: string | null
@@ -41925,6 +42291,8 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    accountType?: NullableEnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType | null
+    onboarded?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     username?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
@@ -41964,6 +42332,8 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    accountType?: NullableEnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType | null
+    onboarded?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     username?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
@@ -42014,6 +42384,8 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    accountType?: NullableEnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType | null
+    onboarded?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     username?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
@@ -42053,6 +42425,8 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    accountType?: NullableEnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType | null
+    onboarded?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     username?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
@@ -42231,6 +42605,8 @@ export namespace Prisma {
     phone?: string | null
     passwordHash?: string | null
     role?: $Enums.Role
+    accountType?: $Enums.AccountType | null
+    onboarded?: boolean
     name: string
     username?: string | null
     bio?: string | null
@@ -42270,6 +42646,8 @@ export namespace Prisma {
     phone?: string | null
     passwordHash?: string | null
     role?: $Enums.Role
+    accountType?: $Enums.AccountType | null
+    onboarded?: boolean
     name: string
     username?: string | null
     bio?: string | null
@@ -42353,6 +42731,8 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    accountType?: NullableEnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType | null
+    onboarded?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     username?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
@@ -42392,6 +42772,8 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    accountType?: NullableEnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType | null
+    onboarded?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     username?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
@@ -42508,6 +42890,8 @@ export namespace Prisma {
     phone?: string | null
     passwordHash?: string | null
     role?: $Enums.Role
+    accountType?: $Enums.AccountType | null
+    onboarded?: boolean
     name: string
     username?: string | null
     bio?: string | null
@@ -42547,6 +42931,8 @@ export namespace Prisma {
     phone?: string | null
     passwordHash?: string | null
     role?: $Enums.Role
+    accountType?: $Enums.AccountType | null
+    onboarded?: boolean
     name: string
     username?: string | null
     bio?: string | null
@@ -42602,6 +42988,8 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    accountType?: NullableEnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType | null
+    onboarded?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     username?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
@@ -42641,6 +43029,8 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    accountType?: NullableEnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType | null
+    onboarded?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     username?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
@@ -42680,6 +43070,8 @@ export namespace Prisma {
     phone?: string | null
     passwordHash?: string | null
     role?: $Enums.Role
+    accountType?: $Enums.AccountType | null
+    onboarded?: boolean
     name: string
     username?: string | null
     bio?: string | null
@@ -42719,6 +43111,8 @@ export namespace Prisma {
     phone?: string | null
     passwordHash?: string | null
     role?: $Enums.Role
+    accountType?: $Enums.AccountType | null
+    onboarded?: boolean
     name: string
     username?: string | null
     bio?: string | null
@@ -42812,6 +43206,8 @@ export namespace Prisma {
     phone?: StringNullableFilter<"User"> | string | null
     passwordHash?: StringNullableFilter<"User"> | string | null
     role?: EnumRoleFilter<"User"> | $Enums.Role
+    accountType?: EnumAccountTypeNullableFilter<"User"> | $Enums.AccountType | null
+    onboarded?: BoolFilter<"User"> | boolean
     name?: StringFilter<"User"> | string
     username?: StringNullableFilter<"User"> | string | null
     bio?: StringNullableFilter<"User"> | string | null
@@ -42874,6 +43270,8 @@ export namespace Prisma {
     phone?: string | null
     passwordHash?: string | null
     role?: $Enums.Role
+    accountType?: $Enums.AccountType | null
+    onboarded?: boolean
     name: string
     username?: string | null
     bio?: string | null
@@ -42913,6 +43311,8 @@ export namespace Prisma {
     phone?: string | null
     passwordHash?: string | null
     role?: $Enums.Role
+    accountType?: $Enums.AccountType | null
+    onboarded?: boolean
     name: string
     username?: string | null
     bio?: string | null
@@ -42957,6 +43357,8 @@ export namespace Prisma {
     phone?: string | null
     passwordHash?: string | null
     role?: $Enums.Role
+    accountType?: $Enums.AccountType | null
+    onboarded?: boolean
     name: string
     username?: string | null
     bio?: string | null
@@ -42996,6 +43398,8 @@ export namespace Prisma {
     phone?: string | null
     passwordHash?: string | null
     role?: $Enums.Role
+    accountType?: $Enums.AccountType | null
+    onboarded?: boolean
     name: string
     username?: string | null
     bio?: string | null
@@ -43080,6 +43484,8 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    accountType?: NullableEnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType | null
+    onboarded?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     username?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
@@ -43119,6 +43525,8 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    accountType?: NullableEnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType | null
+    onboarded?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     username?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
@@ -43169,6 +43577,8 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    accountType?: NullableEnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType | null
+    onboarded?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     username?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
@@ -43208,6 +43618,8 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    accountType?: NullableEnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType | null
+    onboarded?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     username?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
@@ -43247,6 +43659,8 @@ export namespace Prisma {
     phone?: string | null
     passwordHash?: string | null
     role?: $Enums.Role
+    accountType?: $Enums.AccountType | null
+    onboarded?: boolean
     name: string
     username?: string | null
     bio?: string | null
@@ -43286,6 +43700,8 @@ export namespace Prisma {
     phone?: string | null
     passwordHash?: string | null
     role?: $Enums.Role
+    accountType?: $Enums.AccountType | null
+    onboarded?: boolean
     name: string
     username?: string | null
     bio?: string | null
@@ -43330,6 +43746,8 @@ export namespace Prisma {
     phone?: string | null
     passwordHash?: string | null
     role?: $Enums.Role
+    accountType?: $Enums.AccountType | null
+    onboarded?: boolean
     name: string
     username?: string | null
     bio?: string | null
@@ -43369,6 +43787,8 @@ export namespace Prisma {
     phone?: string | null
     passwordHash?: string | null
     role?: $Enums.Role
+    accountType?: $Enums.AccountType | null
+    onboarded?: boolean
     name: string
     username?: string | null
     bio?: string | null
@@ -43424,6 +43844,8 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    accountType?: NullableEnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType | null
+    onboarded?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     username?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
@@ -43463,6 +43885,8 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    accountType?: NullableEnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType | null
+    onboarded?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     username?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
@@ -43513,6 +43937,8 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    accountType?: NullableEnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType | null
+    onboarded?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     username?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
@@ -43552,6 +43978,8 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    accountType?: NullableEnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType | null
+    onboarded?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     username?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
@@ -43594,6 +44022,11 @@ export namespace Prisma {
     education?: NullableJsonNullValueInput | InputJsonValue
     completedJobs?: number
     successRate?: number | null
+    howHear?: string | null
+    howHearOther?: string | null
+    goals?: ProfileCreategoalsInput | string[]
+    individualFocus?: string | null
+    organizationPurpose?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user: UserCreateNestedOneWithoutProfileInput
@@ -43611,6 +44044,11 @@ export namespace Prisma {
     education?: NullableJsonNullValueInput | InputJsonValue
     completedJobs?: number
     successRate?: number | null
+    howHear?: string | null
+    howHearOther?: string | null
+    goals?: ProfileCreategoalsInput | string[]
+    individualFocus?: string | null
+    organizationPurpose?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     skills?: ProfileSkillUncheckedCreateNestedManyWithoutProfileInput
@@ -43642,6 +44080,11 @@ export namespace Prisma {
     education?: NullableJsonNullValueInput | InputJsonValue
     completedJobs?: IntFieldUpdateOperationsInput | number
     successRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    howHear?: NullableStringFieldUpdateOperationsInput | string | null
+    howHearOther?: NullableStringFieldUpdateOperationsInput | string | null
+    goals?: ProfileUpdategoalsInput | string[]
+    individualFocus?: NullableStringFieldUpdateOperationsInput | string | null
+    organizationPurpose?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutProfileNestedInput
@@ -43659,6 +44102,11 @@ export namespace Prisma {
     education?: NullableJsonNullValueInput | InputJsonValue
     completedJobs?: IntFieldUpdateOperationsInput | number
     successRate?: NullableFloatFieldUpdateOperationsInput | number | null
+    howHear?: NullableStringFieldUpdateOperationsInput | string | null
+    howHearOther?: NullableStringFieldUpdateOperationsInput | string | null
+    goals?: ProfileUpdategoalsInput | string[]
+    individualFocus?: NullableStringFieldUpdateOperationsInput | string | null
+    organizationPurpose?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     skills?: ProfileSkillUncheckedUpdateManyWithoutProfileNestedInput
@@ -43671,6 +44119,8 @@ export namespace Prisma {
     phone?: string | null
     passwordHash?: string | null
     role?: $Enums.Role
+    accountType?: $Enums.AccountType | null
+    onboarded?: boolean
     name: string
     username?: string | null
     bio?: string | null
@@ -43710,6 +44160,8 @@ export namespace Prisma {
     phone?: string | null
     passwordHash?: string | null
     role?: $Enums.Role
+    accountType?: $Enums.AccountType | null
+    onboarded?: boolean
     name: string
     username?: string | null
     bio?: string | null
@@ -43765,6 +44217,8 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    accountType?: NullableEnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType | null
+    onboarded?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     username?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
@@ -43804,6 +44258,8 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    accountType?: NullableEnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType | null
+    onboarded?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     username?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
@@ -43843,6 +44299,8 @@ export namespace Prisma {
     phone?: string | null
     passwordHash?: string | null
     role?: $Enums.Role
+    accountType?: $Enums.AccountType | null
+    onboarded?: boolean
     name: string
     username?: string | null
     bio?: string | null
@@ -43882,6 +44340,8 @@ export namespace Prisma {
     phone?: string | null
     passwordHash?: string | null
     role?: $Enums.Role
+    accountType?: $Enums.AccountType | null
+    onboarded?: boolean
     name: string
     username?: string | null
     bio?: string | null
@@ -43937,6 +44397,8 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    accountType?: NullableEnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType | null
+    onboarded?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     username?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
@@ -43976,6 +44438,8 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    accountType?: NullableEnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType | null
+    onboarded?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     username?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
@@ -44015,6 +44479,8 @@ export namespace Prisma {
     phone?: string | null
     passwordHash?: string | null
     role?: $Enums.Role
+    accountType?: $Enums.AccountType | null
+    onboarded?: boolean
     name: string
     username?: string | null
     bio?: string | null
@@ -44054,6 +44520,8 @@ export namespace Prisma {
     phone?: string | null
     passwordHash?: string | null
     role?: $Enums.Role
+    accountType?: $Enums.AccountType | null
+    onboarded?: boolean
     name: string
     username?: string | null
     bio?: string | null
@@ -44109,6 +44577,8 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    accountType?: NullableEnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType | null
+    onboarded?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     username?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
@@ -44148,6 +44618,8 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    accountType?: NullableEnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType | null
+    onboarded?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     username?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
@@ -45442,6 +45914,8 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    accountType?: NullableEnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType | null
+    onboarded?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     username?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
@@ -45481,6 +45955,8 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    accountType?: NullableEnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType | null
+    onboarded?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     username?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null
@@ -45520,6 +45996,8 @@ export namespace Prisma {
     phone?: NullableStringFieldUpdateOperationsInput | string | null
     passwordHash?: NullableStringFieldUpdateOperationsInput | string | null
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    accountType?: NullableEnumAccountTypeFieldUpdateOperationsInput | $Enums.AccountType | null
+    onboarded?: BoolFieldUpdateOperationsInput | boolean
     name?: StringFieldUpdateOperationsInput | string
     username?: NullableStringFieldUpdateOperationsInput | string | null
     bio?: NullableStringFieldUpdateOperationsInput | string | null

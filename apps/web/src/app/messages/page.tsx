@@ -1,7 +1,7 @@
 // apps/web/src/app/messages/page.tsx
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { trpc } from "@/utils/trpc";
 import { getSocket } from "@/utils/socket";
 import { useSessionContext } from "@/components/providers"; // Use the new useSessionContext hook
@@ -18,14 +18,18 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-type Conversation = Awaited<
-  ReturnType<typeof trpc.conversation.list.query>
->[number];
-type Message = Awaited<ReturnType<typeof trpc.message.list.query>>[number];
+import type { AppRouter } from "@Alpha/api/routers";
+import { inferRouterOutputs } from "@trpc/server";
+
+type RouterOutput = inferRouterOutputs<AppRouter>;
+type Conversation = RouterOutput["conversation"]["list"][number];
+type Message = RouterOutput["message"]["list"][number];
+type User = RouterOutput["user"]["list"][number];
 
 export default function MessagesPage() {
   const { session } = useSessionContext();
-  const userId = session?.user?.id;
+  const utils = trpc.useContext();
+  const userId = session?.userId;
 
   const [selectedConversationId, setSelectedConversationId] = useState<
     string | null
@@ -48,21 +52,50 @@ export default function MessagesPage() {
   const sendMessageMutation = trpc.message.send.useMutation({
     onSuccess: () => {
       setNewMessage("");
-      refetchMessages();
-      refetchConversations();
+      // The message list will be updated via the socket event.
+      // We can invalidate the conversations list to update the last message preview.
+      utils.conversation.list.invalidate();
+    },
+    onError: (error) => {
+      console.error("Failed to send message:", error);
+      // Optionally, show a toast notification to the user
+      // toast.error("Failed to send message. Please try again.");
     },
   });
 
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
   useEffect(() => {
+    scrollToBottom();
+  }, [messages]); // Scroll to bottom when messages load or new messages arrive
+
+  useEffect(() => {
+    console.log("selectedConversationId changed:", selectedConversationId);
     const socket = getSocket();
 
     if (selectedConversationId) {
       socket.emit("joinConversation", selectedConversationId);
 
-      const handleNewMessage = (message: Message) => {
-        if (message.conversationId === selectedConversationId) {
-          refetchMessages();
-          refetchConversations();
+      const handleNewMessage = (newMessage: Message) => {
+        if (newMessage.conversationId === selectedConversationId) {
+          // Update the query cache with the new message
+          utils.message.list.setData(
+            { conversationId: selectedConversationId },
+            (oldData: Message[] | undefined) => {
+              if (!oldData) return [newMessage];
+              // Avoid adding duplicate messages
+              if (oldData.some((msg: Message) => msg.id === newMessage.id)) {
+                return oldData;
+              }
+              return [...oldData, newMessage];
+            }
+          );
+          // Invalidate conversations to update the last message preview
+          utils.conversation.list.invalidate();
         }
       };
 
@@ -73,22 +106,41 @@ export default function MessagesPage() {
         socket.emit("leaveConversation", selectedConversationId);
       };
     }
-  }, [selectedConversationId, refetchMessages, refetchConversations]);
+  }, [selectedConversationId, utils]);
 
   const handleSendMessage = () => {
-    if (newMessage.trim() === "" || !selectedConversationId || !userId) return;
+    console.log("Attempting to send message...");
+    console.log("Current newMessage:", newMessage);
+    console.log("Current selectedConversationId:", selectedConversationId);
+    console.log("Current userId:", userId);
+
+    if (newMessage.trim() === "" || !selectedConversationId || !userId) {
+      console.log(
+        "Message not sent: Missing message body, conversation ID, or user ID."
+      );
+      return;
+    }
 
     const participant = conversations
-      ?.find((c) => c.id === selectedConversationId)
-      ?.participants.find((p) => p.id !== userId);
+      ?.find((c: Conversation) => c.id === selectedConversationId)
+      ?.participants.find((p: User) => p.id !== userId);
 
-    if (participant) {
-      sendMessageMutation.mutate({
-        conversationId: selectedConversationId,
-        toUserId: participant.id,
-        body: newMessage,
-      });
+    if (!participant) {
+      console.error("Participant not found for selected conversation.");
+      return;
     }
+
+    sendMessageMutation.mutate({
+      conversationId: selectedConversationId,
+      toUserId: participant.id,
+      body: newMessage,
+    });
+    console.log(
+      "Message mutation triggered for conversationId:",
+      selectedConversationId,
+      "toUserId:",
+      participant.id
+    );
   };
 
   return (
@@ -112,6 +164,10 @@ export default function MessagesPage() {
               </DialogHeader>
               <NewConversationDialog
                 onConversationCreated={(conversationId) => {
+                  console.log(
+                    "New conversation created with ID:",
+                    conversationId
+                  );
                   setSelectedConversationId(conversationId);
                   setIsNewConversationDialogOpen(false);
                   refetchConversations();
@@ -128,7 +184,7 @@ export default function MessagesPage() {
           ) : (
             conversations?.map((conversation: Conversation) => {
               const otherParticipant = conversation.participants.find(
-                (p: any) => p.id !== userId
+                (p: User) => p.id !== userId
               );
               const lastMessage = conversation.messages[0];
               return (
@@ -139,7 +195,13 @@ export default function MessagesPage() {
                       ? "bg-gray-100 dark:bg-gray-800"
                       : ""
                   }`}
-                  onClick={() => setSelectedConversationId(conversation.id)}
+                  onClick={() => {
+                    console.log(
+                      "Conversation clicked, setting ID:",
+                      conversation.id
+                    );
+                    setSelectedConversationId(conversation.id);
+                  }}
                 >
                   <Avatar>
                     <AvatarImage
@@ -177,23 +239,28 @@ export default function MessagesPage() {
                 <AvatarImage
                   src={
                     conversations
-                      ?.find((c) => c.id === selectedConversationId)
-                      ?.participants.find((p) => p.id !== userId)?.image ||
-                    "/placeholder-avatar.jpg"
+                      ?.find(
+                        (c: Conversation) => c.id === selectedConversationId
+                      )
+                      ?.participants.find((p: User) => p.id !== userId)
+                      ?.image || "/placeholder-avatar.jpg"
                   }
                 />
                 <AvatarFallback>
                   {
                     conversations
-                      ?.find((c) => c.id === selectedConversationId)
-                      ?.participants.find((p) => p.id !== userId)?.name?.[0]
+                      ?.find(
+                        (c: Conversation) => c.id === selectedConversationId
+                      )
+                      ?.participants.find((p: User) => p.id !== userId)
+                      ?.name?.[0]
                   }
                 </AvatarFallback>
               </Avatar>
               <h2 className="text-lg font-semibold">
                 {conversations
                   ?.find((c: Conversation) => c.id === selectedConversationId)
-                  ?.participants.find((p: any) => p.id !== userId)?.name ||
+                  ?.participants.find((p: User) => p.id !== userId)?.name ||
                   "Unknown User"}
               </h2>
             </div>
@@ -229,6 +296,7 @@ export default function MessagesPage() {
                       </div>
                     </div>
                   ))}
+                  <div ref={messagesEndRef} /> {/* Scroll anchor */}
                 </div>
               )}
             </ScrollArea>
@@ -267,21 +335,23 @@ function NewConversationDialog({
   onConversationCreated: (conversationId: string) => void;
 }) {
   const { data: users } = trpc.user.list.useQuery();
+  const utils = trpc.useContext(); // Get tRPC context
   const createConversationMutation = trpc.conversation.create.useMutation({
     onSuccess: (data) => {
       onConversationCreated(data.id);
+      utils.conversation.list.invalidate(); // Invalidate conversations list after creating a new one
     },
   });
 
   const handleCreateConversation = (userId: string) => {
-    createConversationMutation.mutate({ toUserId: userId });
+    createConversationMutation.mutate({ participantIds: [userId] });
   };
 
   return (
     <div>
       <Input placeholder="Search for users..." />
       <ScrollArea className="h-64 mt-4">
-        {users?.map((user) => (
+        {users?.map((user: User) => (
           <div
             key={user.id}
             className="flex items-center gap-3 p-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800"

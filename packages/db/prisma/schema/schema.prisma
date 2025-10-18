@@ -65,13 +65,20 @@ enum NotificationType {
   SYSTEM
 }
 
+enum AccountType {
+  INDIVIDUAL
+  ORGANIZATION
+}
+
 model User {
   id              String            @id @default(cuid()) @map("_id")
   email           String?           @unique
   emailVerified   Boolean           @default(false)  
   phone           String?           @unique
-  passwordHash        String?           // null if OAuth-only
+  passwordHash    String?           // null if OAuth-only
   role            Role              @default(PROVIDER)
+  accountType     AccountType?      // Added for onboarding
+  onboarded       Boolean           @default(false) // Added for onboarding
   name            String
   username        String?           @unique
   bio             String?           // short about
@@ -151,21 +158,26 @@ model Account {
 
 
 model Profile {
-  id            String   @id @default(cuid()) @map("_id")
-  user          User     @relation("UserProfile", fields: [userId], references: [id])
-  userId        String   @unique
-  headline      String?
-  hourlyRate    Float?
-  currency      Currency? @default(ETB)
-  availability  String?   // e.g., "Full-time", "Part-time", "Not available"
-  skills        ProfileSkill[] // Changed to ProfileSkill for many-to-many
-  experience    Json?     // structured experience data
-  education     Json?     // structured education data
-  portfolio     Portfolio[]
-  completedJobs Int       @default(0)
-  successRate   Float?    // 0..100
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id                  String   @id @default(cuid()) @map("_id")
+  user                User     @relation("UserProfile", fields: [userId], references: [id])
+  userId              String   @unique
+  headline            String?
+  hourlyRate          Float?
+  currency            Currency? @default(ETB)
+  availability        String?   // e.g., "Full-time", "Part-time", "Not available"
+  skills              ProfileSkill[] // Changed to ProfileSkill for many-to-many
+  experience          Json?     // structured experience data
+  education           Json?     // structured education data
+  portfolio           Portfolio[]
+  completedJobs       Int       @default(0)
+  successRate         Float?    // 0..100
+  howHear             String?   // Added for onboarding
+  howHearOther        String?   // Added for onboarding
+  goals               String[]  @default([]) // Added for onboarding
+  individualFocus     String?   // Added for onboarding
+  organizationPurpose String?   // Added for onboarding
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
 
   @@map("profiles")
 }

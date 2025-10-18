@@ -80,9 +80,18 @@ export const messageRouter = router({
       });
 
       if (!conversation) {
+        console.error(
+          "Conversation not found or participants are invalid for conversationId:",
+          input.conversationId,
+          "fromUserId:",
+          fromUserId,
+          "toUserId:",
+          input.toUserId
+        );
         throw new Error("Conversation not found or participants are invalid.");
       }
 
+      console.log("Attempting to create message in database...");
       const message = await ctx.db.message.create({
         data: {
           conversationId: input.conversationId,
@@ -107,12 +116,17 @@ export const messageRouter = router({
           },
         },
       });
+      console.log("Message successfully created in database:", message);
 
       // Update conversation updatedAt to bring it to the top of the list
       await ctx.db.conversation.update({
         where: { id: input.conversationId },
         data: { updatedAt: new Date() },
       });
+      console.log(
+        "Conversation updatedAt updated for conversationId:",
+        input.conversationId
+      );
 
       ctx.io.to(input.conversationId).emit("newMessage", message);
 

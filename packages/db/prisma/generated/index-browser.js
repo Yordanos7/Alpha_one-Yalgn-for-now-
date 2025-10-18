@@ -127,6 +127,8 @@ exports.Prisma.UserScalarFieldEnum = {
   phone: 'phone',
   passwordHash: 'passwordHash',
   role: 'role',
+  accountType: 'accountType',
+  onboarded: 'onboarded',
   name: 'name',
   username: 'username',
   bio: 'bio',
@@ -181,6 +183,11 @@ exports.Prisma.ProfileScalarFieldEnum = {
   education: 'education',
   completedJobs: 'completedJobs',
   successRate: 'successRate',
+  howHear: 'howHear',
+  howHearOther: 'howHearOther',
+  goals: 'goals',
+  individualFocus: 'individualFocus',
+  organizationPurpose: 'organizationPurpose',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -422,6 +429,11 @@ exports.Role = exports.$Enums.Role = {
   PROVIDER: 'PROVIDER',
   SEEKER: 'SEEKER',
   ADMIN: 'ADMIN'
+};
+
+exports.AccountType = exports.$Enums.AccountType = {
+  INDIVIDUAL: 'INDIVIDUAL',
+  ORGANIZATION: 'ORGANIZATION'
 };
 
 exports.Currency = exports.$Enums.Currency = {
