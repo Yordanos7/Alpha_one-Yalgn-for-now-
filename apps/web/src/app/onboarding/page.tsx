@@ -633,7 +633,8 @@ export default function OnboardingPage() {
     if (step < 4) {
       setStep((prev) => prev + 1);
     } else {
-      handleFinishOnboarding();
+      // For step 4, pass the data directly to handleFinishOnboarding
+      handleFinishOnboarding(data as Step4Data);
     }
   };
 
@@ -641,11 +642,14 @@ export default function OnboardingPage() {
     setStep((prev) => Math.max(1, prev - 1));
   };
 
-  const handleFinishOnboarding = async () => {
+  const handleFinishOnboarding = async (step4Data?: Step4Data) => {
     if (isSubmitting) return;
 
     setIsSubmitting(true);
     try {
+      // Use the passed step4Data if available, otherwise fall back to state
+      const finalStep4Data = step4Data || onboardingData.step4;
+
       // Validate all steps
       if (!onboardingData.step1?.userType) {
         toast.error("Please complete Step 1.");
@@ -665,7 +669,8 @@ export default function OnboardingPage() {
         setIsSubmitting(false);
         return;
       }
-      if (!onboardingData.step4?.skills?.length) {
+      if (!finalStep4Data?.skills?.length) {
+        // Use finalStep4Data for validation
         toast.error("Please complete Step 4.");
         setStep(4);
         setIsSubmitting(false);
@@ -676,7 +681,7 @@ export default function OnboardingPage() {
         step1: onboardingData.step1,
         step2: onboardingData.step2,
         step3: onboardingData.step3,
-        step4: onboardingData.step4,
+        step4: finalStep4Data, // Use finalStep4Data for submission
       });
     } catch (error) {
       console.error("Error during onboarding completion:", error);

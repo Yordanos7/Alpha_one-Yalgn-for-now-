@@ -3,6 +3,7 @@ import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { auth } from "@Alpha/auth"; // Better-Auth instance
 import { fromNodeHeaders } from "better-auth/node";
+import { AccountType } from "@Alpha/db"; // Import AccountType enum from @Alpha/db
 
 export const userRouter = router({
   getUserProfile: protectedProcedure.query(async ({ ctx: { user, db } }) => {
@@ -320,7 +321,7 @@ export const userRouter = router({
         await db.user.update({
           where: { id: user.id },
           data: {
-            accountType: input.step1.userType,
+            accountType: input.step1.userType.toUpperCase() as AccountType, // Convert to uppercase for Prisma enum
             onboarded: true, // Mark onboarding as complete
           },
         });

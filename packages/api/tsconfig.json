@@ -8,7 +8,8 @@
     "composite": true,
     "rootDir": "src",
     "paths": {
-      "@Alpha/auth": ["../../packages/auth/src"]
+      "@Alpha/auth": ["../../packages/auth/src"],
+      "@Alpha/db": ["../../packages/db/src"]
     }
   },
   "include": ["src/**/*.ts", "src/types/**/*.d.ts"],
