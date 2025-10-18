@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { useSession } from "@/hooks/use-session";
 import {
   Search,
   Briefcase,
@@ -20,7 +21,6 @@ import {
   Users,
   Plus,
 } from "lucide-react";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
@@ -32,8 +32,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export default function ApplicationsPage() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [userRole, setUserRole] = useState<"provider" | "seeker">("provider"); // "provider" or "seeker"
+  const [isModalOpen, setIsModalOpen] = useState(false); // by mean the model is job details modal or the pop up for application details
+  const { session, isLoading } = useSession();
+  const accountType = session?.user?.accountType; // Assuming session.user.accountType exists
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -44,30 +45,29 @@ export default function ApplicationsPage() {
 
       {/* Main Content */}
       <main className="flex-1 p-8 bg-[#202020] flex flex-col">
-        {/* Tabs/Toggle for role selection */}
-        <div className="mb-8">
-          <Tabs
-            defaultValue="provider"
-            onValueChange={(value) =>
-              setUserRole(value as "provider" | "seeker")
-            }
-          >
-            <TabsList className="grid w-full grid-cols-2 bg-[#2C2C2C]">
-              <TabsTrigger value="provider">My Applications</TabsTrigger>
-              <TabsTrigger value="seeker">My Jobs</TabsTrigger>
-            </TabsList>
-          </Tabs>
-        </div>
+        {/* Main Header for Applications / Jobs */}
+        <header className="flex flex-col mb-8 bg-[#2C2C2C] p-4 rounded-lg">
+          <h1 className="text-2xl font-bold">Applications / Jobs</h1>
+          {isLoading ? (
+            <p className="text-gray-400">Loading user data...</p>
+          ) : (
+            <p className="text-gray-400">
+              {accountType === "INDIVIDUAL"
+                ? "Track the jobs you’ve applied to and manage your proposals."
+                : "Manage your job postings and review applicants."}
+            </p>
+          )}
+        </header>
 
-        {userRole === "provider" ? (
+        {isLoading ? (
+          <div className="flex-1 flex items-center justify-center text-gray-400">
+            Loading content...
+          </div>
+        ) : accountType === "INDIVIDUAL" ? (
           <>
             {/* Provider View Header */}
-            <header className="flex flex-col mb-8 bg-[#2C2C2C] p-4 rounded-lg">
-              <h1 className="text-2xl font-bold">My Applications</h1>
-              <p className="text-gray-400">
-                Track the jobs you’ve applied to and manage your proposals.
-              </p>
-            </header>
+            {/* This header is now integrated into the main header above */}
+            {/* Provider Filters */}
 
             {/* Provider Filters */}
             <div className="flex items-center space-x-4 mb-6">
@@ -329,7 +329,7 @@ export default function ApplicationsPage() {
               >
                 <X size={24} />
               </Button>
-              {userRole === "provider" ? (
+              {accountType === "INDIVIDUAL" ? (
                 <>
                   <div className="flex items-center mb-6">
                     <Search className="mr-3 text-gray-400" size={20} />
@@ -375,6 +375,7 @@ export default function ApplicationsPage() {
                       </Avatar>
                       <div>
                         <p className="font-semibold">Acme Corp</p>
+
                         <p className="text-gray-400 text-sm">
                           Client Rating: 4.8/5
                         </p>
