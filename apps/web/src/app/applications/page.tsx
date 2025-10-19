@@ -16,8 +16,13 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
+import { useRouter } from "next/navigation";
+import { useSession } from "@/hooks/use-session"; // Added useSession import
 
 export default function ApplicationsPage() {
+  const router = useRouter();
+  const { session, isLoading } = useSession(); // Get session and loading state
+
   // No session or modal state needed for this generic job posts page
 
   return (
@@ -27,11 +32,29 @@ export default function ApplicationsPage() {
       {/* Main Content */}
       <main className="flex-1 p-8 bg-[#202020] flex flex-col">
         {/* Main Header for Job Posts */}
-        <header className="flex flex-col mb-8 bg-[#2C2C2C] p-4 rounded-lg">
-          <h1 className="text-2xl font-bold">Job Posts</h1>
-          <p className="text-gray-400">
-            Explore available job opportunities from various organizations.
-          </p>
+        <header className="flex items-center justify-between mb-8 bg-[#2C2C2C] p-4 rounded-lg">
+          <div className="flex flex-col">
+            <h1 className="text-2xl font-bold">Job Posts</h1>
+            <p className="text-gray-400">
+              Explore available job opportunities from various organizations.
+            </p>
+          </div>
+          {!isLoading && session?.user?.accountType === "ORGANIZATION" && (
+            <Button
+              className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold rounded-lg px-4 py-2"
+              onClick={() => router.push("/organization/jobs")}
+            >
+              Manage My Job Postings
+            </Button>
+          )}
+          {!isLoading && session?.user?.accountType === "INDIVIDUAL" && (
+            <Button
+              className="bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg px-4 py-2"
+              onClick={() => router.push("/individual/applications")}
+            >
+              View My Applications
+            </Button>
+          )}
         </header>
 
         {/* Filters */}
@@ -78,7 +101,7 @@ export default function ApplicationsPage() {
           {/* Example Job Card */}
           <Card
             className="bg-[#2C2C2C] p-6 rounded-lg mb-4 flex items-center justify-between cursor-pointer"
-            // onClick={openModal} // Removed modal logic
+            onClick={() => router.push(`/jobs/123`)} // Example: Navigate to a dummy job ID
           >
             <div className="flex items-center">
               <Briefcase className="h-12 w-12 mr-4 text-yellow-500" size={32} />
@@ -113,7 +136,7 @@ export default function ApplicationsPage() {
           {/* Another Example Job Card */}
           <Card
             className="bg-[#2C2C2C] p-6 rounded-lg mb-4 flex items-center justify-between cursor-pointer"
-            // onClick={openModal} // Removed modal logic
+            onClick={() => router.push(`/jobs/456`)} // Example: Navigate to another dummy job ID
           >
             <div className="flex items-center">
               <Briefcase className="h-12 w-12 mr-4 text-yellow-500" size={32} />
