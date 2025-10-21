@@ -23,6 +23,10 @@ export default function ApplicationsPage() {
   const router = useRouter();
   const { session, isLoading } = useSession(); // Get session and loading state
 
+  console.log("ApplicationsPage - Session:", session);
+  console.log("ApplicationsPage - Is Loading Session:", isLoading);
+  console.log("ApplicationsPage - Account Type:", session?.user?.accountType);
+
   // No session or modal state needed for this generic job posts page
 
   return (
