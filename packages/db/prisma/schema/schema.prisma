@@ -157,6 +157,8 @@ model Account {
 }
 
 
+
+
 model Profile {
   id                  String   @id @default(cuid()) @map("_id")
   user                User     @relation("UserProfile", fields: [userId], references: [id])
@@ -183,7 +185,7 @@ model Profile {
 }
 
 /*
-  Skills and Category join tables
+  Skills and Category join tables what is the use of the @@map here in the code need clear explansion
 */
 
 model Skill {
