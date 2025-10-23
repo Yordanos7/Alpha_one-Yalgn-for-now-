@@ -1,9 +1,10 @@
 // packages/api/src/context.ts
 import { type CreateExpressContextOptions } from "@trpc/server/adapters/express";
 import { auth } from "@Alpha/auth";
-import db from "@Alpha/db"; // Revert to importing db from @Alpha/db
-import { Server as SocketIOServer } from "socket.io"; // Import SocketIOServer
+import db from "@Alpha/db";
+import { Server as SocketIOServer } from "socket.io";
 import { fromNodeHeaders } from "better-auth/node";
+import { PrismaClient } from "@Alpha/db/prisma/generated/client"; // Corrected import path for PrismaClient
 
 // Modified createContext to accept io instance
 export const createContext = async ({
@@ -17,14 +18,16 @@ export const createContext = async ({
   const session = authResult?.session || null;
   const user = authResult?.user || null;
 
-  return {
-    db, // Revert to using db directly
+  const context = {
+    db,
     session,
     user,
-    io, // Add io to the context
-    req, // Add req to the context
-    res, // Add res to the context
+    io,
+    req,
+    res,
   };
+  console.log("tRPC Context created:", context); // Add logging
+  return context;
 };
 
 export type Context = Awaited<ReturnType<typeof createContext>>;

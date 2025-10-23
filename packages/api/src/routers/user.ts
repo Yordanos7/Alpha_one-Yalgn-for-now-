@@ -283,6 +283,63 @@ export const userRouter = router({
     };
   }),
 
+  getPublicUserProfile: protectedProcedure
+    .input(z.object({ userId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const { userId } = input;
+      const userProfile = await ctx.db.user.findUnique({
+        where: { id: userId },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          image: true,
+          bio: true,
+          location: true,
+          accountType: true,
+          profile: {
+            select: {
+              headline: true,
+              hourlyRate: true,
+              currency: true,
+              availability: true,
+              completedJobs: true,
+              successRate: true,
+              experience: true,
+              education: true,
+              portfolio: {
+                select: {
+                  id: true,
+                  title: true,
+                  description: true,
+                  media: true,
+                  link: true,
+                },
+              },
+              skills: {
+                select: {
+                  skill: {
+                    select: {
+                      name: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      });
+
+      if (!userProfile) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "User profile not found.",
+        });
+      }
+
+      return userProfile;
+    }),
+
   list: protectedProcedure.query(async ({ ctx: { user, db } }) => {
     const userId = user?.id;
     if (!userId) {
@@ -292,7 +349,7 @@ export const userRouter = router({
       });
     }
 
-    return db.user.findMany({
+    return ctx.db.user.findMany({
       where: {
         id: {
           not: userId, // Exclude the current user

@@ -181,7 +181,7 @@ model Profile {
 }
 
 /**
- * Skills and Category join tables
+ * Skills and Category join tables what is the use of the @@map here in the code need clear explansion
  */
 
 model Skill {

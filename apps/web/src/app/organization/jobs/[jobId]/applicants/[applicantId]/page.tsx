@@ -171,7 +171,12 @@ export default function ApplicantDetailPage() {
               >
                 <User className="mr-2" size={20} /> View Profile
               </Button>
-              <Button className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold rounded-lg px-4 py-2">
+              <Button
+                className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold rounded-lg px-4 py-2"
+                onClick={() =>
+                  router.push(`/messages?recipientId=${applicantId}`)
+                }
+              >
                 <MessageSquare className="mr-2" size={20} /> Message
               </Button>
               <Button className="bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg px-4 py-2">
