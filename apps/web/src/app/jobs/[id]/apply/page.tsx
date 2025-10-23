@@ -12,10 +12,12 @@ import { useParams, useRouter } from "next/navigation";
 import { useSession } from "@/hooks/use-session";
 import { redirect } from "next/navigation";
 import { FileText, UploadCloud, X } from "lucide-react"; // Added X import
+import { trpc } from "@/utils/trpc"; // Import trpc client
+import { useMutation } from "@tanstack/react-query"; // Import useMutation
 
 export default function ApplyToJobPage() {
   const params = useParams();
-  const jobId = params.id;
+  const jobId = params.id as string; // Cast to string
   const router = useRouter();
   const { session, isLoading } = useSession();
 
@@ -23,6 +25,8 @@ export default function ApplyToJobPage() {
   const [budgetOffer, setBudgetOffer] = useState("");
   const [resume, setResume] = useState<File | null>(null);
   const [coverLetter, setCoverLetter] = useState<File | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!isLoading && session?.user?.accountType !== "INDIVIDUAL") {
@@ -64,18 +68,61 @@ export default function ApplyToJobPage() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // In a real application, you would send this data and files to your backend API
-    console.log({
-      jobId,
-      proposalMessage,
-      budgetOffer,
-      resume,
-      coverLetter,
+  const createProposalMutation = trpc.job.createProposal.useMutation({
+    onSuccess: () => {
+      alert("Application Submitted Successfully!");
+      router.push(`/jobs/${jobId}`); // Redirect back to job detail page
+    },
+    onError: (err) => {
+      setError(err.message);
+      setIsSubmitting(false);
+    },
+  });
+
+  const uploadFile = async (file: File): Promise<string> => {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const response = await fetch("/api/upload", {
+      method: "POST",
+      body: formData,
     });
-    alert("Application Submitted Successfully! (Check console for data)");
-    router.push(`/jobs/${jobId}`); // Redirect back to job detail page
+
+    if (!response.ok) {
+      throw new Error("File upload failed.");
+    }
+
+    const data = await response.json();
+    return data.url; // Assuming the upload API returns a URL
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setError(null);
+
+    try {
+      let resumeUrl: string | undefined;
+      let coverLetterUrl: string | undefined;
+
+      if (resume) {
+        resumeUrl = await uploadFile(resume);
+      }
+      if (coverLetter) {
+        coverLetterUrl = await uploadFile(coverLetter);
+      }
+
+      await createProposalMutation.mutateAsync({
+        jobId,
+        proposalMessage,
+        budgetOffer,
+        resumeUrl,
+        coverLetterUrl,
+      });
+    } catch (err: any) {
+      setError(err.message || "An unexpected error occurred.");
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -193,11 +240,14 @@ export default function ApplyToJobPage() {
                   </div>
                 </div>
 
+                {error && <p className="text-red-500 text-sm">{error}</p>}
+
                 <Button
                   type="submit"
                   className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold rounded-lg px-6 py-3"
+                  disabled={isSubmitting}
                 >
-                  Submit Application
+                  {isSubmitting ? "Submitting..." : "Submit Application"}
                 </Button>
               </form>
             </CardContent>

@@ -2,6 +2,7 @@ import { protectedProcedure, publicProcedure, router } from "../index";
 import { userRouter } from "./user"; // Import the new userRouter morning reading
 import { conversationRouter } from "./conversation";
 import { messageRouter } from "./message";
+import { jobRouter } from "./job"; // Import the new jobRouter
 
 export const appRouter = router({
   healthCheck: publicProcedure.query(() => {
@@ -10,11 +11,12 @@ export const appRouter = router({
   privateData: protectedProcedure.query(({ ctx }) => {
     return {
       message: "This is private",
-      user: ctx.session.user,
+      user: ctx.user, // Use ctx.user directly
     };
   }),
   user: userRouter, // Add the userRouter
   conversation: conversationRouter,
   message: messageRouter,
+  job: jobRouter, // Add the jobRouter
 });
 export type AppRouter = typeof appRouter;
