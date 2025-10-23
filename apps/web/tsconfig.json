@@ -21,7 +21,8 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@Alpha/api/routers": ["../../packages/api/src/routers/index.ts"]
     }
   },
   "include": [

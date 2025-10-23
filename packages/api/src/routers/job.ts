@@ -4,6 +4,107 @@ import { TRPCError } from "@trpc/server";
 import { type User } from "@Alpha/db/prisma/generated/client"; // Import User type
 
 export const jobRouter = router({
+  list: protectedProcedure.query(async ({ ctx }) => {
+    return ctx.db.job.findMany({
+      include: {
+        seeker: {
+          select: {
+            name: true,
+          },
+        },
+        proposals: {
+          select: {
+            id: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+  }),
+
+  create: protectedProcedure
+    .input(
+      z.object({
+        title: z.string().min(1),
+        location: z.string().min(1),
+        budget: z.string().min(1), // Will be parsed to float range
+        deadline: z.string().min(1), // Will be parsed to Date
+        description: z.string().min(1),
+        skills: z.array(z.string()).optional(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { title, location, budget, deadline, description, skills } = input;
+      const seekerId = ctx.user!.id; // Get seekerId from ctx.user
+
+      // Parse budget range (assuming "min - max" format or single number)
+      let budgetMin: number | undefined;
+      let budgetMax: number | undefined;
+      const budgetParts = budget.split("-").map((s) => parseFloat(s.trim()));
+      if (
+        budgetParts.length === 2 &&
+        !isNaN(budgetParts[0]) &&
+        !isNaN(budgetParts[1])
+      ) {
+        budgetMin = budgetParts[0];
+        budgetMax = budgetParts[1];
+      } else if (budgetParts.length === 1 && !isNaN(budgetParts[0])) {
+        budgetMin = budgetParts[0];
+        budgetMax = budgetParts[0]; // If single number, min and max are the same
+      } else {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Invalid budget format. Use 'min - max' or a single number.",
+        });
+      }
+
+      // Parse deadline
+      const parsedDeadline = new Date(deadline);
+      if (isNaN(parsedDeadline.getTime())) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Invalid deadline date.",
+        });
+      }
+
+      // Handle skills connection
+      const skillConnects = await Promise.all(
+        (skills || []).map(async (skillName) => {
+          const skill = await ctx.db.skill.upsert({
+            where: { name: skillName },
+            update: {},
+            create: {
+              name: skillName,
+              slug: skillName.toLowerCase().replace(/\s/g, "-"),
+            },
+          });
+          return { id: skill.id };
+        })
+      );
+
+      const job = await ctx.db.job.create({
+        data: {
+          seekerId,
+          title,
+          slug: title.toLowerCase().replace(/\s/g, "-") + "-" + Date.now(), // Simple slug generation
+          description,
+          location,
+          budgetMin: budgetMin ?? null, // Explicitly cast to number | null
+          budgetMax: budgetMax ?? null, // Explicitly cast to number | null
+          deadline: parsedDeadline,
+          requiredSkills: {
+            connect: skillConnects,
+          },
+          status: "OPEN",
+          currency: "ETB", // Default currency
+        },
+      });
+
+      return job;
+    }),
+
   createProposal: protectedProcedure
     .input(
       z.object({
@@ -65,5 +166,4 @@ export const jobRouter = router({
     }),
 });
 
-// Add type annotation for jobRouter to prevent portability issues
 export type JobRouter = typeof jobRouter;

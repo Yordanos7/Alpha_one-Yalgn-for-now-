@@ -14,10 +14,22 @@ import { useRouter } from "next/navigation";
 import { useSession } from "@/hooks/use-session";
 import { redirect } from "next/navigation";
 import { useEffect } from "react";
+import { trpc } from "@/utils/trpc";
+import { toast } from "sonner"; // Assuming sonner is used for toasts
 
 export default function NewJobPage() {
   const router = useRouter();
   const { session, isLoading } = useSession();
+  const { mutate: createJob, isLoading: isCreatingJob } =
+    trpc.job.create.useMutation({
+      onSuccess: () => {
+        toast.success("Job posted successfully!");
+        router.push("/organization/jobs");
+      },
+      onError: (error) => {
+        toast.error(`Failed to post job: ${error.message}`);
+      },
+    });
 
   const [jobTitle, setJobTitle] = useState("");
   const [location, setLocation] = useState("");
@@ -71,17 +83,14 @@ export default function NewJobPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real application, you would send this data to your backend API
-    console.log({
-      jobTitle,
+    createJob({
+      title: jobTitle,
       location,
       budget,
       deadline,
       description,
       skills,
     });
-    alert("Job Posted Successfully! (Check console for data)");
-    router.push("/organization/jobs"); // Redirect to my jobs page
   };
 
   return (
@@ -216,8 +225,9 @@ export default function NewJobPage() {
                 <Button
                   type="submit"
                   className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold rounded-lg px-6 py-3"
+                  disabled={isCreatingJob}
                 >
-                  Post Job
+                  {isCreatingJob ? "Posting Job..." : "Post Job"}
                 </Button>
               </form>
             </CardContent>

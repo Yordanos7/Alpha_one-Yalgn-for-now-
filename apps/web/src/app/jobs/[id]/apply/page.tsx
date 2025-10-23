@@ -13,6 +13,8 @@ import { useSession } from "@/hooks/use-session";
 import { redirect } from "next/navigation";
 import { FileText, UploadCloud, X } from "lucide-react"; // Added X import
 import { trpc } from "@/utils/trpc"; // Import trpc client
+import { TRPCClientError } from "@trpc/client"; // Import TRPCClientError
+import { type AppRouter } from "@Alpha/api/routers"; // Import AppRouter type
 import { useMutation } from "@tanstack/react-query"; // Import useMutation
 
 export default function ApplyToJobPage() {
@@ -73,7 +75,8 @@ export default function ApplyToJobPage() {
       alert("Application Submitted Successfully!");
       router.push(`/jobs/${jobId}`); // Redirect back to job detail page
     },
-    onError: (err) => {
+    onError: (err: TRPCClientError<AppRouter>) => {
+      // Explicitly type err
       setError(err.message);
       setIsSubmitting(false);
     },

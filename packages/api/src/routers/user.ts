@@ -25,6 +25,7 @@ export const userRouter = router({
         image: true,
         bio: true,
         location: true,
+        accountType: true, // Add accountType here
         profile: {
           select: {
             skills: {
@@ -245,8 +246,41 @@ export const userRouter = router({
       }
     }),
 
-  getSession: protectedProcedure.query(({ ctx }) => {
-    return ctx.session;
+  getSession: protectedProcedure.query(async ({ ctx }) => {
+    if (!ctx.user?.id) {
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "Not authenticated",
+      });
+    }
+
+    const fullUser = await ctx.db.user.findUnique({
+      where: { id: ctx.user.id },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        image: true,
+        bio: true,
+        location: true,
+        accountType: true, // Ensure accountType is selected
+      },
+    });
+
+    if (!fullUser) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "User not found",
+      });
+    }
+
+    return {
+      session: ctx.session,
+      user: {
+        ...ctx.user, // Keep existing user data from context
+        ...fullUser, // Overlay with data from DB, including accountType
+      },
+    };
   }),
 
   list: protectedProcedure.query(async ({ ctx: { user, db } }) => {
