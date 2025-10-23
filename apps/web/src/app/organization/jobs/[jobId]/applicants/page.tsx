@@ -18,7 +18,8 @@ import { useSession } from "@/hooks/use-session";
 import { redirect } from "next/navigation";
 import { trpc } from "@/utils/trpc";
 import type { AppRouter } from "@Alpha/api/routers";
-import type { inferRouterOutputs } from "@trpc/react-query";
+import type { inferRouterOutputs } from "@trpc/server"; // Corrected import
+import { Input } from "@/components/ui/input"; // Added Input import
 
 type RouterOutput = inferRouterOutputs<AppRouter>;
 type Proposal = RouterOutput["job"]["listProposalsForJob"][number];

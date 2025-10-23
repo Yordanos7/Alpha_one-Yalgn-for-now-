@@ -10,47 +10,34 @@ import { Search, FileText, Check, X, MessageSquare, User } from "lucide-react";
 import { useParams, useRouter } from "next/navigation"; // Added useRouter import
 import { useSession } from "@/hooks/use-session";
 import { redirect } from "next/navigation";
+import { trpc } from "@/utils/trpc";
+import type { AppRouter } from "@Alpha/api/routers";
+import type { inferRouterOutputs } from "@trpc/server";
+import { Loader } from "lucide-react";
+
+type RouterOutput = inferRouterOutputs<AppRouter>;
+type Proposal = RouterOutput["job"]["getProposal"];
 
 export default function ApplicantDetailPage() {
   const params = useParams();
-  const jobId = params.jobId;
-  const applicantId = params.applicantId;
-  const router = useRouter(); // Initialized router
-  const { session, isLoading } = useSession();
+  const jobId = params.jobId as string;
+  const applicantId = params.applicantId as string;
+  const router = useRouter();
+  const { session, isLoading: isSessionLoading } = useSession();
 
-  // Simulate fetching applicant details based on jobId and applicantId
-  const [applicantDetails, setApplicantDetails] = useState<any>(null);
-  const [applicantLoading, setApplicantLoading] = useState(true);
+  const {
+    data: proposal,
+    isLoading: isProposalLoading,
+    error: proposalError,
+  } = trpc.job.getProposal.useQuery({ jobId, providerId: applicantId });
 
   useEffect(() => {
-    if (!isLoading && session?.user?.accountType !== "ORGANIZATION") {
+    if (!isSessionLoading && session?.user?.accountType !== "ORGANIZATION") {
       redirect("/access-denied");
     }
+  }, [session, isSessionLoading]);
 
-    // Simulate API call to fetch applicant details
-    const fetchApplicant = async () => {
-      setApplicantLoading(true);
-      await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate API call
-      setApplicantDetails({
-        id: applicantId,
-        name: "John Doe",
-        avatar: "https://github.com/shadcn.png",
-        rating: 4.5,
-        proposalMessage: `I am highly interested in the Senior Frontend Developer position. My expertise in React and Next.js aligns perfectly with your requirements. I have a strong portfolio demonstrating my ability to deliver high-quality, scalable frontend solutions.`,
-        budgetOffer: "ETB 23,000",
-        attachments: [
-          { name: "resume.pdf", url: "/uploads/resume.pdf" },
-          { name: "portfolio.pdf", url: "/uploads/portfolio.pdf" },
-        ],
-      });
-      setApplicantLoading(false);
-    };
-    if (!isLoading && session?.user?.accountType === "ORGANIZATION") {
-      fetchApplicant();
-    }
-  }, [jobId, applicantId, session, isLoading]);
-
-  if (isLoading || applicantLoading) {
+  if (isSessionLoading || isProposalLoading) {
     return (
       <div className="flex min-h-screen bg-[#202020] text-white">
         <Sidebar currentPage="applicant-detail" />
@@ -75,7 +62,21 @@ export default function ApplicantDetailPage() {
     );
   }
 
-  if (!applicantDetails) {
+  if (proposalError) {
+    return (
+      <div className="flex min-h-screen bg-[#202020] text-white">
+        <Sidebar currentPage="applicant-detail" />
+        <main className="flex-1 p-8 bg-[#411a1a] flex flex-col items-center justify-center">
+          <h1 className="text-2xl font-bold text-red-500">Error</h1>
+          <p className="text-gray-400">
+            Failed to load applicant details: {proposalError.message}
+          </p>
+        </main>
+      </div>
+    );
+  }
+
+  if (!proposal) {
     return (
       <div className="flex min-h-screen bg-[#202020] text-white">
         <Sidebar currentPage="applicant-detail" />
@@ -92,6 +93,7 @@ export default function ApplicantDetailPage() {
     );
   }
 
+  console.log(proposal);
   return (
     <div className="flex min-h-screen bg-[#202020] text-white">
       <Sidebar currentPage="applicant-detail" />
@@ -103,50 +105,59 @@ export default function ApplicantDetailPage() {
             <div className="flex items-center mb-6">
               <Avatar className="h-16 w-16 mr-4">
                 <AvatarImage
-                  src={applicantDetails.avatar}
-                  alt={applicantDetails.name}
+                  src={proposal.provider.image || "/placeholder-avatar.jpg"}
+                  alt={proposal.provider.name}
                 />
                 <AvatarFallback>
-                  {applicantDetails.name.charAt(0)}
+                  {proposal.provider.name.charAt(0)}
                 </AvatarFallback>
               </Avatar>
               <div>
-                <h1 className="text-3xl font-bold">{applicantDetails.name}</h1>
+                <h1 className="text-3xl font-bold">{proposal.provider.name}</h1>
                 <p className="text-gray-400">
-                  Rating: {applicantDetails.rating}/5
+                  Applying for: {proposal.job.title}
                 </p>
+                {/* You might want to add provider rating here if available */}
               </div>
             </div>
 
             <div className="mb-6">
               <h2 className="text-xl font-semibold mb-3">Proposal Message</h2>
               <p className="text-gray-300 leading-relaxed">
-                {applicantDetails.proposalMessage}
+                {proposal.coverLetter || "No cover letter provided."}
               </p>
             </div>
 
             <div className="mb-6">
               <h2 className="text-xl font-semibold mb-3">Budget Offer</h2>
-              <p className="text-gray-300">{applicantDetails.budgetOffer}</p>
+              <p className="text-gray-300">
+                {proposal.currency} {proposal.price}
+              </p>
             </div>
 
             <div className="mb-6">
               <h2 className="text-xl font-semibold mb-3">Attachments</h2>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {applicantDetails.attachments.map((attachment: any) => (
-                  <a
-                    key={attachment.name}
-                    href={attachment.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="bg-[#3A3A3A] p-4 rounded-lg flex flex-col items-center hover:bg-[#4A4A4A] transition-colors"
-                  >
-                    <FileText className="mb-2 text-yellow-500" size={32} />
-                    <span className="text-sm text-center">
-                      {attachment.name}
-                    </span>
-                  </a>
-                ))}
+                {proposal.attachments && proposal.attachments.length > 0 ? (
+                  proposal.attachments.map(
+                    (attachment: string, index: number) => (
+                      <a
+                        key={index}
+                        href={attachment}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bg-[#3A3A3A] p-4 rounded-lg flex flex-col items-center hover:bg-[#4A4A4A] transition-colors"
+                      >
+                        <FileText className="mb-2 text-yellow-500" size={32} />
+                        <span className="text-sm text-center">
+                          {attachment.split("/").pop()} {/* Display filename */}
+                        </span>
+                      </a>
+                    )
+                  )
+                ) : (
+                  <p className="text-gray-400">No attachments provided.</p>
+                )}
               </div>
             </div>
 
@@ -155,7 +166,7 @@ export default function ApplicantDetailPage() {
                 variant="outline"
                 className="bg-[#3A3A3A] border-none text-white"
                 onClick={() =>
-                  router.push(`/individual/profile/${applicantId}`)
+                  router.push(`/individual/profile/${proposal.providerId}`)
                 }
               >
                 <User className="mr-2" size={20} /> View Profile

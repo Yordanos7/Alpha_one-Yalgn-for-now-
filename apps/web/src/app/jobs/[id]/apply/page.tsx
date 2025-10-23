@@ -96,7 +96,7 @@ export default function ApplyToJobPage() {
     }
 
     const data = await response.json();
-    return data.url; // Assuming the upload API returns a URL
+    return data.filePath; // Correctly get filePath from the upload API response
   };
 
   const handleSubmit = async (e: React.FormEvent) => {

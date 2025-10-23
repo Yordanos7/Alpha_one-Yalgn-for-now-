@@ -105,6 +105,74 @@ export const jobRouter = router({
       return job;
     }),
 
+  listProposalsForJob: protectedProcedure
+    .input(z.object({ jobId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const { jobId } = input;
+      return ctx.db.proposal.findMany({
+        where: { jobId },
+        include: {
+          provider: {
+            select: {
+              id: true,
+              name: true,
+              image: true,
+            },
+          },
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+    }),
+
+  getProposal: protectedProcedure
+    .input(z.object({ jobId: z.string(), providerId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const { jobId, providerId } = input;
+      const proposal = await ctx.db.proposal.findFirst({
+        where: {
+          jobId,
+          providerId,
+        },
+        select: {
+          // Changed from include to select to explicitly get attachments
+          id: true,
+          jobId: true,
+          providerId: true,
+          coverLetter: true,
+          price: true,
+          currency: true,
+          estimatedDays: true,
+          status: true,
+          attachments: true, // Explicitly select attachments
+          createdAt: true,
+          updatedAt: true,
+          provider: {
+            select: {
+              id: true,
+              name: true,
+              image: true,
+            },
+          },
+          job: {
+            select: {
+              title: true,
+            },
+          },
+        },
+      });
+
+      if (!proposal) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Proposal not found.",
+        });
+      }
+
+      return proposal;
+    }),
+
   createProposal: protectedProcedure
     .input(
       z.object({
