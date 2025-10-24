@@ -8,6 +8,7 @@ import { Progress } from "@/components/ui/progress";
 import Sidebar from "@/components/sidebar";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge"; // Import Badge component
 import { useState } from "react";
 import Link from "next/link"; // Import Link for navigation
 import {
@@ -21,128 +22,127 @@ import {
   X, // For closing the modal
 } from "lucide-react";
 
-interface Product {
+// Define a mock Listing interface based on schema.prisma
+interface Listing {
   id: string;
-  name: string;
-  price: number;
-  rating: number;
-  imageUrl: string;
+  title: string;
   description: string;
-  seller: string;
-  shippingDetails: string;
-  thumbnailUrls: string[];
+  price: number;
+  currency: "ETB" | "USD";
+  deliveryDays?: number;
+  categoryId?: string;
+  images: string[];
+  tags: string[];
+  isPublished: boolean;
+  rating?: number; // Added for display purposes, not directly from schema
+  reviewCount?: number; // Added for display purposes, not directly from schema
+  provider: {
+    id: string;
+    name: string;
+    image?: string;
+    accountType: "INDIVIDUAL" | "ORGANIZATION";
+  };
+  createdAt: Date;
+  updatedAt: Date;
 }
 
-const products: Product[] = [
+// Mock listings data
+const mockListings: Listing[] = [
   {
-    id: "1",
-    name: "Wireless Stereo Earbuds",
-    price: 129.99,
-    rating: 4.5,
-    imageUrl: "https://via.placeholder.com/150",
-    description:
-      "Lite de llore la noie dancellly he raotnper iot anis mepferont, Neolaluta udo la tor amd lolurs ait their diheris iverbeem. Ob praite male beloagr and ineet conaenites.",
-    seller: "Seller A",
-    shippingDetails: "Shipping Detills",
-    thumbnailUrls: [
-      "https://via.placeholder.com/50",
-      "https://via.placeholder.com/50",
-      "https://via.placeholder.com/50",
-      "https://via.placeholder.com/50",
-    ],
-  },
-  {
-    id: "2",
-    name: "Compact Drone",
-    price: 299.99,
-    rating: 4.0,
-    imageUrl: "https://via.placeholder.com/150",
-    description:
-      "Lite de llore la noie dancellly he raotnper iot anis mepferont, Neolaluta udo la tor amd lolurs ait their diheris iverbeem. Ob praite male beloagr and ineet conaenites.",
-    seller: "Seller B",
-    shippingDetails: "Shipping Detills",
-    thumbnailUrls: [
-      "https://via.placeholder.com/50",
-      "https://via.placeholder.com/50",
-      "https://via.placeholder.com/50",
-      "https://via.placeholder.com/50",
-    ],
-  },
-  {
-    id: "3",
-    name: "Noise-Cancelling Headphones",
-    price: 199.99,
+    id: "lst1",
+    title: "Custom Logo Design",
+    description: "Professional logo design service for your brand.",
+    price: 150.0,
+    currency: "USD",
+    deliveryDays: 5,
+    categoryId: "cat2",
+    images: ["https://via.placeholder.com/150/0000FF/FFFFFF?text=Logo1"],
+    tags: ["logo", "design", "branding"],
+    isPublished: true,
     rating: 4.8,
-    imageUrl: "https://via.placeholder.com/150",
-    description:
-      "Lite de llore la noie dancellly he raotnper iot anis mepferont, Neolaluta udo la tor amd lolurs ait their diheris iverbeem. Ob praite male beloagr and ineet conaenites.",
-    seller: "Seller C",
-    shippingDetails: "Shipping Detills",
-    thumbnailUrls: [
-      "https://via.placeholder.com/50",
-      "https://via.placeholder.com/50",
-      "https://via.placeholder.com/50",
-      "https://via.placeholder.com/50",
-    ],
+    reviewCount: 25,
+    provider: {
+      id: "user1",
+      name: "Freelancer A",
+      image: "https://github.com/shadcn.png",
+      accountType: "INDIVIDUAL",
+    },
+    createdAt: new Date(),
+    updatedAt: new Date(),
   },
   {
-    id: "4",
-    name: "Stiarg Unn",
-    price: 99.99,
-    rating: 3.5,
-    imageUrl: "https://via.placeholder.com/150",
-    description:
-      "Lite de llore la noie dancellly he raotnper iot anis mepferont, Neolaluta udo la tor amd lolurs ait their diheris iverbeem. Ob praite male beloagr and ineet conaenites.",
-    seller: "Seller D",
-    shippingDetails: "Shipping Detills",
-    thumbnailUrls: [
-      "https://via.placeholder.com/50",
-      "https://via.placeholder.com/50",
-      "https://via.placeholder.com/50",
-      "https://via.placeholder.com/50",
-    ],
+    id: "lst2",
+    title: "E-commerce Website Development",
+    description: "Build a fully functional e-commerce website.",
+    price: 1200.0,
+    currency: "USD",
+    deliveryDays: 30,
+    categoryId: "cat1",
+    images: ["https://via.placeholder.com/150/FF0000/FFFFFF?text=Web1"],
+    tags: ["web development", "e-commerce", "react"],
+    isPublished: true,
+    rating: 4.5,
+    reviewCount: 10,
+    provider: {
+      id: "org1",
+      name: "Org Solutions",
+      image: "https://github.com/shadcn.png",
+      accountType: "ORGANIZATION",
+    },
+    createdAt: new Date(),
+    updatedAt: new Date(),
   },
   {
-    id: "5",
-    name: "Noise-Cha Baphones",
-    price: 79.99,
+    id: "lst3",
+    title: "Social Media Marketing Package",
+    description: "Boost your online presence with our marketing package.",
+    price: 300.0,
+    currency: "USD",
+    deliveryDays: 7,
+    categoryId: "cat3",
+    images: ["https://via.placeholder.com/150/00FF00/FFFFFF?text=Social1"],
+    tags: ["marketing", "social media", "digital"],
+    isPublished: true,
     rating: 4.2,
-    imageUrl: "https://via.placeholder.com/150",
-    description:
-      "Lite de llore la noie dancellly he raotnper iot anis mepferont, Neolaluta udo la tor amd lolurs ait their diheris iverbeem. Ob praite male beloagr and ineet conaenites.",
-    seller: "Seller E",
-    shippingDetails: "Shipping Detills",
-    thumbnailUrls: [
-      "https://via.placeholder.com/50",
-      "https://via.placeholder.com/50",
-      "https://via.placeholder.com/50",
-      "https://via.placeholder.com/50",
-    ],
+    reviewCount: 15,
+    provider: {
+      id: "user2",
+      name: "Freelancer B",
+      image: "https://github.com/shadcn.png",
+      accountType: "INDIVIDUAL",
+    },
+    createdAt: new Date(),
+    updatedAt: new Date(),
   },
   {
-    id: "6",
-    name: "Smart Projector",
-    price: 349.99,
-    rating: 4.7,
-    imageUrl: "https://via.placeholder.com/150",
-    description:
-      "Lite de llore la noie dancellly he raotnper iot anis mepferont, Neolaluta udo la tor amd lolurs ait their diheris iverbeem. Ob praite male beloagr and ineet conaenites.",
-    seller: "Seller F",
-    shippingDetails: "Shipping Detills",
-    thumbnailUrls: [
-      "https://via.placeholder.com/50",
-      "https://via.placeholder.com/50",
-      "https://via.placeholder.com/50",
-      "https://via.placeholder.com/50",
-    ],
+    id: "lst4",
+    title: "Mobile App UI/UX Design",
+    description: "Intuitive and modern UI/UX design for mobile applications.",
+    price: 500.0,
+    currency: "USD",
+    deliveryDays: 10,
+    categoryId: "cat2",
+    images: ["https://via.placeholder.com/150/FFFF00/000000?text=UIUX1"],
+    tags: ["ui/ux", "mobile app", "design"],
+    isPublished: true,
+    rating: 4.9,
+    reviewCount: 30,
+    provider: {
+      id: "user3",
+      name: "Freelancer C",
+      image: "https://github.com/shadcn.png",
+      accountType: "INDIVIDUAL",
+    },
+    createdAt: new Date(),
+    updatedAt: new Date(),
   },
 ];
 
-const ProductCard = ({
-  product,
+const ListingCard = ({
+  listing,
   onClick,
 }: {
-  product: Product;
+  listing: Listing;
   onClick: () => void;
 }) => (
   <Card
@@ -150,35 +150,39 @@ const ProductCard = ({
     onClick={onClick}
   >
     <img
-      src={product.imageUrl}
-      alt={product.name}
+      src={listing.images[0] || "https://via.placeholder.com/150"}
+      alt={listing.title}
       className="w-32 h-32 object-cover mb-4 rounded-lg"
     />
-    <p className="text-lg font-semibold text-center mb-1">{product.name}</p>
+    <p className="text-lg font-semibold text-center mb-1">{listing.title}</p>
     <div className="flex items-center mb-2">
       {[...Array(5)].map((_, i) => (
         <Star
           key={i}
           className={
-            i < Math.floor(product.rating) ? "text-yellow-500" : "text-gray-500"
+            i < Math.floor(listing.rating || 0)
+              ? "text-yellow-500"
+              : "text-gray-500"
           }
           size={16}
-          fill={i < Math.floor(product.rating) ? "currentColor" : "none"}
+          fill={i < Math.floor(listing.rating || 0) ? "currentColor" : "none"}
         />
       ))}
-      <span className="text-sm text-gray-400 ml-2">({product.rating})</span>
+      <span className="text-sm text-gray-400 ml-2">
+        ({listing.rating?.toFixed(1) || "N/A"})
+      </span>
     </div>
     <p className="text-md font-bold text-green-500 mb-4">
-      ${product.price.toFixed(2)} USD
+      {listing.currency} {listing.price.toFixed(2)}
     </p>
     <Button className="bg-green-600 hover:bg-green-700 text-white font-semibold rounded-md px-6 py-2">
-      Buy Now
+      View Details
     </Button>
   </Card>
 );
 
 export default function MarketplacePage() {
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [selectedListing, setSelectedListing] = useState<Listing | null>(null);
 
   return (
     <div className="flex min-h-screen bg-[#202020] text-white">
@@ -258,11 +262,11 @@ export default function MarketplacePage() {
         <div className="flex flex-1 space-x-8">
           {/* Product Grid */}
           <div className="flex-1 grid grid-cols-3 gap-6">
-            {products.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                onClick={() => setSelectedProduct(product)}
+            {mockListings.map((listing) => (
+              <ListingCard
+                key={listing.id}
+                listing={listing}
+                onClick={() => setSelectedListing(listing)}
               />
             ))}
           </div>
@@ -345,22 +349,25 @@ export default function MarketplacePage() {
         </div>
       </main>
 
-      {/* Product Detail Modal */}
+      {/* Listing Detail Modal */}
       <Dialog
-        open={!!selectedProduct}
-        onOpenChange={() => setSelectedProduct(null)}
+        open={!!selectedListing}
+        onOpenChange={() => setSelectedListing(null)}
       >
         <DialogContent className="bg-[#2C2C2C] text-white p-6 rounded-lg max-w-2xl">
-          {selectedProduct && (
+          {selectedListing && (
             <div className="flex">
               <div className="flex-shrink-0 mr-6">
                 <img
-                  src={selectedProduct.imageUrl}
-                  alt={selectedProduct.name}
+                  src={
+                    selectedListing.images[0] ||
+                    "https://via.placeholder.com/150"
+                  }
+                  alt={selectedListing.title}
                   className="w-64 h-64 object-cover rounded-lg mb-4"
                 />
                 <div className="flex space-x-2">
-                  {selectedProduct.thumbnailUrls.map((url, index) => (
+                  {selectedListing.images.map((url, index) => (
                     <img
                       key={index}
                       src={url}
@@ -372,30 +379,30 @@ export default function MarketplacePage() {
               </div>
               <div className="flex-1">
                 <h2 className="text-2xl font-bold mb-2">
-                  {selectedProduct.name}
+                  {selectedListing.title}
                 </h2>
                 <p className="text-xl font-semibold text-green-500 mb-2">
-                  ${selectedProduct.price.toFixed(2)} USD
+                  {selectedListing.currency} {selectedListing.price.toFixed(2)}
                 </p>
                 <div className="flex items-center mb-4">
                   {[...Array(5)].map((_, i) => (
                     <Star
                       key={i}
                       className={
-                        i < Math.floor(selectedProduct.rating)
+                        i < Math.floor(selectedListing.rating || 0)
                           ? "text-yellow-500"
                           : "text-gray-500"
                       }
                       size={16}
                       fill={
-                        i < Math.floor(selectedProduct.rating)
+                        i < Math.floor(selectedListing.rating || 0)
                           ? "currentColor"
                           : "none"
                       }
                     />
                   ))}
                   <span className="text-sm text-gray-400 ml-2">
-                    ({selectedProduct.rating})
+                    ({selectedListing.rating?.toFixed(1) || "N/A"})
                   </span>
                 </div>
 
@@ -408,10 +415,10 @@ export default function MarketplacePage() {
                       Description
                     </TabsTrigger>
                     <TabsTrigger
-                      value="specifications"
+                      value="details"
                       className="data-[state=active]:bg-green-600 data-[state=active]:text-white rounded-sm px-4 py-2"
                     >
-                      Specifications
+                      Details
                     </TabsTrigger>
                     <TabsTrigger
                       value="reviews"
@@ -425,17 +432,35 @@ export default function MarketplacePage() {
                     className="mt-4 text-gray-300"
                   >
                     <h3 className="font-semibold mb-2">Description</h3>
-                    <p className="mb-4">{selectedProduct.description}</p>
-                    <h3 className="font-semibold mb-2">Seller Information</h3>
-                    <p className="mb-4">{selectedProduct.seller}</p>
-                    <h3 className="font-semibold mb-2">Shipping Details</h3>
-                    <p>{selectedProduct.shippingDetails}</p>
+                    <p className="mb-4">{selectedListing.description}</p>
+                    <h3 className="font-semibold mb-2">Provider Information</h3>
+                    <p className="mb-4">
+                      {selectedListing.provider.name} (
+                      {selectedListing.provider.accountType})
+                    </p>
+                    {selectedListing.deliveryDays && (
+                      <>
+                        <h3 className="font-semibold mb-2">
+                          Estimated Delivery
+                        </h3>
+                        <p>{selectedListing.deliveryDays} days</p>
+                      </>
+                    )}
                   </TabsContent>
-                  <TabsContent
-                    value="specifications"
-                    className="mt-4 text-gray-300"
-                  >
-                    <p>Specifications content goes here.</p>
+                  <TabsContent value="details" className="mt-4 text-gray-300">
+                    <h3 className="font-semibold mb-2">Tags</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedListing.tags.map((tag, index) => (
+                        <Badge
+                          key={index}
+                          variant="secondary"
+                          className="bg-[#3A3A3A] text-white px-3 py-1 rounded-full text-sm"
+                        >
+                          {tag}
+                        </Badge>
+                      ))}
+                    </div>
+                    {/* Add more details here if needed */}
                   </TabsContent>
                   <TabsContent value="reviews" className="mt-4 text-gray-300">
                     <p>Reviews content goes here.</p>
@@ -445,7 +470,7 @@ export default function MarketplacePage() {
                 <div className="flex space-x-4">
                   <Button className="bg-[#3A3A3A] hover:bg-[#4A4A4A] text-gray-300 font-semibold rounded-md px-6 py-2 flex items-center">
                     <MessageSquare className="mr-2" size={16} />
-                    Message Seller
+                    Message Provider
                   </Button>
                   <Button className="bg-green-600 hover:bg-green-700 text-white font-semibold rounded-md px-6 py-2 flex items-center">
                     <Plus className="mr-2" size={16} />

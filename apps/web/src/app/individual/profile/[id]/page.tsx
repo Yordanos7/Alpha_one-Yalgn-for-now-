@@ -1,11 +1,13 @@
 "use client";
 
 import Sidebar from "@/components/sidebar";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"; // Import Dialog components
+import { ListingForm } from "@/components/listing-form"; // Import ListingForm
 import {
   Mail,
   Phone,
@@ -18,6 +20,7 @@ import {
   BookOpen,
   Link,
   Loader,
+  Plus, // Import Plus icon for the button
 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useSession } from "@/hooks/use-session";
@@ -34,6 +37,7 @@ export default function IndividualProfilePage() {
   const params = useParams();
   const userId = params.id as string;
   const { session, isLoading: isSessionLoading } = useSession();
+  const [isFormOpen, setIsFormOpen] = useState(false); // State for controlling the listing form modal
 
   const {
     data: userProfile,
@@ -93,6 +97,14 @@ export default function IndividualProfilePage() {
 
   // Assuming userProfile now contains the data from the backend
   const profileData = userProfile.profile; // Access the nested profile object
+  const isOwnProfile = session?.user?.id === userId; // Check if the logged-in user is viewing their own profile
+
+  const handleCreateListing = (data: any) => {
+    console.log("Creating listing with data (frontend only):", data);
+    // In a real scenario, this would trigger a tRPC mutation
+    setIsFormOpen(false); // Close the form after submission
+    // For now, we'll just log and close.
+  };
 
   return (
     <div className="flex min-h-screen bg-[#202020] text-white">
@@ -247,6 +259,62 @@ export default function IndividualProfilePage() {
                 Back
               </Button>
             </div>
+
+            {/* My Products & Services Section */}
+            {isOwnProfile && (
+              <div className="mb-6">
+                <div className="flex items-center justify-between mb-3">
+                  <h2 className="text-xl font-semibold">
+                    My Products & Services
+                  </h2>
+                  <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
+                    <DialogTrigger asChild>
+                      <Button className="bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg px-4 py-2 flex items-center">
+                        <Plus className="mr-2" size={16} /> Post New
+                        Product/Service
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="bg-[#2C2C2C] text-white p-6 rounded-lg max-w-3xl">
+                      <ListingForm
+                        onSubmit={handleCreateListing}
+                        onCancel={() => setIsFormOpen(false)}
+                      />
+                    </DialogContent>
+                  </Dialog>
+                </div>
+                {/* Placeholder for listings */}
+                <Card className="bg-[#3A3A3A] p-4 rounded-lg">
+                  <CardContent className="p-0 text-gray-400">
+                    <p>Your posted products and services will appear here.</p>
+                    <p className="mt-2">
+                      (This section will fetch and display actual listings from
+                      the backend once implemented.)
+                    </p>
+                    {/* Mock listings for demonstration */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                      <Card className="bg-[#2C2C2C] p-4 rounded-lg">
+                        <h3 className="font-semibold text-white">
+                          Mock Product 1
+                        </h3>
+                        <p className="text-sm text-gray-400">
+                          A great service offered by you.
+                        </p>
+                        <p className="text-green-500 font-bold">$100 USD</p>
+                      </Card>
+                      <Card className="bg-[#2C2C2C] p-4 rounded-lg">
+                        <h3 className="font-semibold text-white">
+                          Mock Product 2
+                        </h3>
+                        <p className="text-sm text-gray-400">
+                          Another fantastic offering.
+                        </p>
+                        <p className="text-green-500 font-bold">$250 USD</p>
+                      </Card>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
           </Card>
         </ScrollArea>
       </main>

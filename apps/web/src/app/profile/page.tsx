@@ -48,6 +48,7 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -58,6 +59,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { ListingForm } from "@/components/listing-form"; // Import ListingForm
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -68,6 +70,7 @@ export default function ProfilePage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [isEditingSkills, setIsEditingSkills] = useState(false);
+  const [isListingFormOpen, setIsListingFormOpen] = useState(false); // State for controlling the listing form modal
 
   const {
     data: userProfileData,
@@ -228,6 +231,13 @@ export default function ProfilePage() {
   const user = userProfileData;
   const profile = userProfileData.profile;
   const verification = userProfileData.verification;
+
+  const handleCreateListing = (data: any) => {
+    console.log("Creating listing with data (frontend only):", data);
+    // In a real scenario, this would trigger a tRPC mutation
+    setIsListingFormOpen(false); // Close the form after submission
+    // For now, we'll just log and close.
+  };
 
   // Placeholder data for demonstration, matching the new design image
   const userProfile = {
@@ -740,6 +750,55 @@ export default function ProfilePage() {
                 <Button variant="outline" size="sm">
                   View Project
                 </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* My Products & Services Section */}
+          <Card className="p-6 bg-card">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 p-0 mb-4">
+              <CardTitle className="text-xl font-semibold">
+                My Products & Services
+              </CardTitle>
+              <Dialog
+                open={isListingFormOpen}
+                onOpenChange={setIsListingFormOpen}
+              >
+                <DialogTrigger asChild>
+                  <Button className="bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg px-4 py-2 flex items-center">
+                    <Plus className="mr-2" size={16} /> Post New Product/Service
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="bg-[#2C2C2C] text-white p-6 rounded-lg max-w-3xl">
+                  <ListingForm
+                    onSubmit={handleCreateListing}
+                    onCancel={() => setIsListingFormOpen(false)}
+                  />
+                </DialogContent>
+              </Dialog>
+            </CardHeader>
+            <CardContent className="p-0 text-muted-foreground">
+              <p>Your posted products and services will appear here.</p>
+              <p className="mt-2">
+                (This section will fetch and display actual listings from the
+                backend once implemented.)
+              </p>
+              {/* Mock listings for demonstration */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                <Card className="bg-[#2C2C2C] p-4 rounded-lg">
+                  <h3 className="font-semibold text-white">Mock Product 1</h3>
+                  <p className="text-sm text-gray-400">
+                    A great service offered by you.
+                  </p>
+                  <p className="text-green-500 font-bold">$100 USD</p>
+                </Card>
+                <Card className="bg-[#2C2C2C] p-4 rounded-lg">
+                  <h3 className="font-semibold text-white">Mock Product 2</h3>
+                  <p className="text-sm text-gray-400">
+                    Another fantastic offering.
+                  </p>
+                  <p className="text-green-500 font-bold">$250 USD</p>
+                </Card>
               </div>
             </CardContent>
           </Card>
