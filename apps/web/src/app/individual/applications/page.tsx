@@ -29,26 +29,72 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useSession } from "@/hooks/use-session";
 import { redirect } from "next/navigation";
+import { trpc } from "@/utils/trpc";
+import type { AppRouter } from "@Alpha/api/routers";
+import type { inferRouterOutputs } from "@trpc/server";
+import { format } from "date-fns";
+import { useRouter } from "next/navigation";
+
+type RouterOutput = inferRouterOutputs<AppRouter>;
+type Proposal = RouterOutput["job"]["listProposalsForProvider"][number];
 
 export default function IndividualApplicationsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false); // For job detail modal
-  const { session, isLoading } = useSession();
+  const [selectedProposal, setSelectedProposal] = useState<Proposal | null>(
+    null
+  );
+  const { session, isLoading: isSessionLoading } = useSession();
+  const router = useRouter();
+
+  const {
+    data: proposals,
+    isLoading: isProposalsLoading,
+    error: proposalsError,
+  } = trpc.job.listProposalsForProvider.useQuery(
+    { providerId: session?.user?.id || "" },
+    {
+      enabled: !!session?.user?.id, // Only fetch if user ID is available
+    }
+  );
 
   useEffect(() => {
-    if (!isLoading && session?.user?.accountType !== "INDIVIDUAL") {
+    if (!isSessionLoading && session?.user?.accountType !== "INDIVIDUAL") {
       redirect("/access-denied");
     }
-  }, [session, isLoading]);
+  }, [session, isSessionLoading]);
 
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
+  const openModal = (proposal: Proposal) => {
+    setSelectedProposal(proposal);
+    setIsModalOpen(true);
+  };
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedProposal(null);
+  };
 
-  if (isLoading) {
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case "PENDING":
+        return <Badge variant="outline">Pending</Badge>;
+      case "ACCEPTED":
+        return <Badge className="bg-green-500 text-white">Accepted</Badge>;
+      case "REJECTED":
+        return <Badge variant="destructive">Rejected</Badge>;
+      case "WITHDRAWN":
+        return <Badge variant="secondary">Withdrawn</Badge>;
+      case "COMPLETED":
+        return <Badge className="bg-blue-500 text-white">Completed</Badge>;
+      default:
+        return <Badge variant="outline">{status}</Badge>;
+    }
+  };
+
+  if (isSessionLoading || isProposalsLoading) {
     return (
       <div className="flex min-h-screen bg-[#202020] text-white">
         <Sidebar currentPage="individual-applications" />
         <main className="flex-1 p-8 bg-[#202020] flex flex-col items-center justify-center">
-          <p className="text-gray-400">Loading user data...</p>
+          <p className="text-gray-400">Loading applications...</p>
         </main>
       </div>
     );
@@ -62,6 +108,20 @@ export default function IndividualApplicationsPage() {
           <h1 className="text-2xl font-bold text-red-500">Access Denied</h1>
           <p className="text-gray-400">
             You do not have permission to view this page.
+          </p>
+        </main>
+      </div>
+    );
+  }
+
+  if (proposalsError) {
+    return (
+      <div className="flex min-h-screen bg-[#202020] text-white">
+        <Sidebar currentPage="individual-applications" />
+        <main className="flex-1 p-8 bg-[#411a1a] flex flex-col items-center justify-center">
+          <h1 className="text-2xl font-bold text-red-500">Error</h1>
+          <p className="text-gray-400">
+            Failed to load applications: {proposalsError.message}
           </p>
         </main>
       </div>
@@ -126,54 +186,75 @@ export default function IndividualApplicationsPage() {
 
         {/* Application List */}
         <ScrollArea className="flex-1 h-full pr-4">
-          {/* Example Application Card */}
-          <Card
-            className="bg-[#2C2C2C] p-6 rounded-lg mb-4 flex items-center justify-between cursor-pointer"
-            onClick={openModal}
-          >
-            <div className="flex items-center">
-              <Avatar className="h-12 w-12 mr-4">
-                <AvatarImage
-                  src="https://github.com/shadcn.png"
-                  alt="@shadcn"
-                />
-                <AvatarFallback>CN</AvatarFallback>
-              </Avatar>
-              <div>
-                <p className="text-xl font-semibold">Mobile App UI Design</p>
-                <p className="text-gray-400">Acme Corp</p>
-                <div className="flex items-center text-sm text-gray-400 mt-1">
-                  <Clock className="mr-1" size={16} />
-                  <span>Applied on: Oct 15, 2025</span>
-                  <DollarSign className="ml-4 mr-1" size={16} />
-                  <span>Proposed: ETB 12,000</span>
-                  <Badge className="ml-4 bg-blue-500 text-white text-xs px-2 py-1 rounded-full">
-                    Submitted
-                  </Badge>
-                </div>
-              </div>
-            </div>
-            <div className="flex space-x-2">
-              <Button
-                variant="outline"
-                className="bg-[#3A3A3A] border-none text-white"
+          {proposals && proposals.length > 0 ? (
+            proposals.map((proposal: Proposal) => (
+              <Card
+                key={proposal.id}
+                className="bg-[#2C2C2C] p-6 rounded-lg mb-4 flex items-center justify-between cursor-pointer"
+                onClick={() => openModal(proposal)}
               >
-                View Job
+                <div className="flex items-center">
+                  <Avatar className="h-12 w-12 mr-4">
+                    <AvatarImage
+                      src={
+                        proposal.job.seeker.image || "/placeholder-avatar.jpg"
+                      }
+                      alt={proposal.job.seeker.name}
+                    />
+                    <AvatarFallback>
+                      {proposal.job.seeker.name.charAt(0)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <p className="text-xl font-semibold">
+                      {proposal.job.title}
+                    </p>
+                    <p className="text-gray-400">{proposal.job.seeker.name}</p>
+                    <div className="flex items-center text-sm text-gray-400 mt-1">
+                      <Clock className="mr-1" size={16} />
+                      <span>
+                        Applied on:{" "}
+                        {format(new Date(proposal.createdAt), "MMM dd, yyyy")}
+                      </span>
+                      <DollarSign className="ml-4 mr-1" size={16} />
+                      <span>
+                        Proposed: {proposal.currency} {proposal.price}
+                      </span>
+                      <div className="ml-4">
+                        {getStatusBadge(proposal.status)}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex space-x-2">
+                  <Button
+                    variant="outline"
+                    className="bg-[#3A3A3A] border-none text-white"
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent modal from opening
+                      router.push(`/jobs/${proposal.jobId}`);
+                    }}
+                  >
+                    View Job
+                  </Button>
+                  {proposal.status === "PENDING" && (
+                    <Button variant="destructive">Withdraw</Button>
+                  )}
+                </div>
+              </Card>
+            ))
+          ) : (
+            <div className="flex flex-col items-center justify-center h-full text-gray-400 p-8">
+              <Briefcase size={48} className="mb-4" />
+              <p className="text-lg text-center">
+                You haven’t applied to any jobs yet — explore new opportunities
+                in the Marketplace.
+              </p>
+              <Button className="mt-4 bg-yellow-500 hover:bg-yellow-600 text-black font-semibold rounded-lg px-4 py-2">
+                Explore Marketplace
               </Button>
-              <Button variant="destructive">Withdraw</Button>
             </div>
-          </Card>
-
-          {/* Empty State for Provider */}
-          {/*
-          <div className="flex flex-col items-center justify-center h-full text-gray-400 p-8">
-            <Briefcase size={48} className="mb-4" />
-            <p className="text-lg text-center">You haven’t applied to any jobs yet — explore new opportunities in the Marketplace.</p>
-            <Button className="mt-4 bg-yellow-500 hover:bg-yellow-600 text-black font-semibold rounded-lg px-4 py-2">
-              Explore Marketplace
-            </Button>
-          </div>
-          */}
+          )}
         </ScrollArea>
 
         {/* Provider Dashboard Enhancements */}
@@ -200,11 +281,16 @@ export default function IndividualApplicationsPage() {
             <h3 className="text-lg font-semibold mb-4">Earnings Summary</h3>
             <div className="grid grid-cols-3 gap-4 text-center">
               <div>
-                <p className="text-2xl font-bold text-yellow-500">12</p>
+                <p className="text-2xl font-bold text-yellow-500">
+                  {proposals?.length || 0}
+                </p>
                 <p className="text-gray-400 text-sm">Applied</p>
               </div>
               <div>
-                <p className="text-2xl font-bold text-green-500">3</p>
+                <p className="text-2xl font-bold text-green-500">
+                  {proposals?.filter((p: Proposal) => p.status === "ACCEPTED")
+                    .length || 0}
+                </p>
                 <p className="text-gray-400 text-sm">Hired</p>
               </div>
               <div>
@@ -216,7 +302,7 @@ export default function IndividualApplicationsPage() {
         </div>
 
         {/* Job Details Modal */}
-        {isModalOpen && (
+        {isModalOpen && selectedProposal && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <Card className="bg-[#2C2C2C] p-8 rounded-lg w-1/2 max-w-2xl relative">
               <Button
@@ -230,19 +316,15 @@ export default function IndividualApplicationsPage() {
                 <div className="flex items-center mb-6">
                   <Search className="mr-3 text-gray-400" size={20} />
                   <h2 className="text-2xl font-bold">
-                    Job Details: Mobile App UI Design
+                    Job Details: {selectedProposal.job.title}
                   </h2>
                 </div>
 
                 <div className="mb-6">
                   <h3 className="text-lg font-semibold mb-2">Description</h3>
                   <p className="text-gray-400">
-                    You've moved a mobile UI Design project that requires a
-                    strong understanding of user experience and visual
-                    aesthetics. The project involves creating intuitive and
-                    visually appealing interfaces for a mobile application.
-                    Attention to detail and a passion for delivering
-                    high-quality designs are crucial.
+                    {selectedProposal.job.description ||
+                      "No description provided."}
                   </p>
                 </div>
 
@@ -251,11 +333,8 @@ export default function IndividualApplicationsPage() {
                     Proposal Summary
                   </h3>
                   <p className="text-gray-400">
-                    My proposal for this project includes a comprehensive
-                    approach to UI/UX design, focusing on user-centric
-                    principles and modern aesthetics. I will deliver
-                    high-fidelity mockups, interactive prototypes, and a
-                    detailed design system.
+                    {selectedProposal.coverLetter ||
+                      "No cover letter provided."}
                   </p>
                 </div>
 
@@ -264,16 +343,23 @@ export default function IndividualApplicationsPage() {
                   <div className="flex items-center">
                     <Avatar className="h-10 w-10 mr-3">
                       <AvatarImage
-                        src="https://github.com/shadcn.png"
-                        alt="@shadcn"
+                        src={
+                          selectedProposal.job.seeker.image ||
+                          "/placeholder-avatar.jpg"
+                        }
+                        alt={selectedProposal.job.seeker.name}
                       />
-                      <AvatarFallback>AC</AvatarFallback>
+                      <AvatarFallback>
+                        {selectedProposal.job.seeker.name.charAt(0)}
+                      </AvatarFallback>
                     </Avatar>
                     <div>
-                      <p className="font-semibold">Acme Corp</p>
+                      <p className="font-semibold">
+                        {selectedProposal.job.seeker.name}
+                      </p>
 
                       <p className="text-gray-400 text-sm">
-                        Client Rating: 4.8/5
+                        {/* Client Rating: 4.8/5 (Placeholder for now) */}
                       </p>
                     </div>
                   </div>
@@ -283,7 +369,15 @@ export default function IndividualApplicationsPage() {
                   <h3 className="text-lg font-semibold mb-2">Timeline</h3>
                   <div className="flex items-center text-gray-400">
                     <Calendar className="mr-2" size={20} />
-                    <span>Delivery Deadline: July 20, 2024</span>
+                    <span>
+                      Delivery Deadline:{" "}
+                      {selectedProposal.job.deadline
+                        ? format(
+                            new Date(selectedProposal.job.deadline),
+                            "MMM dd, yyyy"
+                          )
+                        : "N/A"}
+                    </span>
                   </div>
                 </div>
 

@@ -40,20 +40,26 @@ export const jobRouter = router({
       const seekerId = ctx.user!.id; // Get seekerId from ctx.user
 
       // Parse budget range (assuming "min - max" format or single number)
-      let budgetMin: number | undefined;
-      let budgetMax: number | undefined;
+      let budgetMin: number | null = null;
+      let budgetMax: number | null = null;
       const budgetParts = budget.split("-").map((s) => parseFloat(s.trim()));
+
+      const tempBudgetMin = budgetParts[0];
+      const tempBudgetMax =
+        budgetParts.length === 2 ? budgetParts[1] : budgetParts[0];
+
+      if (typeof tempBudgetMin === "number" && !isNaN(tempBudgetMin)) {
+        budgetMin = tempBudgetMin;
+      }
+      if (typeof tempBudgetMax === "number" && !isNaN(tempBudgetMax)) {
+        budgetMax = tempBudgetMax;
+      }
+
       if (
-        budgetParts.length === 2 &&
-        !isNaN(budgetParts[0]) &&
-        !isNaN(budgetParts[1])
+        (budgetParts.length === 2 &&
+          (budgetMin === null || budgetMax === null)) ||
+        (budgetParts.length === 1 && budgetMin === null)
       ) {
-        budgetMin = budgetParts[0];
-        budgetMax = budgetParts[1];
-      } else if (budgetParts.length === 1 && !isNaN(budgetParts[0])) {
-        budgetMin = budgetParts[0];
-        budgetMax = budgetParts[0]; // If single number, min and max are the same
-      } else {
         throw new TRPCError({
           code: "BAD_REQUEST",
           message: "Invalid budget format. Use 'min - max' or a single number.",
@@ -91,8 +97,8 @@ export const jobRouter = router({
           slug: title.toLowerCase().replace(/\s/g, "-") + "-" + Date.now(), // Simple slug generation
           description,
           location,
-          budgetMin: budgetMin ?? null, // Explicitly cast to number | null
-          budgetMax: budgetMax ?? null, // Explicitly cast to number | null
+          budgetMin: budgetMin,
+          budgetMax: budgetMax,
           deadline: parsedDeadline,
           requiredSkills: {
             connect: skillConnects,
@@ -171,6 +177,96 @@ export const jobRouter = router({
       }
 
       return proposal;
+    }),
+
+  listProposalsForProvider: protectedProcedure
+    .input(z.object({ providerId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const { providerId } = input;
+      return ctx.db.proposal.findMany({
+        where: { providerId },
+        include: {
+          job: {
+            select: {
+              id: true,
+              title: true,
+              seeker: {
+                select: {
+                  name: true,
+                  image: true,
+                },
+              },
+            },
+          },
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+    }),
+
+  acceptProposal: protectedProcedure
+    .input(z.object({ proposalId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const { proposalId } = input;
+
+      const updatedProposal = await ctx.db.proposal.update({
+        where: { id: proposalId },
+        data: { status: "ACCEPTED" },
+        include: {
+          job: {
+            select: {
+              id: true,
+              seekerId: true,
+            },
+          },
+        },
+      });
+
+      // Reject all other PENDING proposals for the same job and close the job
+      if (updatedProposal.job?.id) {
+        await ctx.db.proposal.updateMany({
+          where: {
+            jobId: updatedProposal.job.id,
+            id: {
+              not: proposalId,
+            },
+            status: "PENDING",
+          },
+          data: {
+            status: "REJECTED",
+          },
+        });
+
+        await ctx.db.job.update({
+          where: { id: updatedProposal.job.id },
+          data: {
+            status: "CLOSED",
+            closedAt: new Date(),
+          },
+        });
+      }
+
+      // Optionally, create a contract here if the proposal is accepted
+      // You might also want to notify the provider of the accepted proposal
+      // and other providers of their rejected status.
+
+      return updatedProposal;
+    }),
+
+  rejectProposal: protectedProcedure
+    .input(z.object({ proposalId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const { proposalId } = input;
+
+      const updatedProposal = await ctx.db.proposal.update({
+        where: { id: proposalId },
+        data: { status: "REJECTED" },
+      });
+
+      // Optionally, notify the provider.
+
+      return updatedProposal;
     }),
 
   createProposal: protectedProcedure

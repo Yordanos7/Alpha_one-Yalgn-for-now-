@@ -13399,6 +13399,7 @@ export namespace Prisma {
     location: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    closedAt: Date | null
   }
 
   export type JobMaxAggregateOutputType = {
@@ -13416,6 +13417,7 @@ export namespace Prisma {
     location: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    closedAt: Date | null
   }
 
   export type JobCountAggregateOutputType = {
@@ -13434,6 +13436,7 @@ export namespace Prisma {
     location: number
     createdAt: number
     updatedAt: number
+    closedAt: number
     _all: number
   }
 
@@ -13463,6 +13466,7 @@ export namespace Prisma {
     location?: true
     createdAt?: true
     updatedAt?: true
+    closedAt?: true
   }
 
   export type JobMaxAggregateInputType = {
@@ -13480,6 +13484,7 @@ export namespace Prisma {
     location?: true
     createdAt?: true
     updatedAt?: true
+    closedAt?: true
   }
 
   export type JobCountAggregateInputType = {
@@ -13498,6 +13503,7 @@ export namespace Prisma {
     location?: true
     createdAt?: true
     updatedAt?: true
+    closedAt?: true
     _all?: true
   }
 
@@ -13603,6 +13609,7 @@ export namespace Prisma {
     location: string | null
     createdAt: Date
     updatedAt: Date
+    closedAt: Date | null
     _count: JobCountAggregateOutputType | null
     _avg: JobAvgAggregateOutputType | null
     _sum: JobSumAggregateOutputType | null
@@ -13640,6 +13647,7 @@ export namespace Prisma {
     location?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    closedAt?: boolean
     seeker?: boolean | UserDefaultArgs<ExtArgs>
     requiredSkills?: boolean | Job$requiredSkillsArgs<ExtArgs>
     proposals?: boolean | Job$proposalsArgs<ExtArgs>
@@ -13663,6 +13671,7 @@ export namespace Prisma {
     location?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    closedAt?: boolean
     seeker?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["job"]>
 
@@ -13682,6 +13691,7 @@ export namespace Prisma {
     location?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    closedAt?: boolean
     seeker?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["job"]>
 
@@ -13701,9 +13711,10 @@ export namespace Prisma {
     location?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    closedAt?: boolean
   }
 
-  export type JobOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "seekerId" | "title" | "slug" | "description" | "type" | "budgetMin" | "budgetMax" | "currency" | "deadline" | "status" | "attachments" | "location" | "createdAt" | "updatedAt", ExtArgs["result"]["job"]>
+  export type JobOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "seekerId" | "title" | "slug" | "description" | "type" | "budgetMin" | "budgetMax" | "currency" | "deadline" | "status" | "attachments" | "location" | "createdAt" | "updatedAt" | "closedAt", ExtArgs["result"]["job"]>
   export type JobInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     seeker?: boolean | UserDefaultArgs<ExtArgs>
     requiredSkills?: boolean | Job$requiredSkillsArgs<ExtArgs>
@@ -13742,6 +13753,7 @@ export namespace Prisma {
       location: string | null
       createdAt: Date
       updatedAt: Date
+      closedAt: Date | null
     }, ExtArgs["result"]["job"]>
     composites: {}
   }
@@ -14184,6 +14196,7 @@ export namespace Prisma {
     readonly location: FieldRef<"Job", 'String'>
     readonly createdAt: FieldRef<"Job", 'DateTime'>
     readonly updatedAt: FieldRef<"Job", 'DateTime'>
+    readonly closedAt: FieldRef<"Job", 'DateTime'>
   }
     
 
@@ -30537,7 +30550,8 @@ export namespace Prisma {
     attachments: 'attachments',
     location: 'location',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    updatedAt: 'updatedAt',
+    closedAt: 'closedAt'
   };
 
   export type JobScalarFieldEnum = (typeof JobScalarFieldEnum)[keyof typeof JobScalarFieldEnum]
@@ -31771,6 +31785,7 @@ export namespace Prisma {
     location?: StringNullableFilter<"Job"> | string | null
     createdAt?: DateTimeFilter<"Job"> | Date | string
     updatedAt?: DateTimeFilter<"Job"> | Date | string
+    closedAt?: DateTimeNullableFilter<"Job"> | Date | string | null
     seeker?: XOR<UserScalarRelationFilter, UserWhereInput>
     requiredSkills?: SkillListRelationFilter
     proposals?: ProposalListRelationFilter
@@ -31793,6 +31808,7 @@ export namespace Prisma {
     location?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    closedAt?: SortOrderInput | SortOrder
     seeker?: UserOrderByWithRelationInput
     requiredSkills?: SkillOrderByRelationAggregateInput
     proposals?: ProposalOrderByRelationAggregateInput
@@ -31818,6 +31834,7 @@ export namespace Prisma {
     location?: StringNullableFilter<"Job"> | string | null
     createdAt?: DateTimeFilter<"Job"> | Date | string
     updatedAt?: DateTimeFilter<"Job"> | Date | string
+    closedAt?: DateTimeNullableFilter<"Job"> | Date | string | null
     seeker?: XOR<UserScalarRelationFilter, UserWhereInput>
     requiredSkills?: SkillListRelationFilter
     proposals?: ProposalListRelationFilter
@@ -31840,6 +31857,7 @@ export namespace Prisma {
     location?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    closedAt?: SortOrderInput | SortOrder
     _count?: JobCountOrderByAggregateInput
     _avg?: JobAvgOrderByAggregateInput
     _max?: JobMaxOrderByAggregateInput
@@ -31866,6 +31884,7 @@ export namespace Prisma {
     location?: StringNullableWithAggregatesFilter<"Job"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Job"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Job"> | Date | string
+    closedAt?: DateTimeNullableWithAggregatesFilter<"Job"> | Date | string | null
   }
 
   export type ProposalWhereInput = {
@@ -33761,6 +33780,7 @@ export namespace Prisma {
     location?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    closedAt?: Date | string | null
     seeker: UserCreateNestedOneWithoutJobsPostedInput
     requiredSkills?: SkillCreateNestedManyWithoutJobsInput
     proposals?: ProposalCreateNestedManyWithoutJobInput
@@ -33783,6 +33803,7 @@ export namespace Prisma {
     location?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    closedAt?: Date | string | null
     requiredSkills?: SkillUncheckedCreateNestedManyWithoutJobsInput
     proposals?: ProposalUncheckedCreateNestedManyWithoutJobInput
     contract?: ContractUncheckedCreateNestedOneWithoutJobInput
@@ -33803,6 +33824,7 @@ export namespace Prisma {
     location?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     seeker?: UserUpdateOneRequiredWithoutJobsPostedNestedInput
     requiredSkills?: SkillUpdateManyWithoutJobsNestedInput
     proposals?: ProposalUpdateManyWithoutJobNestedInput
@@ -33825,6 +33847,7 @@ export namespace Prisma {
     location?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     requiredSkills?: SkillUncheckedUpdateManyWithoutJobsNestedInput
     proposals?: ProposalUncheckedUpdateManyWithoutJobNestedInput
     contract?: ContractUncheckedUpdateOneWithoutJobNestedInput
@@ -33846,6 +33869,7 @@ export namespace Prisma {
     location?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    closedAt?: Date | string | null
   }
 
   export type JobUpdateManyMutationInput = {
@@ -33863,6 +33887,7 @@ export namespace Prisma {
     location?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type JobUncheckedUpdateManyInput = {
@@ -33881,6 +33906,7 @@ export namespace Prisma {
     location?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type ProposalCreateInput = {
@@ -35893,6 +35919,7 @@ export namespace Prisma {
     location?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    closedAt?: SortOrder
   }
 
   export type JobAvgOrderByAggregateInput = {
@@ -35915,6 +35942,7 @@ export namespace Prisma {
     location?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    closedAt?: SortOrder
   }
 
   export type JobMinOrderByAggregateInput = {
@@ -35932,6 +35960,7 @@ export namespace Prisma {
     location?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    closedAt?: SortOrder
   }
 
   export type JobSumOrderByAggregateInput = {
@@ -39035,6 +39064,7 @@ export namespace Prisma {
     location?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    closedAt?: Date | string | null
     requiredSkills?: SkillCreateNestedManyWithoutJobsInput
     proposals?: ProposalCreateNestedManyWithoutJobInput
     contract?: ContractCreateNestedOneWithoutJobInput
@@ -39055,6 +39085,7 @@ export namespace Prisma {
     location?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    closedAt?: Date | string | null
     requiredSkills?: SkillUncheckedCreateNestedManyWithoutJobsInput
     proposals?: ProposalUncheckedCreateNestedManyWithoutJobInput
     contract?: ContractUncheckedCreateNestedOneWithoutJobInput
@@ -39671,6 +39702,7 @@ export namespace Prisma {
     location?: StringNullableFilter<"Job"> | string | null
     createdAt?: DateTimeFilter<"Job"> | Date | string
     updatedAt?: DateTimeFilter<"Job"> | Date | string
+    closedAt?: DateTimeNullableFilter<"Job"> | Date | string | null
   }
 
   export type ProposalUpsertWithWhereUniqueWithoutProviderInput = {
@@ -40756,6 +40788,7 @@ export namespace Prisma {
     location?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    closedAt?: Date | string | null
     seeker: UserCreateNestedOneWithoutJobsPostedInput
     proposals?: ProposalCreateNestedManyWithoutJobInput
     contract?: ContractCreateNestedOneWithoutJobInput
@@ -40777,6 +40810,7 @@ export namespace Prisma {
     location?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    closedAt?: Date | string | null
     proposals?: ProposalUncheckedCreateNestedManyWithoutJobInput
     contract?: ContractUncheckedCreateNestedOneWithoutJobInput
   }
@@ -41689,6 +41723,7 @@ export namespace Prisma {
     location?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    closedAt?: Date | string | null
     seeker: UserCreateNestedOneWithoutJobsPostedInput
     requiredSkills?: SkillCreateNestedManyWithoutJobsInput
     contract?: ContractCreateNestedOneWithoutJobInput
@@ -41710,6 +41745,7 @@ export namespace Prisma {
     location?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    closedAt?: Date | string | null
     requiredSkills?: SkillUncheckedCreateNestedManyWithoutJobsInput
     contract?: ContractUncheckedCreateNestedOneWithoutJobInput
   }
@@ -41832,6 +41868,7 @@ export namespace Prisma {
     location?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     seeker?: UserUpdateOneRequiredWithoutJobsPostedNestedInput
     requiredSkills?: SkillUpdateManyWithoutJobsNestedInput
     contract?: ContractUpdateOneWithoutJobNestedInput
@@ -41853,6 +41890,7 @@ export namespace Prisma {
     location?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     requiredSkills?: SkillUncheckedUpdateManyWithoutJobsNestedInput
     contract?: ContractUncheckedUpdateOneWithoutJobNestedInput
   }
@@ -41965,6 +42003,7 @@ export namespace Prisma {
     location?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    closedAt?: Date | string | null
     seeker: UserCreateNestedOneWithoutJobsPostedInput
     requiredSkills?: SkillCreateNestedManyWithoutJobsInput
     proposals?: ProposalCreateNestedManyWithoutJobInput
@@ -41986,6 +42025,7 @@ export namespace Prisma {
     location?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    closedAt?: Date | string | null
     requiredSkills?: SkillUncheckedCreateNestedManyWithoutJobsInput
     proposals?: ProposalUncheckedCreateNestedManyWithoutJobInput
   }
@@ -42248,6 +42288,7 @@ export namespace Prisma {
     location?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     seeker?: UserUpdateOneRequiredWithoutJobsPostedNestedInput
     requiredSkills?: SkillUpdateManyWithoutJobsNestedInput
     proposals?: ProposalUpdateManyWithoutJobNestedInput
@@ -42269,6 +42310,7 @@ export namespace Prisma {
     location?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     requiredSkills?: SkillUncheckedUpdateManyWithoutJobsNestedInput
     proposals?: ProposalUncheckedUpdateManyWithoutJobNestedInput
   }
@@ -44765,6 +44807,7 @@ export namespace Prisma {
     location?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    closedAt?: Date | string | null
   }
 
   export type ProposalCreateManyProviderInput = {
@@ -44969,6 +45012,7 @@ export namespace Prisma {
     location?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     requiredSkills?: SkillUpdateManyWithoutJobsNestedInput
     proposals?: ProposalUpdateManyWithoutJobNestedInput
     contract?: ContractUpdateOneWithoutJobNestedInput
@@ -44989,6 +45033,7 @@ export namespace Prisma {
     location?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     requiredSkills?: SkillUncheckedUpdateManyWithoutJobsNestedInput
     proposals?: ProposalUncheckedUpdateManyWithoutJobNestedInput
     contract?: ContractUncheckedUpdateOneWithoutJobNestedInput
@@ -45009,6 +45054,7 @@ export namespace Prisma {
     location?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type ProposalUpdateWithoutProviderInput = {
@@ -45602,6 +45648,7 @@ export namespace Prisma {
     location?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     seeker?: UserUpdateOneRequiredWithoutJobsPostedNestedInput
     proposals?: ProposalUpdateManyWithoutJobNestedInput
     contract?: ContractUpdateOneWithoutJobNestedInput
@@ -45623,6 +45670,7 @@ export namespace Prisma {
     location?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     proposals?: ProposalUncheckedUpdateManyWithoutJobNestedInput
     contract?: ContractUncheckedUpdateOneWithoutJobNestedInput
   }
@@ -45643,6 +45691,7 @@ export namespace Prisma {
     location?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type ListingCreateManyCategoryInput = {

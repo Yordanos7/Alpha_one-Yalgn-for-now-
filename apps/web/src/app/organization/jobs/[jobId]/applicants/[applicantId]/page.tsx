@@ -14,6 +14,7 @@ import { trpc } from "@/utils/trpc";
 import type { AppRouter } from "@Alpha/api/routers";
 import type { inferRouterOutputs } from "@trpc/server";
 import { Loader } from "lucide-react";
+import { Badge } from "@/components/ui/badge"; // Import Badge component
 
 type RouterOutput = inferRouterOutputs<AppRouter>;
 type Proposal = RouterOutput["job"]["getProposal"];
@@ -25,11 +26,45 @@ export default function ApplicantDetailPage() {
   const router = useRouter();
   const { session, isLoading: isSessionLoading } = useSession();
 
+  const utils = trpc.useUtils(); // Initialize trpc utils for invalidation
+
   const {
     data: proposal,
     isLoading: isProposalLoading,
     error: proposalError,
   } = trpc.job.getProposal.useQuery({ jobId, providerId: applicantId });
+
+  const createConversationMutation = trpc.conversation.create.useMutation({
+    onSuccess: (data) => {
+      router.push(`/messages?conversationId=${data.id}`);
+    },
+    onError: (error: any) => {
+      console.error("Failed to create or find conversation:", error);
+      // Optionally, show a toast notification to the user
+    },
+  });
+
+  const acceptProposalMutation = trpc.job.acceptProposal.useMutation({
+    onSuccess: () => {
+      utils.job.getProposal.invalidate({ jobId, providerId: applicantId }); // Invalidate to refetch
+      // Optionally, show a success toast
+    },
+    onError: (error: any) => {
+      console.error("Failed to accept proposal:", error);
+      // Optionally, show an error toast
+    },
+  });
+
+  const rejectProposalMutation = trpc.job.rejectProposal.useMutation({
+    onSuccess: () => {
+      utils.job.getProposal.invalidate({ jobId, providerId: applicantId }); // Invalidate to refetch
+      // Optionally, show a success toast
+    },
+    onError: (error: any) => {
+      console.error("Failed to reject proposal:", error);
+      // Optionally, show an error toast
+    },
+  });
 
   useEffect(() => {
     if (!isSessionLoading && session?.user?.accountType !== "ORGANIZATION") {
@@ -93,6 +128,48 @@ export default function ApplicantDetailPage() {
     );
   }
 
+  const handleMessageApplicant = () => {
+    if (!session?.user?.id) {
+      console.error("User not authenticated to message applicant.");
+      return;
+    }
+    createConversationMutation.mutate({
+      participantIds: [applicantId, session.user.id],
+    });
+  };
+
+  const handleAcceptProposal = () => {
+    if (proposal?.id) {
+      acceptProposalMutation.mutate({ proposalId: proposal.id });
+    }
+  };
+
+  const handleRejectProposal = () => {
+    if (proposal?.id) {
+      rejectProposalMutation.mutate({ proposalId: proposal.id });
+    }
+  };
+
+  const isDecisionMade =
+    proposal.status === "ACCEPTED" || proposal.status === "REJECTED";
+
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case "PENDING":
+        return <Badge variant="outline">Pending</Badge>;
+      case "ACCEPTED":
+        return <Badge className="bg-green-500 text-white">Accepted</Badge>;
+      case "REJECTED":
+        return <Badge variant="destructive">Rejected</Badge>;
+      case "WITHDRAWN":
+        return <Badge variant="secondary">Withdrawn</Badge>;
+      case "COMPLETED":
+        return <Badge className="bg-blue-500 text-white">Completed</Badge>;
+      default:
+        return <Badge variant="outline">{status}</Badge>;
+    }
+  };
+
   console.log(proposal);
   return (
     <div className="flex min-h-screen bg-[#202020] text-white">
@@ -117,6 +194,7 @@ export default function ApplicantDetailPage() {
                 <p className="text-gray-400">
                   Applying for: {proposal.job.title}
                 </p>
+                <div className="mt-2">{getStatusBadge(proposal.status)}</div>
                 {/* You might want to add provider rating here if available */}
               </div>
             </div>
@@ -173,17 +251,26 @@ export default function ApplicantDetailPage() {
               </Button>
               <Button
                 className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold rounded-lg px-4 py-2"
-                onClick={() =>
-                  router.push(`/messages?recipientId=${applicantId}`)
-                }
+                onClick={handleMessageApplicant}
+                disabled={createConversationMutation.isPending}
               >
                 <MessageSquare className="mr-2" size={20} /> Message
               </Button>
-              <Button className="bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg px-4 py-2">
-                <Check className="mr-2" size={20} /> Accept
+              <Button
+                className="bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg px-4 py-2"
+                onClick={handleAcceptProposal}
+                disabled={isDecisionMade || acceptProposalMutation.isPending}
+              >
+                <Check className="mr-2" size={20} />{" "}
+                {acceptProposalMutation.isPending ? "Accepting..." : "Accept"}
               </Button>
-              <Button variant="destructive">
-                <X className="mr-2" size={20} /> Reject
+              <Button
+                variant="destructive"
+                onClick={handleRejectProposal}
+                disabled={isDecisionMade || rejectProposalMutation.isPending}
+              >
+                <X className="mr-2" size={20} />{" "}
+                {rejectProposalMutation.isPending ? "Rejecting..." : "Reject"}
               </Button>
             </div>
           </Card>

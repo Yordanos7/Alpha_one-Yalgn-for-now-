@@ -1,6 +1,7 @@
 import { includes, z } from "zod";
 import { router, publicProcedure, protectedProcedure, t } from "..";
 import { partial } from "zod/mini";
+import { PrismaClient } from "@Alpha/db/prisma/generated/client"; // Explicitly import PrismaClient
 
 export const conversationRouter = router({
   list: protectedProcedure.query(async ({ ctx }) => {

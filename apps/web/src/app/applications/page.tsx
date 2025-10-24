@@ -1,7 +1,6 @@
 "use client";
 
 import Sidebar from "@/components/sidebar";
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
@@ -21,7 +20,7 @@ import { useSession } from "@/hooks/use-session"; // Added useSession import
 import { trpc } from "@/utils/trpc";
 import { Loader } from "lucide-react";
 import type { AppRouter } from "@Alpha/api/routers";
-import type { inferRouterOutputs } from "@trpc/react-query";
+import type { inferRouterOutputs } from "@trpc/server";
 
 type RouterOutput = inferRouterOutputs<AppRouter>;
 type Job = RouterOutput["job"]["list"][number];

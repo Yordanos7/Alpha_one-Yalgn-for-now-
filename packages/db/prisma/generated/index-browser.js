@@ -248,7 +248,8 @@ exports.Prisma.JobScalarFieldEnum = {
   attachments: 'attachments',
   location: 'location',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  closedAt: 'closedAt'
 };
 
 exports.Prisma.ProposalScalarFieldEnum = {
