@@ -1,7 +1,6 @@
 "use client";
 
 import Sidebar from "@/components/sidebar";
-import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -19,47 +18,45 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useParams, useRouter } from "next/navigation";
 import { useSession } from "@/hooks/use-session";
 import { redirect } from "next/navigation";
+import { trpc } from "@/utils/trpc"; // Import trpc
+import type { AppRouter } from "@Alpha/api/routers"; // Import AppRouter
+import type { inferRouterOutputs } from "@trpc/server"; // Import inferRouterOutputs
+
+type RouterOutput = inferRouterOutputs<AppRouter>;
+type JobDetails = RouterOutput["job"]["getById"];
 
 export default function JobDetailPage() {
   const params = useParams();
-  const jobId = params.id; // Get job ID from URL
+  const jobId = params.id as string; // Get job ID from URL
   const router = useRouter();
-  const { session, isLoading } = useSession();
+  const { session, isLoading: isSessionLoading } = useSession();
 
-  // Simulate fetching job details based on jobId
-  const [jobDetails, setJobDetails] = useState<any>(null);
-  const [jobLoading, setJobLoading] = useState(true);
+  const {
+    data: jobDetails,
+    isLoading: isJobLoading,
+    error: jobError,
+  } = trpc.job.getById.useQuery({ id: jobId });
 
-  useEffect(() => {
-    // In a real application, you would fetch job details from an API here
-    // For now, simulate with a dummy object
-    const fetchJob = async () => {
-      setJobLoading(true);
-      await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate API call
-      setJobDetails({
-        id: jobId,
-        title: "Senior Frontend Developer",
-        organizationName: "Acme Corp",
-        organizationLogo: "https://github.com/shadcn.png",
-        location: "Addis Ababa, Ethiopia (Remote)",
-        budget: "ETB 25,000 - 35,000",
-        deadline: "Nov 30, 2025",
-        status: "Active",
-        applicantsCount: 5,
-        description: `We are seeking a highly skilled and motivated Senior Frontend Developer to join our dynamic team. The ideal candidate will have extensive experience with modern JavaScript frameworks, particularly React and Next.js. You will be responsible for developing and maintaining user-facing features, optimizing applications for maximum speed and scalability, and collaborating with backend developers and UI/UX designers.`,
-        skills: ["React", "Next.js", "TypeScript", "Tailwind CSS", "GraphQL"],
-      });
-      setJobLoading(false);
-    };
-    fetchJob();
-  }, [jobId]);
-
-  if (isLoading || jobLoading) {
+  if (isSessionLoading || isJobLoading) {
     return (
       <div className="flex min-h-screen bg-[#202020] text-white">
         <Sidebar currentPage="job-detail" />
         <main className="flex-1 p-8 bg-[#202020] flex flex-col items-center justify-center">
           <p className="text-gray-400">Loading job details...</p>
+        </main>
+      </div>
+    );
+  }
+
+  if (jobError) {
+    return (
+      <div className="flex min-h-screen bg-[#202020] text-white">
+        <Sidebar currentPage="job-detail" />
+        <main className="flex-1 p-8 bg-[#202020] flex flex-col items-center justify-center">
+          <h1 className="text-2xl font-bold text-red-500">Error</h1>
+          <p className="text-gray-400">
+            Error fetching job details: {jobError.message}
+          </p>
         </main>
       </div>
     );
@@ -81,7 +78,7 @@ export default function JobDetailPage() {
 
   const isIndividual = session?.user?.accountType === "INDIVIDUAL";
   const isOrganization = session?.user?.accountType === "ORGANIZATION";
-
+  console.log("Job Details:", jobDetails);
   return (
     <div className="flex min-h-screen bg-[#202020] text-white">
       <Sidebar currentPage="job-detail" />
@@ -96,14 +93,17 @@ export default function JobDetailPage() {
                 <div className="flex items-center text-gray-400 text-sm">
                   <Avatar className="h-8 w-8 mr-2">
                     <AvatarImage
-                      src={jobDetails.organizationLogo}
-                      alt={jobDetails.organizationName}
+                      src={
+                        jobDetails.seeker.image ||
+                        "https://github.com/shadcn.png"
+                      }
+                      alt={jobDetails.seeker.name || "Organization"}
                     />
                     <AvatarFallback>
-                      {jobDetails.organizationName.charAt(0)}
+                      {jobDetails.seeker.name?.charAt(0) || "O"}
                     </AvatarFallback>
                   </Avatar>
-                  <span>{jobDetails.organizationName}</span>
+                  <span>{jobDetails.seeker.name}</span>
                   <MapPin className="ml-4 mr-1" size={16} />
                   <span>{jobDetails.location}</span>
                 </div>
@@ -129,11 +129,19 @@ export default function JobDetailPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 text-gray-400 text-sm">
               <div className="flex items-center">
                 <DollarSign className="mr-2" size={16} />
-                <span>Budget: {jobDetails.budget}</span>
+                <span>
+                  Budget: {jobDetails.currency} {jobDetails.budgetMin} -{" "}
+                  {jobDetails.budgetMax}
+                </span>
               </div>
               <div className="flex items-center">
                 <Calendar className="mr-2" size={16} />
-                <span>Deadline: {jobDetails.deadline}</span>
+                <span>
+                  Deadline:{" "}
+                  {jobDetails.deadline
+                    ? new Date(jobDetails.deadline).toLocaleDateString()
+                    : "N/A"}
+                </span>
               </div>
               <div className="flex items-center">
                 <Clock className="mr-2" size={16} />
@@ -156,13 +164,13 @@ export default function JobDetailPage() {
             <div className="mb-6">
               <h2 className="text-xl font-semibold mb-3">Skills Required</h2>
               <div className="flex flex-wrap gap-2">
-                {jobDetails.skills.map((skill: string) => (
+                {jobDetails.requiredSkills.map((skill: { name: string }) => (
                   <Badge
-                    key={skill}
+                    key={skill.name}
                     variant="secondary"
                     className="bg-[#3A3A3A] text-white px-3 py-1 rounded-full"
                   >
-                    <Tag className="mr-1" size={14} /> {skill}
+                    <Tag className="mr-1" size={14} /> {skill.name}
                   </Badge>
                 ))}
               </div>

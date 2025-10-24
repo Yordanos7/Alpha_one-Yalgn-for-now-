@@ -24,6 +24,39 @@ export const jobRouter = router({
     });
   }),
 
+  getById: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const { id } = input;
+      const job = await ctx.db.job.findUnique({
+        where: { id },
+        include: {
+          seeker: {
+            select: {
+              name: true,
+              image: true, // Assuming seeker has an image field
+            },
+          },
+          requiredSkills: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      });
+
+      console.log("Fetched job details:", job); // Debug log
+
+      if (!job) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Job not found.",
+        });
+      }
+
+      return job;
+    }),
+
   create: protectedProcedure
     .input(
       z.object({
@@ -38,6 +71,8 @@ export const jobRouter = router({
     .mutation(async ({ ctx, input }) => {
       const { title, location, budget, deadline, description, skills } = input;
       const seekerId = ctx.user!.id; // Get seekerId from ctx.user
+
+      console.log("Skills received in create procedure:", skills); // Debug log
 
       // Parse budget range (assuming "min - max" format or single number)
       let budgetMin: number | null = null;
@@ -89,6 +124,8 @@ export const jobRouter = router({
           return { id: skill.id };
         })
       );
+
+      console.log("Skill connects array:", skillConnects); // Debug log
 
       const job = await ctx.db.job.create({
         data: {

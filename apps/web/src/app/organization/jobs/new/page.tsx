@@ -26,7 +26,7 @@ export default function NewJobPage() {
         toast.success("Job posted successfully!");
         router.push("/organization/jobs");
       },
-      onError: (error) => {
+      onError: (error: { message: string }) => {
         toast.error(`Failed to post job: ${error.message}`);
       },
     });
