@@ -5,16 +5,32 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ScrollArea } from "@/components/ui/scroll-area"; // Added ScrollArea import
-import { Search, FileText, Check, X, MessageSquare, User } from "lucide-react";
-import { useParams, useRouter } from "next/navigation"; // Added useRouter import
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Search,
+  FileText,
+  Check,
+  X,
+  MessageSquare,
+  User,
+  Share2,
+} from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
 import { useSession } from "@/hooks/use-session";
 import { redirect } from "next/navigation";
 import { trpc } from "@/utils/trpc";
 import type { AppRouter } from "@Alpha/api/routers";
 import type { inferRouterOutputs } from "@trpc/server";
 import { Loader } from "lucide-react";
-import { Badge } from "@/components/ui/badge"; // Import Badge component
+import { Badge } from "@/components/ui/badge";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 
 type RouterOutput = inferRouterOutputs<AppRouter>;
 type Proposal = RouterOutput["job"]["getProposal"];
@@ -26,7 +42,7 @@ export default function ApplicantDetailPage() {
   const router = useRouter();
   const { session, isLoading: isSessionLoading } = useSession();
 
-  const utils = trpc.useUtils(); // Initialize trpc utils for invalidation
+  const utils = trpc.useUtils();
 
   const {
     data: proposal,
@@ -40,29 +56,24 @@ export default function ApplicantDetailPage() {
     },
     onError: (error: any) => {
       console.error("Failed to create or find conversation:", error);
-      // Optionally, show a toast notification to the user
     },
   });
 
   const acceptProposalMutation = trpc.job.acceptProposal.useMutation({
     onSuccess: () => {
-      utils.job.getProposal.invalidate({ jobId, providerId: applicantId }); // Invalidate to refetch
-      // Optionally, show a success toast
+      utils.job.getProposal.invalidate({ jobId, providerId: applicantId });
     },
     onError: (error: any) => {
       console.error("Failed to accept proposal:", error);
-      // Optionally, show an error toast
     },
   });
 
   const rejectProposalMutation = trpc.job.rejectProposal.useMutation({
     onSuccess: () => {
-      utils.job.getProposal.invalidate({ jobId, providerId: applicantId }); // Invalidate to refetch
-      // Optionally, show a success toast
+      utils.job.getProposal.invalidate({ jobId, providerId: applicantId });
     },
     onError: (error: any) => {
       console.error("Failed to reject proposal:", error);
-      // Optionally, show an error toast
     },
   });
 
@@ -76,7 +87,7 @@ export default function ApplicantDetailPage() {
     return (
       <div className="flex min-h-screen bg-[#202020] text-white">
         <Sidebar currentPage="applicant-detail" />
-        <main className="flex-1 p-8 bg-[#202020] flex flex-col items-center justify-center">
+        <main className="flex-1 p-8 flex flex-col items-center justify-center">
           <p className="text-gray-400">Loading applicant details...</p>
         </main>
       </div>
@@ -87,7 +98,7 @@ export default function ApplicantDetailPage() {
     return (
       <div className="flex min-h-screen bg-[#202020] text-white">
         <Sidebar currentPage="applicant-detail" />
-        <main className="flex-1 p-8 bg-[#202020] flex flex-col items-center justify-center">
+        <main className="flex-1 p-8 flex flex-col items-center justify-center">
           <h1 className="text-2xl font-bold text-red-500">Access Denied</h1>
           <p className="text-gray-400">
             You do not have permission to view this page.
@@ -101,7 +112,7 @@ export default function ApplicantDetailPage() {
     return (
       <div className="flex min-h-screen bg-[#202020] text-white">
         <Sidebar currentPage="applicant-detail" />
-        <main className="flex-1 p-8 bg-[#411a1a] flex flex-col items-center justify-center">
+        <main className="flex-1 p-8 flex flex-col items-center justify-center">
           <h1 className="text-2xl font-bold text-red-500">Error</h1>
           <p className="text-gray-400">
             Failed to load applicant details: {proposalError.message}
@@ -115,7 +126,7 @@ export default function ApplicantDetailPage() {
     return (
       <div className="flex min-h-screen bg-[#202020] text-white">
         <Sidebar currentPage="applicant-detail" />
-        <main className="flex-1 p-8 bg-[#202020] flex flex-col items-center justify-center">
+        <main className="flex-1 p-8 flex flex-col items-center justify-center">
           <h1 className="text-2xl font-bold text-red-500">
             Applicant Not Found
           </h1>
@@ -129,25 +140,49 @@ export default function ApplicantDetailPage() {
   }
 
   const handleMessageApplicant = () => {
-    if (!session?.user?.id) {
-      console.error("User not authenticated to message applicant.");
-      return;
-    }
+    if (!session?.user?.id) return;
     createConversationMutation.mutate({
       participantIds: [applicantId, session.user.id],
     });
   };
 
   const handleAcceptProposal = () => {
-    if (proposal?.id) {
+    if (proposal?.id)
       acceptProposalMutation.mutate({ proposalId: proposal.id });
-    }
   };
 
   const handleRejectProposal = () => {
-    if (proposal?.id) {
+    if (proposal?.id)
       rejectProposalMutation.mutate({ proposalId: proposal.id });
+  };
+
+  const handleShare = (platform: string) => {
+    const shareUrl = encodeURIComponent(window.location.href);
+    const text = encodeURIComponent(
+      `Check out this job: ${proposal.job.title}`
+    );
+
+    let url = "";
+    switch (platform) {
+      case "facebook":
+        url = `https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`;
+        break;
+      case "twitter":
+        url = `https://twitter.com/intent/tweet?url=${shareUrl}&text=${text}`;
+        break;
+      case "linkedin":
+        url = `https://www.linkedin.com/sharing/share-offsite/?url=${shareUrl}`;
+        break;
+      case "whatsapp":
+        url = `https://api.whatsapp.com/send?text=${text}%20${shareUrl}`;
+        break;
+      case "telegram":
+        url = `https://t.me/share/url?url=${shareUrl}&text=${text}`;
+        break;
+      default:
+        return;
     }
+    window.open(url, "_blank", "noopener,noreferrer");
   };
 
   const isDecisionMade =
@@ -170,13 +205,10 @@ export default function ApplicantDetailPage() {
     }
   };
 
-  console.log(proposal);
   return (
     <div className="flex min-h-screen bg-[#202020] text-white">
       <Sidebar currentPage="applicant-detail" />
-
-      {/* Main Content */}
-      <main className="flex-1 p-8 bg-[#202020] flex flex-col">
+      <main className="flex-1 p-8 flex flex-col">
         <ScrollArea className="flex-1 h-full pr-4">
           <Card className="bg-[#2C2C2C] p-8 rounded-lg mb-8">
             <div className="flex items-center mb-6">
@@ -195,10 +227,43 @@ export default function ApplicantDetailPage() {
                   Applying for: {proposal.job.title}
                 </p>
                 <div className="mt-2">{getStatusBadge(proposal.status)}</div>
-                {/* You might want to add provider rating here if available */}
               </div>
             </div>
 
+            {/* === Share Dropdown === */}
+            <div className="flex justify-end mb-6">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="bg-[#3A3A3A] border-none text-white"
+                  >
+                    <Share2 className="mr-2" size={18} /> Share
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="bg-[#2C2C2C] text-white">
+                  <DropdownMenuLabel>Select platform</DropdownMenuLabel>
+                  <DropdownMenuSeparator className="bg-gray-600" />
+                  <DropdownMenuItem onClick={() => handleShare("facebook")}>
+                    Facebook
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleShare("twitter")}>
+                    Twitter (X)
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleShare("linkedin")}>
+                    LinkedIn
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleShare("whatsapp")}>
+                    WhatsApp
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleShare("telegram")}>
+                    Telegram
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+
+            {/* === Proposal Details === */}
             <div className="mb-6">
               <h2 className="text-xl font-semibold mb-3">Proposal Message</h2>
               <p className="text-gray-300 leading-relaxed">
@@ -228,7 +293,7 @@ export default function ApplicantDetailPage() {
                       >
                         <FileText className="mb-2 text-yellow-500" size={32} />
                         <span className="text-sm text-center">
-                          {attachment.split("/").pop()} {/* Display filename */}
+                          {attachment.split("/").pop()}
                         </span>
                       </a>
                     )
@@ -239,6 +304,7 @@ export default function ApplicantDetailPage() {
               </div>
             </div>
 
+            {/* === Action Buttons === */}
             <div className="flex justify-end space-x-4 mt-8">
               <Button
                 variant="outline"

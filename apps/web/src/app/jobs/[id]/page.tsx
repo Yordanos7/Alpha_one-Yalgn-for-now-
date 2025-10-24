@@ -12,6 +12,7 @@ import {
   Tag,
   Clock,
   Users,
+  Share2, // Added Share2 icon
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -79,6 +80,45 @@ export default function JobDetailPage() {
   const isIndividual = session?.user?.accountType === "INDIVIDUAL";
   const isOrganization = session?.user?.accountType === "ORGANIZATION";
   console.log("Job Details:", jobDetails);
+
+  const handleShare = async () => {
+    const shareUrl = `${window.location.origin}/jobs/${jobId}`;
+    const shareTitle = `Check out this job: ${jobDetails.title}`;
+    const shareText = `I found this job posting for a ${jobDetails.title} at ${jobDetails.seeker.name}. Apply now!`;
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: shareTitle,
+          text: shareText,
+          url: shareUrl,
+        });
+        console.log("Job shared successfully!");
+      } catch (error) {
+        console.error("Error sharing job:", error);
+      }
+    } else {
+      // Fallback for browsers that do not support Web Share API
+      // Open a new window with a simple share menu or direct links
+      const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(
+        shareUrl
+      )}&text=${encodeURIComponent(shareText)}`;
+      const twitterUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(
+        shareUrl
+      )}&text=${encodeURIComponent(shareText)}`;
+      const linkedinUrl = `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(
+        shareUrl
+      )}&title=${encodeURIComponent(shareTitle)}&summary=${encodeURIComponent(
+        shareText
+      )}`;
+
+      // For simplicity, we'll open Telegram directly.
+      // For a more robust solution, you might want a small modal with multiple share options.
+      window.open(telegramUrl, "_blank");
+      console.log("Web Share API not supported. Opened Telegram share link.");
+    }
+  };
+
   return (
     <div className="flex min-h-screen bg-[#202020] text-white">
       <Sidebar currentPage="job-detail" />
@@ -127,7 +167,7 @@ export default function JobDetailPage() {
               <Button
                 variant="outline"
                 className="bg-[#3A3A3A] border-none text-white"
-                onClick={() => handleShare()}
+                onClick={handleShare}
               >
                 <Share2 className="mr-2" size={16} /> Share Job
               </Button>
