@@ -124,6 +124,13 @@ export default function JobDetailPage() {
                   Edit Job
                 </Button>
               )}
+              <Button
+                variant="outline"
+                className="bg-[#3A3A3A] border-none text-white"
+                onClick={() => handleShare()}
+              >
+                <Share2 className="mr-2" size={16} /> Share Job
+              </Button>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 text-gray-400 text-sm">
