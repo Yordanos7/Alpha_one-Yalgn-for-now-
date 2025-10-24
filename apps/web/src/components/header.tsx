@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Menu } from "lucide-react";
+import { Menu, ShoppingCart } from "lucide-react"; // Added ShoppingCart icon
 import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import UserMenu from "./user-menu";
@@ -42,8 +42,13 @@ const Header = () => {
             </Link>
           </div>
 
-          {/* User Menu or CTA Buttons */}
+          {/* User Menu, Cart, or CTA Buttons */}
           <div className="hidden md:flex items-center gap-4">
+            <Link href="/cart">
+              <Button variant="ghost" size="icon">
+                <ShoppingCart className="h-5 w-5" />
+              </Button>
+            </Link>
             {session?.user ? (
               <UserMenu />
             ) : (
