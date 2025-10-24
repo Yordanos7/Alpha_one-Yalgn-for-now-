@@ -26,7 +26,6 @@ export const createContext = async ({
     req,
     res,
   };
-  console.log("tRPC Context created:", context); // Add logging
   return context;
 };
 

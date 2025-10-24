@@ -4,6 +4,7 @@ import { z } from "zod";
 import { auth } from "@Alpha/auth"; // Better-Auth instance
 import { fromNodeHeaders } from "better-auth/node";
 import { AccountType } from "@Alpha/db"; // Import AccountType enum from @Alpha/db
+import { PrismaClient } from "@Alpha/db/prisma/generated/client"; // Explicitly import PrismaClient
 
 export const userRouter = router({
   getUserProfile: protectedProcedure.query(async ({ ctx: { user, db } }) => {
@@ -349,7 +350,7 @@ export const userRouter = router({
       });
     }
 
-    return ctx.db.user.findMany({
+    return db.user.findMany({
       where: {
         id: {
           not: userId, // Exclude the current user
