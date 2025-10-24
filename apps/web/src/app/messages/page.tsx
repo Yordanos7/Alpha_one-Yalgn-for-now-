@@ -29,7 +29,7 @@ type User = RouterOutput["user"]["list"][number];
 export default function MessagesPage() {
   const { session } = useSessionContext();
   const utils = trpc.useContext();
-  const userId = session?.userId;
+  const userId = session?.user?.id; // Correctly access userId from the nested user object
 
   const [selectedConversationId, setSelectedConversationId] = useState<
     string | null
