@@ -1,7 +1,7 @@
 import { z } from "zod";
-import { protectedProcedure, publicProcedure, router } from "../trpc";
+import { protectedProcedure, publicProcedure, router } from "../index";
 import { TRPCError } from "@trpc/server";
-import { Prisma } from "@Alpha/db/prisma/generated";
+import { Prisma } from "@prisma/client";
 
 const createListingSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -31,10 +31,10 @@ const updateListingSchema = z.object({
 export const listingRouter = router({
   create: protectedProcedure
     .input(createListingSchema)
-    .mutation(async ({ ctx, input }) => {
-      const { userId } = ctx.session;
+    .mutation(async ({ ctx: { prisma, user }, input }) => {
+      const userId = user!.id;
 
-      const listing = await ctx.prisma.listing.create({
+      const listing = await prisma.listing.create({
         data: {
           ...input,
           providerId: userId,
@@ -49,8 +49,8 @@ export const listingRouter = router({
 
   getById: publicProcedure
     .input(z.object({ id: z.string() }))
-    .query(async ({ ctx, input }) => {
-      const listing = await ctx.prisma.listing.findUnique({
+    .query(async ({ ctx: { prisma }, input }) => {
+      const listing = await prisma.listing.findUnique({
         where: { id: input.id },
         include: {
           provider: {
@@ -77,8 +77,8 @@ export const listingRouter = router({
 
   getByUserId: publicProcedure
     .input(z.object({ userId: z.string() }))
-    .query(async ({ ctx, input }) => {
-      const listings = await ctx.prisma.listing.findMany({
+    .query(async ({ ctx: { prisma }, input }) => {
+      const listings = await prisma.listing.findMany({
         where: { providerId: input.userId },
         include: {
           provider: {
@@ -111,7 +111,7 @@ export const listingRouter = router({
         })
         .optional()
     )
-    .query(async ({ ctx, input }) => {
+    .query(async ({ ctx: { prisma }, input }) => {
       const limit = input?.limit ?? 10;
       const { cursor } = input ?? {};
 
@@ -132,7 +132,7 @@ export const listingRouter = router({
         }),
       };
 
-      const listings = await ctx.prisma.listing.findMany({
+      const listings = await prisma.listing.findMany({
         take: limit + 1,
         where,
         cursor: cursor ? { id: cursor } : undefined,
@@ -165,11 +165,11 @@ export const listingRouter = router({
 
   update: protectedProcedure
     .input(updateListingSchema)
-    .mutation(async ({ ctx, input }) => {
+    .mutation(async ({ ctx: { prisma, user }, input }) => {
       const { id, ...data } = input;
-      const { userId } = ctx.session;
+      const userId = user!.id;
 
-      const existingListing = await ctx.prisma.listing.findUnique({
+      const existingListing = await prisma.listing.findUnique({
         where: { id },
       });
 
@@ -180,7 +180,7 @@ export const listingRouter = router({
         });
       }
 
-      const updatedListing = await ctx.prisma.listing.update({
+      const updatedListing = await prisma.listing.update({
         where: { id },
         data: {
           ...data,
@@ -197,10 +197,10 @@ export const listingRouter = router({
 
   delete: protectedProcedure
     .input(z.object({ id: z.string() }))
-    .mutation(async ({ ctx, input }) => {
-      const { userId } = ctx.session;
+    .mutation(async ({ ctx: { prisma, user }, input }) => {
+      const userId = user!.id;
 
-      const existingListing = await ctx.prisma.listing.findUnique({
+      const existingListing = await prisma.listing.findUnique({
         where: { id: input.id },
       });
 
@@ -211,7 +211,7 @@ export const listingRouter = router({
         });
       }
 
-      await ctx.prisma.listing.delete({
+      await prisma.listing.delete({
         where: { id: input.id },
       });
       return { message: "Listing deleted successfully" };

@@ -7,74 +7,74 @@ import { AccountType } from "@Alpha/db"; // Import AccountType enum from @Alpha/
 import { PrismaClient } from "@Alpha/db/prisma/generated/client"; // Explicitly import PrismaClient
 
 export const userRouter = router({
-  getUserProfile: protectedProcedure.query(async ({ ctx: { user, db } }) => {
-    // Use ctx.db instead of ctx.prisma
-    if (!user?.id) {
-      throw new TRPCError({
-        code: "UNAUTHORIZED",
-        message: "Not authenticated",
-      });
-    }
+  getUserProfile: protectedProcedure.query(
+    async ({ ctx: { user, prisma } }) => {
+      if (!user?.id) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Not authenticated",
+        });
+      }
 
-    const userData = await db.user.findUnique({
-      // Use db.user
-      where: { id: user.id },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        image: true,
-        bio: true,
-        location: true,
-        accountType: true, // Add accountType here
-        profile: {
-          select: {
-            skills: {
-              select: {
-                skill: {
-                  select: {
-                    name: true,
+      const userData = await prisma.user.findUnique({
+        // Use db.user
+        where: { id: user.id },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          image: true,
+          bio: true,
+          location: true,
+          accountType: true, // Add accountType here
+          profile: {
+            select: {
+              skills: {
+                select: {
+                  skill: {
+                    select: {
+                      name: true,
+                    },
                   },
                 },
               },
+              headline: true,
+              hourlyRate: true,
+              currency: true,
+              availability: true,
+              completedJobs: true,
+              successRate: true,
+              portfolio: true,
+              education: true,
+              experience: true,
             },
-            headline: true,
-            hourlyRate: true,
-            currency: true,
-            availability: true,
-            completedJobs: true,
-            successRate: true,
-            portfolio: true,
-            education: true,
-            experience: true,
           },
-        },
-        verification: {
-          select: {
-            status: true,
+          verification: {
+            select: {
+              status: true,
+            },
           },
+          createdAt: true,
+          updatedAt: true,
+          languages: true,
+          coins: true,
         },
-        createdAt: true,
-        updatedAt: true,
-        languages: true,
-        coins: true,
-      },
-    });
-
-    if (!userData) {
-      throw new TRPCError({
-        code: "NOT_FOUND",
-        message: "User not found",
       });
-    }
 
-    return userData;
-  }),
+      if (!userData) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "User not found",
+        });
+      }
+
+      return userData;
+    }
+  ),
 
   uploadProfileImage: protectedProcedure
     .input(z.object({ filePath: z.string() }))
-    .mutation(async ({ ctx: { user, db, req, res }, input }) => {
-      // Use ctx.db, req, res
+    .mutation(async ({ ctx: { user, prisma, req, res }, input }) => {
       try {
         console.log(
           "tRPC uploadProfileImage mutation received filePath:",
@@ -82,7 +82,7 @@ export const userRouter = router({
         );
 
         // 1️⃣ Update the user's avatarUrl in the database
-        const updatedUser = await db.user.update({
+        const updatedUser = await ctx.prisma.user.update({
           // Use db.user
           where: { id: user!.id },
           data: { image: input.filePath },
@@ -125,8 +125,7 @@ export const userRouter = router({
         experience: z.any().optional(), // Using z.any() for Json type
       })
     )
-    .mutation(async ({ ctx: { user, db, req, res }, input }) => {
-      // Use ctx.db, req, res
+    .mutation(async ({ ctx: { user, prisma, req, res }, input }) => {
       try {
         // Update User model fields
         const userUpdateData: {
@@ -139,7 +138,7 @@ export const userRouter = router({
         if (input.location !== undefined)
           userUpdateData.location = input.location;
 
-        const updatedUser = await db.user.update({
+        const updatedUser = await ctx.prisma.user.update({
           // Use db.user
           where: { id: user!.id },
           data: userUpdateData,
@@ -167,7 +166,7 @@ export const userRouter = router({
         if (input.experience !== undefined)
           profileUpdateData.experience = input.experience;
 
-        await db.profile.upsert({
+        await ctx.prisma.profile.upsert({
           // Use db.profile
           where: { userId: user!.id },
           update: profileUpdateData,
@@ -197,13 +196,12 @@ export const userRouter = router({
 
   updateSkills: protectedProcedure
     .input(z.object({ skills: z.array(z.string()) }))
-    .mutation(async ({ ctx: { user, db, req, res }, input }) => {
-      // Use ctx.db, req, res
+    .mutation(async ({ ctx: { user, prisma, req, res }, input }) => {
       try {
         // Find or create skills and connect them to the user's profile
         const skillConnects = await Promise.all(
           input.skills.map(async (skillName) => {
-            const skill = await db.skill.upsert({
+            const skill = await ctx.prisma.skill.upsert({
               // Use db.skill
               where: { name: skillName },
               update: {},
@@ -217,7 +215,7 @@ export const userRouter = router({
         );
 
         // Update the user's profile to connect the skills
-        await db.profile.update({
+        await ctx.prisma.profile.update({
           // Use db.profile
           where: { userId: user!.id },
           data: {
@@ -247,48 +245,50 @@ export const userRouter = router({
       }
     }),
 
-  getSession: protectedProcedure.query(async ({ ctx }) => {
-    if (!ctx.user?.id) {
-      throw new TRPCError({
-        code: "UNAUTHORIZED",
-        message: "Not authenticated",
+  getSession: protectedProcedure.query(
+    async ({ ctx: { user, prisma, session } }) => {
+      if (!user?.id) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Not authenticated",
+        });
+      }
+
+      const fullUser = await prisma.user.findUnique({
+        where: { id: ctx.user.id },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          image: true,
+          bio: true,
+          location: true,
+          accountType: true, // Ensure accountType is selected
+        },
       });
+
+      if (!fullUser) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "User not found",
+        });
+      }
+
+      return {
+        session: session,
+        user: {
+          ...user, // Keep existing user data from context
+          ...fullUser, // Overlay with data from DB, including accountType
+        },
+      };
     }
-
-    const fullUser = await ctx.db.user.findUnique({
-      where: { id: ctx.user.id },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        image: true,
-        bio: true,
-        location: true,
-        accountType: true, // Ensure accountType is selected
-      },
-    });
-
-    if (!fullUser) {
-      throw new TRPCError({
-        code: "NOT_FOUND",
-        message: "User not found",
-      });
-    }
-
-    return {
-      session: ctx.session,
-      user: {
-        ...ctx.user, // Keep existing user data from context
-        ...fullUser, // Overlay with data from DB, including accountType
-      },
-    };
-  }),
+  ),
 
   getPublicUserProfile: protectedProcedure
     .input(z.object({ userId: z.string() }))
-    .query(async ({ ctx, input }) => {
+    .query(async ({ ctx: { prisma }, input }) => {
       const { userId } = input;
-      const userProfile = await ctx.db.user.findUnique({
+      const userProfile = await prisma.user.findUnique({
         where: { id: userId },
         select: {
           id: true,
@@ -341,7 +341,7 @@ export const userRouter = router({
       return userProfile;
     }),
 
-  list: protectedProcedure.query(async ({ ctx: { user, db } }) => {
+  list: protectedProcedure.query(async ({ ctx: { user, prisma } }) => {
     const userId = user?.id;
     if (!userId) {
       throw new TRPCError({
@@ -350,7 +350,7 @@ export const userRouter = router({
       });
     }
 
-    return db.user.findMany({
+    return prisma.user.findMany({
       where: {
         id: {
           not: userId, // Exclude the current user
@@ -400,7 +400,7 @@ export const userRouter = router({
         }),
       })
     )
-    .mutation(async ({ ctx: { user, db, req, res }, input }) => {
+    .mutation(async ({ ctx: { user, prisma, req, res }, input }) => {
       if (!user?.id) {
         throw new TRPCError({
           code: "UNAUTHORIZED",
@@ -410,7 +410,7 @@ export const userRouter = router({
 
       try {
         // Update User model
-        await db.user.update({
+        await prisma.user.update({
           where: { id: user.id },
           data: {
             accountType: input.step1.userType.toUpperCase() as AccountType, // Convert to uppercase for Prisma enum
@@ -419,7 +419,7 @@ export const userRouter = router({
         });
 
         // Update Profile model (create if not exists)
-        await db.profile.upsert({
+        await prisma.profile.upsert({
           where: { userId: user.id },
           update: {
             howHear: input.step2.howHear,
@@ -441,7 +441,7 @@ export const userRouter = router({
         // Handle skills (similar to updateSkills)
         const skillConnects = await Promise.all(
           input.step4.skills.map(async (skillName) => {
-            const skill = await db.skill.upsert({
+            const skill = await prisma.skill.upsert({
               where: { name: skillName },
               update: {},
               create: {
@@ -453,7 +453,7 @@ export const userRouter = router({
           })
         );
 
-        await db.profile.update({
+        await prisma.profile.update({
           where: { userId: user.id },
           data: {
             skills: {

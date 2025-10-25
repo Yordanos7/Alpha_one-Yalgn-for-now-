@@ -11,17 +11,7 @@ import type { CreateExpressContextOptions } from "@trpc/server/adapters/express"
 import type { Server } from "socket.io"; // Import Server type for socket.io
 import type { Context } from "./context"; // Import Context from context.ts
 
-// Define Context type directly here
-interface Context {
-  prisma: PrismaClient;
-  session: Session | null;
-  user: { id: string; email: string; accountType: string } | null; // Simplified user type
-  io: Server; // Add socket.io server instance to context
-  req: CreateExpressContextOptions["req"];
-  res: CreateExpressContextOptions["res"];
-}
-
-export const t = initTRPC.context<Context>().transformer(superjson).create();
+export const t = initTRPC.context<Context>().create({ transformer: superjson });
 
 export const router: typeof t.router = t.router;
 

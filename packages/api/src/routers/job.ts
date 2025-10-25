@@ -5,7 +5,7 @@ import { type User } from "@Alpha/db/prisma/generated/client"; // Import User ty
 
 export const jobRouter = router({
   list: protectedProcedure.query(async ({ ctx }) => {
-    return ctx.db.job.findMany({
+    return ctx.prisma.job.findMany({
       include: {
         seeker: {
           select: {
@@ -28,7 +28,7 @@ export const jobRouter = router({
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
       const { id } = input;
-      const job = await ctx.db.job.findUnique({
+      const job = await ctx.prisma.job.findUnique({
         where: { id },
         include: {
           seeker: {
@@ -113,7 +113,7 @@ export const jobRouter = router({
       // Handle skills connection
       const skillConnects = await Promise.all(
         (skills || []).map(async (skillName) => {
-          const skill = await ctx.db.skill.upsert({
+          const skill = await ctx.prisma.skill.upsert({
             where: { name: skillName },
             update: {},
             create: {
@@ -127,7 +127,7 @@ export const jobRouter = router({
 
       console.log("Skill connects array:", skillConnects); // Debug log
 
-      const job = await ctx.db.job.create({
+      const job = await ctx.prisma.job.create({
         data: {
           seekerId,
           title,
@@ -152,7 +152,7 @@ export const jobRouter = router({
     .input(z.object({ jobId: z.string() }))
     .query(async ({ ctx, input }) => {
       const { jobId } = input;
-      return ctx.db.proposal.findMany({
+      return ctx.prisma.proposal.findMany({
         where: { jobId },
         include: {
           provider: {
@@ -173,7 +173,7 @@ export const jobRouter = router({
     .input(z.object({ jobId: z.string(), providerId: z.string() }))
     .query(async ({ ctx, input }) => {
       const { jobId, providerId } = input;
-      const proposal = await ctx.db.proposal.findFirst({
+      const proposal = await ctx.prisma.proposal.findFirst({
         where: {
           jobId,
           providerId,
@@ -220,7 +220,7 @@ export const jobRouter = router({
     .input(z.object({ providerId: z.string() }))
     .query(async ({ ctx, input }) => {
       const { providerId } = input;
-      return ctx.db.proposal.findMany({
+      return ctx.prisma.proposal.findMany({
         where: { providerId },
         include: {
           job: {
@@ -247,7 +247,7 @@ export const jobRouter = router({
     .mutation(async ({ ctx, input }) => {
       const { proposalId } = input;
 
-      const updatedProposal = await ctx.db.proposal.update({
+      const updatedProposal = await ctx.prisma.proposal.update({
         where: { id: proposalId },
         data: { status: "ACCEPTED" },
         include: {
@@ -262,7 +262,7 @@ export const jobRouter = router({
 
       // Reject all other PENDING proposals for the same job and close the job
       if (updatedProposal.job?.id) {
-        await ctx.db.proposal.updateMany({
+        await ctx.prisma.proposal.updateMany({
           where: {
             jobId: updatedProposal.job.id,
             id: {
@@ -275,7 +275,7 @@ export const jobRouter = router({
           },
         });
 
-        await ctx.db.job.update({
+        await ctx.prisma.job.update({
           where: { id: updatedProposal.job.id },
           data: {
             status: "CLOSED",
@@ -296,7 +296,7 @@ export const jobRouter = router({
     .mutation(async ({ ctx, input }) => {
       const { proposalId } = input;
 
-      const updatedProposal = await ctx.db.proposal.update({
+      const updatedProposal = await ctx.prisma.proposal.update({
         where: { id: proposalId },
         data: { status: "REJECTED" },
       });
@@ -338,7 +338,7 @@ export const jobRouter = router({
       }
 
       // Check if the job exists
-      const job = await ctx.db.job.findUnique({
+      const job = await ctx.prisma.job.findUnique({
         where: { id: jobId },
       });
 
@@ -350,7 +350,7 @@ export const jobRouter = router({
       }
 
       // Create the proposal
-      const proposal = await ctx.db.proposal.create({
+      const proposal = await ctx.prisma.proposal.create({
         data: {
           jobId,
           providerId,
