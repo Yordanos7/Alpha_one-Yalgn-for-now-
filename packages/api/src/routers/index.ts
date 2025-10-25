@@ -3,6 +3,7 @@ import { userRouter } from "./user"; // Import the new userRouter morning readin
 import { conversationRouter } from "./conversation";
 import { messageRouter } from "./message";
 import { jobRouter } from "./job"; // Import the new jobRouter
+import { listingRouter } from "./listing";
 
 export const appRouter = router({
   healthCheck: publicProcedure.query(() => {
@@ -18,5 +19,6 @@ export const appRouter = router({
   conversation: conversationRouter,
   message: messageRouter,
   job: jobRouter, // Add the jobRouter
+  listing: listingRouter, // Add the listingRouter here
 });
 export type AppRouter = typeof appRouter;

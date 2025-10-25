@@ -4,9 +4,10 @@ import {
   type inferRouterInputs, // Changed to type-only import
   type inferRouterOutputs, // Changed to type-only import
 } from "@trpc/server";
-import type { Context } from "./context"; // Revert to type-only import of Context
+import superjson from "superjson"; // Import superjson
+import type { Context } from "./context"; // Ensure type-only import of Context
 
-export const t = initTRPC.context<Context>().create();
+export const t = initTRPC.context<Context>().transformer(superjson).create();
 
 export const router: typeof t.router = t.router;
 

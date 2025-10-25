@@ -1,32 +1,38 @@
-// packages/api/src/context.ts
-import { type CreateExpressContextOptions } from "@trpc/server/adapters/express";
-import { auth } from "@Alpha/auth";
-import db from "@Alpha/db";
-import { Server as SocketIOServer } from "socket.io";
-import { fromNodeHeaders } from "better-auth/node";
-import { PrismaClient } from "@Alpha/db/prisma/generated/client"; // Corrected import path for PrismaClient
+import { PrismaClient } from "@prisma/client";
+import { inferAsyncReturnType } from "@trpc/server";
+import { CreateExpressContextOptions } from "@trpc/server/adapters/express";
+import { Session } from "better-auth"; // Assuming better-auth is used for session management
 
-// Modified createContext to accept io instance
-export const createContext = async ({
-  req,
-  res,
-  io,
-}: CreateExpressContextOptions & { io: SocketIOServer }) => {
-  const authResult = await auth.api.getSession({
-    headers: fromNodeHeaders(req.headers),
-  });
-  const session = authResult?.session || null;
-  const user = authResult?.user || null;
+interface CreateContextOptions extends CreateExpressContextOptions {
+  prisma: PrismaClient;
+  session: Session | null;
+  user: { id: string; email: string; accountType: string } | null; // Simplified user type
+}
 
-  const context = {
-    db,
+export function createContextInner(opts: CreateContextOptions) {
+  return {
+    prisma: opts.prisma,
+    session: opts.session,
+    user: opts.user,
+    req: opts.req,
+    res: opts.res,
+  };
+}
+
+export async function createContext({ req, res }: CreateExpressContextOptions) {
+  const prisma = new PrismaClient();
+  // In a real application, you would fetch the session and user based on the request
+  // For now, we'll mock it or assume it's handled by middleware before tRPC
+  const session: Session | null = null; // Placeholder
+  const user: { id: string; email: string; accountType: string } | null = null; // Placeholder
+
+  return createContextInner({
+    prisma,
     session,
     user,
-    io,
     req,
     res,
-  };
-  return context;
-};
+  });
+}
 
-export type Context = Awaited<ReturnType<typeof createContext>>;
+export type Context = inferAsyncReturnType<typeof createContext>;

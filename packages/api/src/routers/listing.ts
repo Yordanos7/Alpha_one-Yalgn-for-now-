@@ -1,0 +1,219 @@
+import { z } from "zod";
+import { protectedProcedure, publicProcedure, router } from "../trpc";
+import { TRPCError } from "@trpc/server";
+import { Prisma } from "@prisma/client";
+
+const createListingSchema = z.object({
+  title: z.string().min(1, "Title is required"),
+  description: z.string().min(1, "Description is required"),
+  price: z.number().positive("Price must be a positive number"),
+  currency: z.enum(["ETB", "USD"]).default("ETB"),
+  deliveryDays: z.number().int().positive().optional(),
+  categoryId: z.string().optional(),
+  images: z.array(z.string().url()).default([]),
+  tags: z.array(z.string()).default([]),
+  isPublished: z.boolean().default(false),
+});
+
+const updateListingSchema = z.object({
+  id: z.string(),
+  title: z.string().min(1, "Title is required").optional(),
+  description: z.string().min(1, "Description is required").optional(),
+  price: z.number().positive("Price must be a positive number").optional(),
+  currency: z.enum(["ETB", "USD"]).optional(),
+  deliveryDays: z.number().int().positive().optional(),
+  categoryId: z.string().optional(),
+  images: z.array(z.string().url()).optional(),
+  tags: z.array(z.string()).optional(),
+  isPublished: z.boolean().optional(),
+});
+
+export const listingRouter = router({
+  create: protectedProcedure
+    .input(createListingSchema)
+    .mutation(async ({ ctx, input }) => {
+      const { userId } = ctx.session;
+
+      const listing = await ctx.prisma.listing.create({
+        data: {
+          ...input,
+          providerId: userId,
+          slug: input.title
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/^-*|-*$/g, ""), // Basic slug generation
+        },
+      });
+      return listing;
+    }),
+
+  getById: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const listing = await ctx.prisma.listing.findUnique({
+        where: { id: input.id },
+        include: {
+          provider: {
+            select: {
+              id: true,
+              name: true,
+              image: true,
+              accountType: true,
+            },
+          },
+          category: true,
+          skills: true,
+        },
+      });
+
+      if (!listing) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Listing not found",
+        });
+      }
+      return listing;
+    }),
+
+  getByUserId: publicProcedure
+    .input(z.object({ userId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const listings = await ctx.prisma.listing.findMany({
+        where: { providerId: input.userId },
+        include: {
+          provider: {
+            select: {
+              id: true,
+              name: true,
+              image: true,
+              accountType: true,
+            },
+          },
+          category: true,
+          skills: true,
+        },
+        orderBy: { createdAt: "desc" },
+      });
+      return listings;
+    }),
+
+  getAll: publicProcedure
+    .input(
+      z
+        .object({
+          limit: z.number().min(1).max(100).default(10),
+          cursor: z.string().nullish(),
+          categoryId: z.string().optional(),
+          search: z.string().optional(),
+          minPrice: z.number().optional(),
+          maxPrice: z.number().optional(),
+          providerType: z.enum(["INDIVIDUAL", "ORGANIZATION"]).optional(),
+        })
+        .optional()
+    )
+    .query(async ({ ctx, input }) => {
+      const limit = input?.limit ?? 10;
+      const { cursor } = input ?? {};
+
+      const where: Prisma.ListingWhereInput = {
+        isPublished: true,
+        ...(input?.categoryId && { categoryId: input.categoryId }),
+        ...(input?.search && {
+          OR: [
+            { title: { contains: input.search, mode: "insensitive" } },
+            { description: { contains: input.search, mode: "insensitive" } },
+            { tags: { has: input.search } },
+          ],
+        }),
+        ...(input?.minPrice && { price: { gte: input.minPrice } }),
+        ...(input?.maxPrice && { price: { lte: input.maxPrice } }),
+        ...(input?.providerType && {
+          provider: { accountType: input.providerType },
+        }),
+      };
+
+      const listings = await ctx.prisma.listing.findMany({
+        take: limit + 1,
+        where,
+        cursor: cursor ? { id: cursor } : undefined,
+        orderBy: { createdAt: "desc" },
+        include: {
+          provider: {
+            select: {
+              id: true,
+              name: true,
+              image: true,
+              accountType: true,
+            },
+          },
+          category: true,
+          skills: true,
+        },
+      });
+
+      let nextCursor: typeof cursor | undefined = undefined;
+      if (listings.length > limit) {
+        const nextItem = listings.pop();
+        nextCursor = nextItem?.id;
+      }
+
+      return {
+        listings,
+        nextCursor,
+      };
+    }),
+
+  update: protectedProcedure
+    .input(updateListingSchema)
+    .mutation(async ({ ctx, input }) => {
+      const { id, ...data } = input;
+      const { userId } = ctx.session;
+
+      const existingListing = await ctx.prisma.listing.findUnique({
+        where: { id },
+      });
+
+      if (!existingListing || existingListing.providerId !== userId) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You are not authorized to update this listing",
+        });
+      }
+
+      const updatedListing = await ctx.prisma.listing.update({
+        where: { id },
+        data: {
+          ...data,
+          ...(data.title && {
+            slug: data.title
+              .toLowerCase()
+              .replace(/[^a-z0-9]+/g, "-")
+              .replace(/^-*|-*$/g, ""),
+          }),
+        },
+      });
+      return updatedListing;
+    }),
+
+  delete: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const { userId } = ctx.session;
+
+      const existingListing = await ctx.prisma.listing.findUnique({
+        where: { id: input.id },
+      });
+
+      if (!existingListing || existingListing.providerId !== userId) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You are not authorized to delete this listing",
+        });
+      }
+
+      await ctx.prisma.listing.delete({
+        where: { id: input.id },
+      });
+      return { message: "Listing deleted successfully" };
+    }),
+});
