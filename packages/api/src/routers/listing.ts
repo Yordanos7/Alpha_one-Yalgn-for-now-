@@ -34,9 +34,12 @@ export const listingRouter = router({
     .mutation(async ({ ctx: { prisma, user }, input }) => {
       const userId = user!.id;
 
+      const { categoryId, ...restInput } = input;
+
       const listing = await prisma.listing.create({
         data: {
-          ...input,
+          ...restInput,
+          ...(categoryId && { categoryId }), // Only include categoryId if it's not an empty string
           providerId: userId,
           slug: input.title
             .toLowerCase()

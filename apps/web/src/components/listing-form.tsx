@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -16,6 +16,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
+import { trpc } from "@/utils/trpc";
 
 interface ListingFormProps {
   initialData?: {
@@ -54,12 +55,18 @@ export function ListingForm({
   );
   const [categoryId, setCategoryId] = useState(initialData?.categoryId || "");
   const [images, setImages] = useState<string[]>(initialData?.images || []);
-  const [newImageUrl, setNewImageUrl] = useState("");
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const [tags, setTags] = useState<string[]>(initialData?.tags || []);
   const [newTag, setNewTag] = useState("");
   const [isPublished, setIsPublished] = useState(
     initialData?.isPublished || false
   );
+
+  const { data: categories, isPending: isCategoriesPending } =
+    trpc.category.getAll.useQuery();
 
   const handleAddTag = () => {
     if (newTag.trim() !== "" && !tags.includes(newTag.trim())) {
@@ -72,11 +79,46 @@ export function ListingForm({
     setTags(tags.filter((tag) => tag !== tagToRemove));
   };
 
-  const handleAddImage = () => {
-    if (newImageUrl.trim() !== "" && !images.includes(newImageUrl.trim())) {
-      setImages([...images, newImageUrl.trim()]);
-      setNewImageUrl("");
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      setSelectedFiles(Array.from(event.target.files));
     }
+  };
+
+  const handleUploadImage = async () => {
+    if (selectedFiles.length === 0) return;
+
+    setIsUploadingImage(true);
+    const uploadedImagePaths: string[] = [];
+
+    for (const file of selectedFiles) {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      try {
+        const response = await fetch("/api/upload", {
+          method: "POST",
+          body: formData,
+        });
+
+        const { filePath, message } = await response.json();
+
+        if (!response.ok) {
+          throw new Error(message || "Upload failed");
+        }
+        uploadedImagePaths.push(filePath);
+      } catch (error) {
+        console.error("Error uploading file:", error);
+        // Handle error for individual file
+      }
+    }
+
+    setImages((prevImages) => [...prevImages, ...uploadedImagePaths]);
+    setSelectedFiles([]);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+    setIsUploadingImage(false);
   };
 
   const handleRemoveImage = (imageToRemove: string) => {
@@ -97,15 +139,6 @@ export function ListingForm({
       isPublished,
     });
   };
-
-  // Mock categories for now
-  const mockCategories = [
-    { id: "cat1", name: "Web Development" },
-    { id: "cat2", name: "Graphic Design" },
-    { id: "cat3", name: "Digital Marketing" },
-    { id: "cat4", name: "Writing & Translation" },
-    { id: "cat5", name: "Video & Animation" },
-  ];
 
   return (
     <Card className="bg-[#2C2C2C] p-6 rounded-lg">
@@ -196,38 +229,59 @@ export function ListingForm({
             <Label htmlFor="category" className="text-gray-300">
               Category
             </Label>
-            <Select value={categoryId} onValueChange={setCategoryId}>
+            <Select
+              value={categoryId}
+              onValueChange={setCategoryId}
+              disabled={isCategoriesPending}
+            >
               <SelectTrigger className="bg-[#3A3A3A] border-none text-white mt-1">
                 <SelectValue placeholder="Select a category" />
               </SelectTrigger>
               <SelectContent className="bg-[#3A3A3A] text-white">
-                {mockCategories.map((cat) => (
-                  <SelectItem key={cat.id} value={cat.id}>
-                    {cat.name}
+                {isCategoriesPending ? (
+                  <SelectItem value="loading" disabled>
+                    Loading...
                   </SelectItem>
-                ))}
+                ) : (
+                  categories?.map((cat: { id: string; name: string }) => (
+                    <SelectItem key={cat.id} value={cat.id}>
+                      {cat.name}
+                    </SelectItem>
+                  ))
+                )}
               </SelectContent>
             </Select>
           </div>
 
           <div>
             <Label htmlFor="images" className="text-gray-300">
-              Images/Videos (URLs for now)
+              Images/Videos
             </Label>
-            <div className="flex space-x-2 mt-1">
+            <div className="flex items-center space-x-2 mt-1">
               <Input
-                id="newImageUrl"
-                value={newImageUrl}
-                onChange={(e) => setNewImageUrl(e.target.value)}
-                placeholder="Add image/video URL"
+                id="images"
+                type="file"
+                multiple
+                onChange={handleFileChange}
                 className="flex-1 bg-[#3A3A3A] border-none text-white placeholder-gray-400"
+                ref={fileInputRef}
               />
               <Button
                 type="button"
-                onClick={handleAddImage}
+                onClick={handleUploadImage}
                 className="bg-blue-500 hover:bg-blue-600 text-white"
+                disabled={selectedFiles.length === 0 || isUploadingImage}
               >
-                <Plus size={20} />
+                {isUploadingImage ? (
+                  <>
+                    <Upload size={20} className="animate-spin mr-2" />{" "}
+                    Uploading...
+                  </>
+                ) : (
+                  <>
+                    <Upload size={20} className="mr-2" /> Upload
+                  </>
+                )}
               </Button>
             </div>
             <div className="flex flex-wrap gap-2 mt-3">
@@ -247,7 +301,7 @@ export function ListingForm({
               ))}
             </div>
             <p className="text-sm text-gray-500 mt-2">
-              (In a real implementation, this would be a file upload component.)
+              (Upload multiple images/videos for your listing.)
             </p>
           </div>
 

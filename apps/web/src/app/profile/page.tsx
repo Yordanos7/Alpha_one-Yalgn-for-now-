@@ -60,6 +60,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ListingForm } from "@/components/listing-form"; // Import ListingForm
+import { ReviewListingDialog } from "@/components/review-listing-dialog";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -71,12 +72,26 @@ export default function ProfilePage() {
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [isEditingSkills, setIsEditingSkills] = useState(false);
   const [isListingFormOpen, setIsListingFormOpen] = useState(false); // State for controlling the listing form modal
+  const [isReviewListingDialogOpen, setIsReviewListingDialogOpen] =
+    useState(false);
+  const [newlyCreatedListing, setNewlyCreatedListing] = useState<any | null>(
+    null
+  );
 
   const {
     data: userProfileData,
     isPending: isProfilePending,
     refetch: refetchUserProfile,
   } = trpc.user.getUserProfile.useQuery();
+
+  const {
+    data: userListings,
+    isPending: isListingsPending,
+    refetch: refetchUserListings,
+  } = trpc.listing.getByUserId.useQuery(
+    { userId: userProfileData?.id || "" },
+    { enabled: !!userProfileData?.id }
+  );
 
   const createListingMutation = trpc.listing.create.useMutation();
 
@@ -226,7 +241,7 @@ export default function ProfilePage() {
     );
   }
 
-  if (!session || !userProfileData) {
+  if (!session || !userProfileData || isListingsPending) {
     return null;
   }
 
@@ -236,10 +251,12 @@ export default function ProfilePage() {
 
   const handleCreateListing = async (data: any) => {
     try {
-      await createListingMutation.mutateAsync(data);
+      const createdListing = await createListingMutation.mutateAsync(data);
       toast.success("Listing created successfully!");
       setIsListingFormOpen(false);
-      // Optionally, you can refetch listings here if they are displayed on the profile
+      setNewlyCreatedListing(createdListing);
+      setIsReviewListingDialogOpen(true);
+      refetchUserListings(); // Refetch user listings to update the displayed list
     } catch (error) {
       console.error("Error creating listing:", error);
       toast.error("Error creating listing. Please try again.");
@@ -792,25 +809,65 @@ export default function ProfilePage() {
               </Dialog>
             </CardHeader>
             <CardContent className="p-0 text-muted-foreground ">
-              <p>Your posted products and services will appear here.</p>
-
-              {/* Mock listings for demonstration */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                <Card className="bg-[#2C2C2C] p-4 rounded-lg">
-                  <h3 className="font-semibold text-white">Mock Product 1</h3>
-                  <p className="text-sm text-gray-400">
-                    A great service offered by you.
-                  </p>
-                  <p className="text-green-500 font-bold">$100 USD</p>
-                </Card>
-                <Card className="bg-[#2C2C2C] p-4 rounded-lg">
-                  <h3 className="font-semibold text-white">Mock Product 2</h3>
-                  <p className="text-sm text-gray-400">
-                    Another fantastic offering.
-                  </p>
-                  <p className="text-green-500 font-bold">$250 USD</p>
-                </Card>
-              </div>
+              {userListings && userListings.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                  {userListings.map(
+                    (
+                      listing: {
+                        id: string;
+                        title: string;
+                        description: string;
+                        price: number;
+                        currency: string;
+                        images: string[];
+                        tags: string[];
+                        isPublished: boolean;
+                      },
+                      index: number
+                    ) => (
+                      <Card
+                        key={listing.id}
+                        className="bg-[#2C2C2C] p-4 rounded-lg"
+                      >
+                        <h3 className="font-semibold text-white">
+                          {listing.title}
+                        </h3>
+                        <p className="text-sm text-gray-400">
+                          {listing.description}
+                        </p>
+                        <p className="text-green-500 font-bold">
+                          {listing.price} {listing.currency}
+                        </p>
+                        {listing.images && listing.images.length > 0 && (
+                          <div className="mt-2">
+                            <img
+                              src={listing.images[0]}
+                              alt={listing.title}
+                              className="w-full h-24 object-cover rounded-md"
+                            />
+                          </div>
+                        )}
+                        <div className="mt-2 flex flex-wrap gap-1">
+                          {listing.tags.map((tag: string, tagIndex: number) => (
+                            <Badge
+                              key={tagIndex}
+                              variant="secondary"
+                              className="text-xs"
+                            >
+                              {tag}
+                            </Badge>
+                          ))}
+                        </div>
+                        <p className="text-xs text-gray-500 mt-2">
+                          {listing.isPublished ? "Published" : "Draft"}
+                        </p>
+                      </Card>
+                    )
+                  )}
+                </div>
+              ) : (
+                <p>You haven't posted any products or services yet.</p>
+              )}
             </CardContent>
           </Card>
 

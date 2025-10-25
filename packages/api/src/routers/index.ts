@@ -4,6 +4,7 @@ import { conversationRouter } from "./conversation";
 import { messageRouter } from "./message";
 import { jobRouter } from "./job"; // Import the new jobRouter
 import { listingRouter } from "./listing";
+import { categoryRouter } from "./category";
 
 export const appRouter = router({
   healthCheck: publicProcedure.query(() => {
@@ -20,5 +21,6 @@ export const appRouter = router({
   message: messageRouter,
   job: jobRouter, // Add the jobRouter
   listing: listingRouter, // Add the listingRouter here
+  category: categoryRouter,
 });
 export type AppRouter = typeof appRouter;
