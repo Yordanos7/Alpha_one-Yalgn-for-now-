@@ -2,17 +2,13 @@
   "name": "@Alpha/db",
   "type": "module",
   "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./src/index.ts"
-    },
-    "./*": {
-      "types": "./dist/*.d.ts",
-      "default": "./src/*.ts"
+    ".": "./src/index.ts",
+    "./generated/client": {
+      "types": "./prisma/generated/client/index.d.ts",
+      "default": "./prisma/generated/client/index.js"
     }
   },
   "scripts": {
-    "build": "tsdown",
     "db:push": "prisma db push",
     "db:studio": "prisma studio",
     "db:generate": "prisma generate",

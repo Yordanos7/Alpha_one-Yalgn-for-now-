@@ -498,8 +498,8 @@ const config = {
       "fromEnvVar": null
     },
     "config": {
-      "moduleFormat": "esm",
       "runtime": "nodejs",
+      "moduleFormat": "esm",
       "engineType": "library"
     },
     "binaryTargets": [
@@ -514,7 +514,8 @@ const config = {
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-    "rootEnvPath": null
+    "rootEnvPath": null,
+    "schemaEnvPath": "../../../../apps/server/.env"
   },
   "relativePath": "../schema",
   "clientVersion": "6.17.0",

@@ -82,7 +82,7 @@ export const userRouter = router({
         );
 
         // 1️⃣ Update the user's avatarUrl in the database
-        const updatedUser = await ctx.prisma.user.update({
+        const updatedUser = await prisma.user.update({
           // Use db.user
           where: { id: user!.id },
           data: { image: input.filePath },
@@ -138,7 +138,7 @@ export const userRouter = router({
         if (input.location !== undefined)
           userUpdateData.location = input.location;
 
-        const updatedUser = await ctx.prisma.user.update({
+        const updatedUser = await prisma.user.update({
           // Use db.user
           where: { id: user!.id },
           data: userUpdateData,
@@ -166,7 +166,7 @@ export const userRouter = router({
         if (input.experience !== undefined)
           profileUpdateData.experience = input.experience;
 
-        await ctx.prisma.profile.upsert({
+        await prisma.profile.upsert({
           // Use db.profile
           where: { userId: user!.id },
           update: profileUpdateData,
@@ -201,7 +201,7 @@ export const userRouter = router({
         // Find or create skills and connect them to the user's profile
         const skillConnects = await Promise.all(
           input.skills.map(async (skillName) => {
-            const skill = await ctx.prisma.skill.upsert({
+            const skill = await prisma.skill.upsert({
               // Use db.skill
               where: { name: skillName },
               update: {},
@@ -215,7 +215,7 @@ export const userRouter = router({
         );
 
         // Update the user's profile to connect the skills
-        await ctx.prisma.profile.update({
+        await prisma.profile.update({
           // Use db.profile
           where: { userId: user!.id },
           data: {
@@ -255,7 +255,7 @@ export const userRouter = router({
       }
 
       const fullUser = await prisma.user.findUnique({
-        where: { id: ctx.user.id },
+        where: { id: user.id },
         select: {
           id: true,
           name: true,

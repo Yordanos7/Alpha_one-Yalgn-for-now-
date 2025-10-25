@@ -1,5 +1,6 @@
-import { PrismaClient, AccountType } from "../prisma/generated"; // Import AccountType
+const { PrismaClient } = await import("../prisma/generated/client/index.js");
+export * from "../prisma/generated/client/index.js";
+
 const prisma = new PrismaClient();
 
 export default prisma;
-export { AccountType }; // Re-export AccountType

@@ -1,8 +1,7 @@
 generator client {
-  provider = "prisma-client-js" // Changed to prisma-client-js
-  output   = "../generated" // Corrected the output path
+  provider     = "prisma-client-js"
+  output       = "../generated/client"
   moduleFormat = "esm"
-  runtime = "nodejs"
 }
 
 datasource db {
