@@ -1,11 +1,25 @@
 import {
   initTRPC,
   TRPCError,
-  type inferRouterInputs, // Changed to type-only import
-  type inferRouterOutputs, // Changed to type-only import
+  type inferRouterInputs,
+  type inferRouterOutputs,
 } from "@trpc/server";
 import superjson from "superjson"; // Import superjson
-import type { Context } from "./context"; // Ensure type-only import of Context
+import { PrismaClient } from "@prisma/client"; // Import PrismaClient
+import type { Session } from "better-auth"; // Ensure type-only import of Session
+import type { CreateExpressContextOptions } from "@trpc/server/adapters/express"; // Ensure type-only import of CreateExpressContextOptions
+import type { Server } from "socket.io"; // Import Server type for socket.io
+import type { Context } from "./context"; // Import Context from context.ts
+
+// Define Context type directly here
+interface Context {
+  prisma: PrismaClient;
+  session: Session | null;
+  user: { id: string; email: string; accountType: string } | null; // Simplified user type
+  io: Server; // Add socket.io server instance to context
+  req: CreateExpressContextOptions["req"];
+  res: CreateExpressContextOptions["res"];
+}
 
 export const t = initTRPC.context<Context>().transformer(superjson).create();
 

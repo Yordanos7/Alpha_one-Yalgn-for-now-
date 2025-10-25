@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { protectedProcedure, publicProcedure, router } from "../trpc";
 import { TRPCError } from "@trpc/server";
-import { Prisma } from "@prisma/client";
+import { Prisma } from "@Alpha/db/prisma/generated";
 
 const createListingSchema = z.object({
   title: z.string().min(1, "Title is required"),
