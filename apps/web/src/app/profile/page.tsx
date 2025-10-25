@@ -777,12 +777,9 @@ export default function ProfilePage() {
                 </DialogContent>
               </Dialog>
             </CardHeader>
-            <CardContent className="p-0 text-muted-foreground">
+            <CardContent className="p-0 text-muted-foreground ">
               <p>Your posted products and services will appear here.</p>
-              <p className="mt-2">
-                (This section will fetch and display actual listings from the
-                backend once implemented.)
-              </p>
+
               {/* Mock listings for demonstration */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                 <Card className="bg-[#2C2C2C] p-4 rounded-lg">
