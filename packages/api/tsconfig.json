@@ -9,7 +9,7 @@
     "rootDir": "src",
     "paths": {
       "@Alpha/auth": ["../../packages/auth/src"],
-      "@Alpha/db": ["../../packages/db/src"]
+      "@Alpha/db": ["../../packages/db"]
     }
   },
   "include": ["src/**/*.ts", "src/types/**/*.d.ts"],

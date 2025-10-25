@@ -96,7 +96,6 @@ export default function IndividualProfilePage() {
   }
 
   // Assuming userProfile now contains the data from the backend
-  const profileData = userProfile.profile; // Access the nested profile object
   const isOwnProfile = session?.user?.id === userId; // Check if the logged-in user is viewing their own profile
 
   const handleCreateListing = (data: any) => {
@@ -125,9 +124,9 @@ export default function IndividualProfilePage() {
               </Avatar>
               <div>
                 <h1 className="text-4xl font-bold">{userProfile.name}</h1>
-                {profileData?.headline && (
+                {userProfile.profile?.headline && (
                   <p className="text-gray-400 text-lg mt-1">
-                    {profileData.headline}
+                    {userProfile.profile.headline}
                   </p>
                 )}
                 <div className="flex items-center text-gray-400 mt-2 text-sm">
@@ -155,101 +154,105 @@ export default function IndividualProfilePage() {
               </div>
             )}
 
-            {profileData?.skills && profileData.skills.length > 0 && (
-              <div className="mb-6">
-                <h2 className="text-xl font-semibold mb-3">Skills</h2>
-                <div className="flex flex-wrap gap-2">
-                  {profileData.skills.map(
-                    (s: UserProfile["profile"]["skills"][number]) => (
-                      <span
-                        key={s.skill.name}
-                        className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm"
-                      >
-                        {s.skill.name}
-                      </span>
-                    )
-                  )}
+            {userProfile.profile?.skills &&
+              userProfile.profile.skills.length > 0 && (
+                <div className="mb-6">
+                  <h2 className="text-xl font-semibold mb-3">Skills</h2>
+                  <div className="flex flex-wrap gap-2">
+                    {userProfile.profile.skills.map(
+                      (s: UserProfile["profile"]["skills"][number]) => (
+                        <span
+                          key={s.skill.name}
+                          className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm"
+                        >
+                          {s.skill.name}
+                        </span>
+                      )
+                    )}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            {(profileData?.hourlyRate || profileData?.completedJobs) && (
+            {(userProfile.profile?.hourlyRate ||
+              userProfile.profile?.completedJobs) && (
               <div className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-                {profileData.hourlyRate && (
+                {userProfile.profile.hourlyRate && (
                   <Card className="bg-[#3A3A3A] p-4 rounded-lg">
                     <CardTitle className="text-lg font-semibold text-gray-300 mb-2">
                       Hourly Rate
                     </CardTitle>
                     <CardContent className="text-yellow-500 text-2xl font-bold p-0">
-                      {profileData.currency} {profileData.hourlyRate}
+                      {userProfile.profile.currency}{" "}
+                      {userProfile.profile.hourlyRate}
                     </CardContent>
                   </Card>
                 )}
-                {profileData.completedJobs !== undefined && (
+                {userProfile.profile.completedJobs !== undefined && (
                   <Card className="bg-[#3A3A3A] p-4 rounded-lg">
                     <CardTitle className="text-lg font-semibold text-gray-300 mb-2">
                       Completed Jobs
                     </CardTitle>
                     <CardContent className="text-green-500 text-2xl font-bold p-0">
-                      {profileData.completedJobs}
+                      {userProfile.profile.completedJobs}
                     </CardContent>
                   </Card>
                 )}
               </div>
             )}
 
-            {profileData?.experience && (
+            {userProfile.profile?.experience && (
               <div className="mb-6">
                 <h2 className="text-xl font-semibold mb-3">Experience</h2>
                 {/* Render structured experience data */}
                 <p className="text-gray-300">
-                  {JSON.stringify(profileData.experience)}
+                  {JSON.stringify(userProfile.profile.experience)}
                 </p>
               </div>
             )}
 
-            {profileData?.education && (
+            {userProfile.profile?.education && (
               <div className="mb-6">
                 <h2 className="text-xl font-semibold mb-3">Education</h2>
                 {/* Render structured education data */}
                 <p className="text-gray-300">
-                  {JSON.stringify(profileData.education)}
+                  {JSON.stringify(userProfile.profile.education)}
                 </p>
               </div>
             )}
 
-            {profileData?.portfolio && profileData.portfolio.length > 0 && (
-              <div className="mb-6">
-                <h2 className="text-xl font-semibold mb-3">Portfolio</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {profileData.portfolio.map(
-                    (item: UserProfile["profile"]["portfolio"][number]) => (
-                      <Card
-                        key={item.id}
-                        className="bg-[#3A3A3A] p-4 rounded-lg hover:bg-[#4A4A4A] transition-colors"
-                      >
-                        <CardTitle className="text-lg font-semibold text-white mb-2">
-                          {item.title}
-                        </CardTitle>
-                        <CardContent className="p-0 text-gray-400 text-sm">
-                          <p className="mb-2">{item.description}</p>
-                          {item.link && (
-                            <a
-                              href={item.link}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-blue-400 hover:underline flex items-center"
-                            >
-                              <Link className="mr-1" size={16} /> View Project
-                            </a>
-                          )}
-                        </CardContent>
-                      </Card>
-                    )
-                  )}
+            {userProfile.profile?.portfolio &&
+              userProfile.profile.portfolio.length > 0 && (
+                <div className="mb-6">
+                  <h2 className="text-xl font-semibold mb-3">Portfolio</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {userProfile.profile.portfolio.map(
+                      (item: UserProfile["profile"]["portfolio"][number]) => (
+                        <Card
+                          key={item.id}
+                          className="bg-[#3A3A3A] p-4 rounded-lg hover:bg-[#4A4A4A] transition-colors"
+                        >
+                          <CardTitle className="text-lg font-semibold text-white mb-2">
+                            {item.title}
+                          </CardTitle>
+                          <CardContent className="p-0 text-gray-400 text-sm">
+                            <p className="mb-2">{item.description}</p>
+                            {item.link && (
+                              <a
+                                href={item.link}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-400 hover:underline flex items-center"
+                              >
+                                <Link className="mr-1" size={16} /> View Project
+                              </a>
+                            )}
+                          </CardContent>
+                        </Card>
+                      )
+                    )}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
             <div className="flex justify-end space-x-4 mt-8">
               <Button

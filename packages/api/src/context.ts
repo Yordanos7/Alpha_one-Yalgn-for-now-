@@ -1,9 +1,11 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client"; // Import PrismaClient directly from @prisma/client
 import type { inferAsyncReturnType } from "@trpc/server"; // type-only import
 import type { CreateExpressContextOptions } from "@trpc/server/adapters/express"; // type-only import
 import type { Session } from "better-auth"; // type-only import
-import type { Server } from "socket.io"; // Import Server type for socket.io
-import type { User as PrismaUser } from "@prisma/client"; // Import Prisma's User type
+import type { Server } from "socket.io"; // Import Server from socket.io
+import type { User as PrismaUser } from "@prisma/client"; // Import Prisma's User type from @prisma/client
+import { auth } from "@Alpha/auth"; // Import Better-Auth instance
+import { fromNodeHeaders } from "better-auth/node"; // Import fromNodeHeaders
 
 // Refine the User type to match what's typically available in the session/context
 type ContextUser = Pick<
@@ -24,13 +26,12 @@ type ContextUser = Pick<
 >;
 
 interface CreateContextOptions {
-  // Removed extends CreateExpressContextOptions
-  prisma: PrismaClient;
+  prisma: PrismaClient; // Use PrismaClient directly
   session: Session | null;
-  user: ContextUser | null; // Use the refined ContextUser type
-  io: Server; // Add socket.io server instance to context
-  req: CreateExpressContextOptions["req"]; // Add req
-  res: CreateExpressContextOptions["res"]; // Add res
+  user: ContextUser | null;
+  io: Server;
+  req: CreateExpressContextOptions["req"];
+  res: CreateExpressContextOptions["res"];
 }
 
 export function createContextInner(opts: CreateContextOptions) {
@@ -38,28 +39,58 @@ export function createContextInner(opts: CreateContextOptions) {
     prisma: opts.prisma,
     session: opts.session,
     user: opts.user,
-    io: opts.io, // Include io in the context
+    io: opts.io,
     req: opts.req,
     res: opts.res,
   };
 }
 
-export async function createContext(opts: CreateExpressContextOptions) {
-  // Changed parameter name to opts
-  const prisma = new PrismaClient();
-  // In a real application, you would fetch the session and user based on the request
-  // For now, we'll mock it or assume it's handled by middleware before tRPC
-  const session: Session | null = null; // Placeholder
-  const user: ContextUser | null = null; // Use the refined ContextUser type
-  const io: Server = {} as Server; // Placeholder for socket.io server
+export async function createContext(
+  opts: CreateExpressContextOptions & { io: Server }
+) {
+  const prisma = new PrismaClient(); // Instantiate PrismaClient directly
+
+  let session: Session | null = null;
+  let user: ContextUser | null = null;
+
+  try {
+    const authResult = await auth.api.getSession({
+      headers: fromNodeHeaders(opts.req.headers),
+    });
+    session = authResult?.session || null;
+
+    if (session?.userId) {
+      user = (await prisma.user.findUnique({
+        where: { id: session.userId },
+        select: {
+          id: true,
+          email: true,
+          name: true,
+          image: true,
+          accountType: true,
+          createdAt: true,
+          updatedAt: true,
+          bio: true,
+          location: true,
+          languages: true,
+          isActive: true,
+          isVerified: true,
+          coins: true,
+        },
+      })) as ContextUser | null;
+    }
+  } catch (error) {
+    console.error("Error fetching session or user in createContext:", error);
+    // Continue with null session and user if an error occurs
+  }
 
   return createContextInner({
     prisma,
     session,
     user,
-    io, // Pass io to createContextInner
-    req: opts.req, // Use opts.req
-    res: opts.res, // Use opts.res
+    io: opts.io,
+    req: opts.req,
+    res: opts.res,
   });
 }
 
