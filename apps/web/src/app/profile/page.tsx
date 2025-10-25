@@ -78,6 +78,8 @@ export default function ProfilePage() {
     refetch: refetchUserProfile,
   } = trpc.user.getUserProfile.useQuery();
 
+  const createListingMutation = trpc.listing.create.useMutation();
+
   const [profileForm, setProfileForm] = useState({
     name: "",
     bio: "",
@@ -117,7 +119,7 @@ export default function ProfilePage() {
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
-      setSelectedFile(event.target.files[0]);
+      setSelectedFile(event.target.files[0] ?? null);
     }
   };
 
@@ -232,11 +234,16 @@ export default function ProfilePage() {
   const profile = userProfileData.profile;
   const verification = userProfileData.verification;
 
-  const handleCreateListing = (data: any) => {
-    console.log("Creating listing with data (frontend only):", data);
-    // In a real scenario, this would trigger a tRPC mutation
-    setIsListingFormOpen(false); // Close the form after submission
-    // For now, we'll just log and close.
+  const handleCreateListing = async (data: any) => {
+    try {
+      await createListingMutation.mutateAsync(data);
+      toast.success("Listing created successfully!");
+      setIsListingFormOpen(false);
+      // Optionally, you can refetch listings here if they are displayed on the profile
+    } catch (error) {
+      console.error("Error creating listing:", error);
+      toast.error("Error creating listing. Please try again.");
+    }
   };
 
   // Placeholder data for demonstration, matching the new design image
@@ -427,7 +434,7 @@ export default function ProfilePage() {
               </Button>
             </CardTitle>
             <div className="flex flex-wrap gap-2 mb-3">
-              {userProfile.skills.map((skill, index) => (
+              {userProfile.skills.map((skill: string, index: number) => (
                 <Badge key={index} variant="default" className="px-3 py-1">
                   {skill}
                 </Badge>
@@ -663,7 +670,7 @@ export default function ProfilePage() {
             </CardHeader>
             <CardContent className="p-0">
               <div className="flex flex-wrap gap-2">
-                {userProfile.skills.map((skill, index) => (
+                {userProfile.skills.map((skill: string, index: number) => (
                   <Badge key={index} variant="secondary" className="px-3 py-1">
                     {skill}
                   </Badge>
@@ -770,9 +777,16 @@ export default function ProfilePage() {
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="bg-[#2C2C2C] text-white p-6 rounded-lg max-w-3xl">
+                  <DialogHeader>
+                    <DialogTitle>Create a new listing</DialogTitle>
+                    <DialogDescription>
+                      Fill out the form below to post a new product or service.
+                    </DialogDescription>
+                  </DialogHeader>
                   <ListingForm
                     onSubmit={handleCreateListing}
                     onCancel={() => setIsListingFormOpen(false)}
+                    isSubmitting={createListingMutation.isPending}
                   />
                 </DialogContent>
               </Dialog>
