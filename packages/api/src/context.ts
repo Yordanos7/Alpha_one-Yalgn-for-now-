@@ -1,32 +1,30 @@
-import { PrismaClient } from "@prisma/client"; // Import PrismaClient directly from @prisma/client
 import type { inferAsyncReturnType } from "@trpc/server"; // type-only import
 import type { CreateExpressContextOptions } from "@trpc/server/adapters/express"; // type-only import
 import type { Session } from "better-auth"; // type-only import
 import type { Server } from "socket.io"; // Import Server from socket.io
-import type { User as PrismaUser } from "@prisma/client"; // Import Prisma's User type from @prisma/client
 import { auth } from "@Alpha/auth"; // Import Better-Auth instance
 import { fromNodeHeaders } from "better-auth/node"; // Import fromNodeHeaders
+import { prisma } from "./prisma"; // Import the singleton Prisma client
 
 // Refine the User type to match what's typically available in the session/context
-type ContextUser = Pick<
-  PrismaUser,
-  | "id"
-  | "email"
-  | "name"
-  | "image"
-  | "accountType"
-  | "createdAt"
-  | "updatedAt"
-  | "bio"
-  | "location"
-  | "languages"
-  | "isActive"
-  | "isVerified"
-  | "coins"
->;
+type ContextUser = {
+  id: string;
+  email: string | null;
+  name: string;
+  image: string | null;
+  accountType: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+  bio: string | null;
+  location: string | null;
+  languages: string[];
+  isActive: boolean;
+  isVerified: boolean;
+  coins: number;
+  emailVerified: boolean;
+};
 
 interface CreateContextOptions {
-  prisma: PrismaClient; // Use PrismaClient directly
   session: Session | null;
   user: ContextUser | null;
   io: Server;
@@ -36,7 +34,7 @@ interface CreateContextOptions {
 
 export function createContextInner(opts: CreateContextOptions) {
   return {
-    prisma: opts.prisma,
+    prisma,
     session: opts.session,
     user: opts.user,
     io: opts.io,
@@ -48,8 +46,6 @@ export function createContextInner(opts: CreateContextOptions) {
 export async function createContext(
   opts: CreateExpressContextOptions & { io: Server }
 ) {
-  const prisma = new PrismaClient(); // Instantiate PrismaClient directly
-
   let session: Session | null = null;
   let user: ContextUser | null = null;
 
@@ -85,7 +81,6 @@ export async function createContext(
   }
 
   return createContextInner({
-    prisma,
     session,
     user,
     io: opts.io,
