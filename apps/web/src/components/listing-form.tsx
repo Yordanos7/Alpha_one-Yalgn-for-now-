@@ -59,7 +59,6 @@ export function ListingForm({
   const [videos, setVideos] = useState<string[]>(initialData?.videos || []);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
-  const [isPendingUploads, setIsPendingUploads] = useState(false); // New state
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [tags, setTags] = useState<string[]>(initialData?.tags || []);
@@ -88,50 +87,6 @@ export function ListingForm({
     }
   };
 
-  const handleUpload = async () => {
-    if (selectedFiles.length === 0) return;
-
-    setIsUploadingImage(true);
-    setIsPendingUploads(true);
-    const uploadedImagePaths: string[] = [];
-    const uploadedVideoPaths: string[] = [];
-
-    for (const file of selectedFiles) {
-      const formData = new FormData();
-      formData.append("file", file);
-
-      try {
-        const response = await fetch("/api/upload", {
-          method: "POST",
-          body: formData,
-        });
-
-        const result = await response.json();
-
-        if (result.success) {
-          if (file.type.startsWith("image/")) {
-            uploadedImagePaths.push(result.path);
-          } else if (file.type.startsWith("video/")) {
-            uploadedVideoPaths.push(result.path);
-          }
-        } else {
-          console.error("Error uploading file:", result);
-        }
-      } catch (error) {
-        console.error("Error uploading file:", error);
-      }
-    }
-
-    setImages((prevImages) => [...prevImages, ...uploadedImagePaths]);
-    setVideos((prevVideos) => [...prevVideos, ...uploadedVideoPaths]);
-    setSelectedFiles([]);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
-    setIsUploadingImage(false);
-    setIsPendingUploads(false);
-  };
-
   const handleRemoveImage = (imageToRemove: string) => {
     setImages(images.filter((image) => image !== imageToRemove));
   };
@@ -140,16 +95,43 @@ export function ListingForm({
     setVideos(videos.filter((video) => video !== videoToRemove));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsUploadingImage(true);
 
-    if (isPendingUploads) {
-      alert("Please wait for all images/videos to finish uploading.");
-      return;
+    const uploadedImagePaths: string[] = [];
+    const uploadedVideoPaths: string[] = [];
+
+    if (selectedFiles.length > 0) {
+      for (const file of selectedFiles) {
+        const formData = new FormData();
+        formData.append("file", file);
+
+        try {
+          const response = await fetch("/api/upload", {
+            method: "POST",
+            body: formData,
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            if (file.type.startsWith("image/")) {
+              uploadedImagePaths.push(result.path);
+            } else if (file.type.startsWith("video/")) {
+              uploadedVideoPaths.push(result.path);
+            }
+          } else {
+            console.error("Error uploading file:", result);
+          }
+        } catch (error) {
+          console.error("Error uploading file:", error);
+        }
+      }
     }
 
-    console.log("Submitting listing with images:", images);
-    console.log("Submitting listing with videos:", videos);
+    const finalImages = [...images, ...uploadedImagePaths];
+    const finalVideos = [...videos, ...uploadedVideoPaths];
 
     onSubmit({
       title,
@@ -158,11 +140,13 @@ export function ListingForm({
       currency,
       deliveryDays: deliveryDays ? parseInt(deliveryDays) : undefined,
       categoryId,
-      images,
-      videos,
+      images: finalImages,
+      videos: finalVideos,
       tags,
       isPublished,
     });
+
+    setIsUploadingImage(false);
   };
 
   return (
@@ -291,23 +275,6 @@ export function ListingForm({
                 className="flex-1 bg-[#3A3A3A] border-none text-white placeholder-gray-400"
                 ref={fileInputRef}
               />
-              <Button
-                type="button"
-                onClick={handleUpload}
-                className="bg-blue-500 hover:bg-blue-600 text-white"
-                disabled={selectedFiles.length === 0 || isUploadingImage}
-              >
-                {isUploadingImage ? (
-                  <>
-                    <Upload size={20} className="animate-spin mr-2" />{" "}
-                    Uploading...
-                  </>
-                ) : (
-                  <>
-                    <Upload size={20} className="mr-2" /> Upload
-                  </>
-                )}
-              </Button>
             </div>
             <div className="flex flex-wrap gap-2 mt-3">
               {images.map((image) => (
@@ -405,9 +372,9 @@ export function ListingForm({
             <Button
               type="submit"
               className="bg-green-600 hover:bg-green-700 text-white font-semibold"
-              disabled={isSubmitting || isPendingUploads} // Disable if uploads are pending
+              disabled={isSubmitting || isUploadingImage}
             >
-              {isSubmitting ? "Saving..." : "Save Listing"}
+              {isSubmitting || isUploadingImage ? "Saving..." : "Save Listing"}
             </Button>
           </div>
         </form>

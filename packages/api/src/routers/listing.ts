@@ -34,6 +34,10 @@ export const listingRouter = router({
   create: protectedProcedure
     .input(createListingSchema)
     .mutation(async ({ ctx: { prisma, user }, input }) => {
+      console.log(
+        "Data received in createListing mutation:",
+        JSON.stringify(input, null, 2)
+      );
       const userId = user!.id;
 
       const { categoryId, ...restInput } = input;

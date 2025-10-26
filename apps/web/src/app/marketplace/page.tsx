@@ -19,8 +19,9 @@ import {
   Plus,
   X, // For closing the modal
 } from "lucide-react";
+import { trpc } from "@/utils/trpc"; // Import trpc
 
-// Define a mock Listing interface based on schema.prisma
+// Define Listing interface based on the backend type
 interface Listing {
   id: string;
   title: string;
@@ -43,98 +44,6 @@ interface Listing {
   createdAt: Date;
   updatedAt: Date;
 }
-
-// Mock listings data
-const mockListings: Listing[] = [
-  {
-    id: "lst1",
-    title: "Custom Logo Design",
-    description: "Professional logo design service for your brand.",
-    price: 150.0,
-    currency: "USD",
-    deliveryDays: 5,
-    categoryId: "cat2",
-    images: ["https://via.placeholder.com/150/0000FF/FFFFFF?text=Logo1"],
-    tags: ["logo", "design", "branding"],
-    isPublished: true,
-    rating: 4.8,
-    reviewCount: 25,
-    provider: {
-      id: "user1",
-      name: "Freelancer A",
-      image: "https://github.com/shadcn.png",
-      accountType: "INDIVIDUAL",
-    },
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  {
-    id: "lst2",
-    title: "E-commerce Website Development",
-    description: "Build a fully functional e-commerce website.",
-    price: 1200.0,
-    currency: "USD",
-    deliveryDays: 30,
-    categoryId: "cat1",
-    images: ["https://via.placeholder.com/150/FF0000/FFFFFF?text=Web1"],
-    tags: ["web development", "e-commerce", "react"],
-    isPublished: true,
-    rating: 4.5,
-    reviewCount: 10,
-    provider: {
-      id: "org1",
-      name: "Org Solutions",
-      image: "https://github.com/shadcn.png",
-      accountType: "ORGANIZATION",
-    },
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  {
-    id: "lst3",
-    title: "Social Media Marketing Package",
-    description: "Boost your online presence with our marketing package.",
-    price: 300.0,
-    currency: "USD",
-    deliveryDays: 7,
-    categoryId: "cat3",
-    images: ["https://via.placeholder.com/150/00FF00/FFFFFF?text=Social1"],
-    tags: ["marketing", "social media", "digital"],
-    isPublished: true,
-    rating: 4.2,
-    reviewCount: 15,
-    provider: {
-      id: "user2",
-      name: "Freelancer B",
-      image: "https://github.com/shadcn.png",
-      accountType: "INDIVIDUAL",
-    },
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-  {
-    id: "lst4",
-    title: "Mobile App UI/UX Design",
-    description: "Intuitive and modern UI/UX design for mobile applications.",
-    price: 500.0,
-    currency: "USD",
-    deliveryDays: 10,
-    categoryId: "cat2",
-    images: ["https://via.placeholder.com/150/FFFF00/000000?text=UIUX1"],
-    tags: ["ui/ux", "mobile app", "design"],
-    isPublished: true,
-    rating: 4.9,
-    reviewCount: 30,
-    provider: {
-      id: "user3",
-      name: "Freelancer C",
-      image: "https://github.com/shadcn.png",
-      accountType: "INDIVIDUAL",
-    },
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  },
-];
 
 const ListingCard = ({ listing }: { listing: Listing }) => (
   <Link href={`/marketplace/${listing.id}`}>
@@ -173,6 +82,39 @@ const ListingCard = ({ listing }: { listing: Listing }) => (
 );
 
 export default function MarketplacePage() {
+  const {
+    data: listingsData,
+    isPending,
+    error,
+  } = trpc.listing.getAll.useQuery();
+
+  if (isPending) {
+    return (
+      <div className="flex min-h-screen bg-[#202020] text-white">
+        <Sidebar currentPage="marketplace" />
+        <main className="flex-1 p-8 bg-[#202020] flex flex-col items-center justify-center">
+          <p className="text-gray-400">Loading listings...</p>
+        </main>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex min-h-screen bg-[#202020] text-white">
+        <Sidebar currentPage="marketplace" />
+        <main className="flex-1 p-8 bg-[#411a1a] flex flex-col items-center justify-center">
+          <h1 className="text-2xl font-bold text-red-500">Error</h1>
+          <p className="text-gray-400">
+            Failed to load listings: {error.message}
+          </p>
+        </main>
+      </div>
+    );
+  }
+
+  const listings = listingsData?.listings || [];
+
   return (
     <div className="flex min-h-screen bg-[#202020] text-white">
       <Sidebar currentPage="marketplace" />
@@ -251,7 +193,7 @@ export default function MarketplacePage() {
         <div className="flex flex-1 space-x-8">
           {/* Product Grid */}
           <div className="flex-1 grid grid-cols-3 gap-6">
-            {mockListings.map((listing) => (
+            {listings.map((listing) => (
               <ListingCard key={listing.id} listing={listing} />
             ))}
           </div>

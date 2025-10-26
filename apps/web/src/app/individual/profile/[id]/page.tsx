@@ -30,7 +30,18 @@ import type { AppRouter } from "@Alpha/api/routers";
 import type { inferRouterOutputs } from "@trpc/server";
 
 type RouterOutput = inferRouterOutputs<AppRouter>;
-type UserProfile = RouterOutput["user"]["getPublicUserProfile"]; // Will create this new procedure
+type UserProfile = RouterOutput["user"]["getPublicUserProfile"];
+
+type ProfileWithSkillsAndPortfolio = NonNullable<UserProfile["profile"]> & {
+  skills: { skill: { name: string } }[];
+  portfolio: {
+    id: string;
+    media: string[];
+    title: string;
+    description: string;
+    link?: string;
+  }[];
+};
 
 export default function IndividualProfilePage() {
   const router = useRouter();
@@ -154,21 +165,22 @@ export default function IndividualProfilePage() {
               </div>
             )}
 
-            {userProfile.profile?.skills &&
-              userProfile.profile.skills.length > 0 && (
+            {(userProfile.profile as ProfileWithSkillsAndPortfolio)?.skills &&
+              (userProfile.profile as ProfileWithSkillsAndPortfolio).skills
+                .length > 0 && (
                 <div className="mb-6">
                   <h2 className="text-xl font-semibold mb-3">Skills</h2>
                   <div className="flex flex-wrap gap-2">
-                    {userProfile.profile.skills.map(
-                      (s: UserProfile["profile"]["skills"][number]) => (
-                        <span
-                          key={s.skill.name}
-                          className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm"
-                        >
-                          {s.skill.name}
-                        </span>
-                      )
-                    )}
+                    {(
+                      userProfile.profile as ProfileWithSkillsAndPortfolio
+                    ).skills.map((s) => (
+                      <span
+                        key={s.skill.name}
+                        className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm"
+                      >
+                        {s.skill.name}
+                      </span>
+                    ))}
                   </div>
                 </div>
               )}
@@ -220,36 +232,38 @@ export default function IndividualProfilePage() {
               </div>
             )}
 
-            {userProfile.profile?.portfolio &&
-              userProfile.profile.portfolio.length > 0 && (
+            {(userProfile.profile as ProfileWithSkillsAndPortfolio)
+              ?.portfolio &&
+              (userProfile.profile as ProfileWithSkillsAndPortfolio).portfolio
+                .length > 0 && (
                 <div className="mb-6">
                   <h2 className="text-xl font-semibold mb-3">Portfolio</h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {userProfile.profile.portfolio.map(
-                      (item: UserProfile["profile"]["portfolio"][number]) => (
-                        <Card
-                          key={item.id}
-                          className="bg-[#3A3A3A] p-4 rounded-lg hover:bg-[#4A4A4A] transition-colors"
-                        >
-                          <CardTitle className="text-lg font-semibold text-white mb-2">
-                            {item.title}
-                          </CardTitle>
-                          <CardContent className="p-0 text-gray-400 text-sm">
-                            <p className="mb-2">{item.description}</p>
-                            {item.link && (
-                              <a
-                                href={item.link}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-blue-400 hover:underline flex items-center"
-                              >
-                                <Link className="mr-1" size={16} /> View Project
-                              </a>
-                            )}
-                          </CardContent>
-                        </Card>
-                      )
-                    )}
+                    {(
+                      userProfile.profile as ProfileWithSkillsAndPortfolio
+                    ).portfolio.map((item) => (
+                      <Card
+                        key={item.id}
+                        className="bg-[#3A3A3A] p-4 rounded-lg hover:bg-[#4A4A4A] transition-colors"
+                      >
+                        <CardTitle className="text-lg font-semibold text-white mb-2">
+                          {item.title}
+                        </CardTitle>
+                        <CardContent className="p-0 text-gray-400 text-sm">
+                          <p className="mb-2">{item.description}</p>
+                          {item.link && (
+                            <a
+                              href={item.link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-400 hover:underline flex items-center"
+                            >
+                              <Link className="mr-1" size={16} /> View Project
+                            </a>
+                          )}
+                        </CardContent>
+                      </Card>
+                    ))}
                   </div>
                 </div>
               )}
@@ -286,36 +300,6 @@ export default function IndividualProfilePage() {
                   </Dialog>
                 </div>
                 {/* Placeholder for listings */}
-                <Card className="bg-[#3A3A3A] p-4 rounded-lg">
-                  <CardContent className="p-0 text-gray-400">
-                    <p>Your posted products and services will appear here.</p>
-                    <p className="mt-2">
-                      (This section will fetch and display actual listings from
-                      the backend once implemented.)
-                    </p>
-                    {/* Mock listings for demonstration */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                      <Card className="bg-[#2C2C2C] p-4 rounded-lg">
-                        <h3 className="font-semibold text-white">
-                          Mock Product 1
-                        </h3>
-                        <p className="text-sm text-gray-400">
-                          A great service offered by you.
-                        </p>
-                        <p className="text-green-500 font-bold">$100 USD</p>
-                      </Card>
-                      <Card className="bg-[#2C2C2C] p-4 rounded-lg">
-                        <h3 className="font-semibold text-white">
-                          Mock Product 2
-                        </h3>
-                        <p className="text-sm text-gray-400">
-                          Another fantastic offering.
-                        </p>
-                        <p className="text-green-500 font-bold">$250 USD</p>
-                      </Card>
-                    </div>
-                  </CardContent>
-                </Card>
               </div>
             )}
           </Card>

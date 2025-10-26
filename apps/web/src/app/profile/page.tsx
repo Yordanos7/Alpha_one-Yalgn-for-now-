@@ -84,6 +84,10 @@ export default function ProfilePage() {
     refetch: refetchUserProfile,
   } = trpc.user.getUserProfile.useQuery();
 
+  // the above would be writen like this if i were use REST API
+  // const { data: userProfileData, isLoading: isProfileLoading, refetch: refetchUserProfile } = useQuery('userProfile', async () => {
+  //   const response = await fetch('/api/user/profile');
+
   const {
     data: userListings,
     isPending: isListingsPending,
@@ -146,7 +150,7 @@ export default function ProfilePage() {
   const updateUserProfileImage = trpc.user.uploadProfileImage.useMutation();
   const [isUploading, setIsUploading] = useState(false);
 
-  // this is for handling profile image upload and saving
+  // this is for handling profile image upload and saving to user:)
   const handleSaveProfileImage = async () => {
     setIsUploading(true);
     if (selectedFile) {
@@ -252,6 +256,10 @@ export default function ProfilePage() {
   const verification = userProfileData.verification;
 
   const handleCreateListing = async (data: any) => {
+    console.log(
+      "Data being sent to createListing mutation:",
+      JSON.stringify(data, null, 2)
+    );
     try {
       const createdListing = await createListingMutation.mutateAsync(data);
       toast.success("Listing created successfully!");
@@ -267,12 +275,14 @@ export default function ProfilePage() {
 
   const handlePublishListing = async (listingId: string) => {
     try {
-      await updateListingMutation.mutateAsync({
+      const updatedListing = await updateListingMutation.mutateAsync({
         id: listingId,
         isPublished: true,
       });
+      console.log("Listing updated after publish:", updatedListing);
       toast.success("Listing published successfully!");
-      refetchUserListings(); // Refetch user listings to update the displayed list
+      await refetchUserListings(); // Ensure refetch completes before logging
+      console.log("User listings after refetch:", userListings);
     } catch (error) {
       console.error("Error publishing listing:", error);
       toast.error("Error publishing listing. Please try again.");
@@ -841,6 +851,7 @@ export default function ProfilePage() {
                         price: number;
                         currency: string;
                         images: string[];
+                        videos: string[];
                         tags: string[];
                         isPublished: boolean;
                       },
@@ -859,28 +870,29 @@ export default function ProfilePage() {
                         <p className="text-green-500 font-bold">
                           {listing.price} {listing.currency}
                         </p>
-                        {listing.images &&
-                          listing.images.length > 0 &&
-                          listing.images[0] && (
-                            <div className="mt-2 w-full h-24 rounded-md overflow-hidden bg-gray-800 flex items-center justify-center">
-                              {isVideo(listing.images[0]) ? (
-                                <video
-                                  src={listing.images[0]}
-                                  className="w-full h-full object-cover"
-                                  muted
-                                  controls={false}
-                                  autoPlay
-                                  loop
-                                />
-                              ) : (
-                                <img
-                                  src={listing.images[0]}
-                                  alt={listing.title}
-                                  className="w-full h-full object-cover"
-                                />
-                              )}
-                            </div>
-                          )}
+                        {(listing.images?.length > 0 ||
+                          listing.videos?.length > 0) && (
+                          <div className="mt-2 w-full h-32 rounded-md overflow-hidden bg-gray-800 flex items-center justify-center">
+                            {listing.videos && listing.videos.length > 0 ? (
+                              <video
+                                src={listing.videos[0]}
+                                className="w-full h-full object-cover"
+                                controls
+                                muted
+                                autoPlay
+                                loop
+                              >
+                                Your browser does not support the video tag.
+                              </video>
+                            ) : listing.images && listing.images.length > 0 ? (
+                              <img
+                                src={listing.images[0]}
+                                alt={listing.title}
+                                className="w-full h-full object-cover"
+                              />
+                            ) : null}
+                          </div>
+                        )}
                         <div className="mt-2 flex flex-wrap gap-1">
                           {listing.tags.map((tag: string, tagIndex: number) => (
                             <Badge
