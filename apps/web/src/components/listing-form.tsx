@@ -28,6 +28,7 @@ interface ListingFormProps {
     deliveryDays?: number;
     categoryId?: string;
     images: string[];
+    videos: string[];
     tags: string[];
     isPublished: boolean;
   };
@@ -55,8 +56,10 @@ export function ListingForm({
   );
   const [categoryId, setCategoryId] = useState(initialData?.categoryId || "");
   const [images, setImages] = useState<string[]>(initialData?.images || []);
+  const [videos, setVideos] = useState<string[]>(initialData?.videos || []);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const [isPendingUploads, setIsPendingUploads] = useState(false); // New state
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [tags, setTags] = useState<string[]>(initialData?.tags || []);
@@ -85,11 +88,13 @@ export function ListingForm({
     }
   };
 
-  const handleUploadImage = async () => {
+  const handleUpload = async () => {
     if (selectedFiles.length === 0) return;
 
     setIsUploadingImage(true);
+    setIsPendingUploads(true);
     const uploadedImagePaths: string[] = [];
+    const uploadedVideoPaths: string[] = [];
 
     for (const file of selectedFiles) {
       const formData = new FormData();
@@ -101,32 +106,51 @@ export function ListingForm({
           body: formData,
         });
 
-        const { filePath, message } = await response.json();
+        const result = await response.json();
 
-        if (!response.ok) {
-          throw new Error(message || "Upload failed");
+        if (result.success) {
+          if (file.type.startsWith("image/")) {
+            uploadedImagePaths.push(result.path);
+          } else if (file.type.startsWith("video/")) {
+            uploadedVideoPaths.push(result.path);
+          }
+        } else {
+          console.error("Error uploading file:", result);
         }
-        uploadedImagePaths.push(filePath);
       } catch (error) {
         console.error("Error uploading file:", error);
-        // Handle error for individual file
       }
     }
 
     setImages((prevImages) => [...prevImages, ...uploadedImagePaths]);
+    setVideos((prevVideos) => [...prevVideos, ...uploadedVideoPaths]);
     setSelectedFiles([]);
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
     setIsUploadingImage(false);
+    setIsPendingUploads(false);
   };
 
   const handleRemoveImage = (imageToRemove: string) => {
     setImages(images.filter((image) => image !== imageToRemove));
   };
 
+  const handleRemoveVideo = (videoToRemove: string) => {
+    setVideos(videos.filter((video) => video !== videoToRemove));
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (isPendingUploads) {
+      alert("Please wait for all images/videos to finish uploading.");
+      return;
+    }
+
+    console.log("Submitting listing with images:", images);
+    console.log("Submitting listing with videos:", videos);
+
     onSubmit({
       title,
       description,
@@ -135,6 +159,7 @@ export function ListingForm({
       deliveryDays: deliveryDays ? parseInt(deliveryDays) : undefined,
       categoryId,
       images,
+      videos,
       tags,
       isPublished,
     });
@@ -268,7 +293,7 @@ export function ListingForm({
               />
               <Button
                 type="button"
-                onClick={handleUploadImage}
+                onClick={handleUpload}
                 className="bg-blue-500 hover:bg-blue-600 text-white"
                 disabled={selectedFiles.length === 0 || isUploadingImage}
               >
@@ -296,6 +321,20 @@ export function ListingForm({
                     className="ml-2 cursor-pointer"
                     size={14}
                     onClick={() => handleRemoveImage(image)}
+                  />
+                </Badge>
+              ))}
+              {videos.map((video) => (
+                <Badge
+                  key={video}
+                  variant="secondary"
+                  className="bg-[#3A3A3A] text-white px-3 py-1 rounded-full flex items-center"
+                >
+                  {video.length > 30 ? video.substring(0, 27) + "..." : video}
+                  <X
+                    className="ml-2 cursor-pointer"
+                    size={14}
+                    onClick={() => handleRemoveVideo(video)}
                   />
                 </Badge>
               ))}
@@ -366,7 +405,7 @@ export function ListingForm({
             <Button
               type="submit"
               className="bg-green-600 hover:bg-green-700 text-white font-semibold"
-              disabled={isSubmitting}
+              disabled={isSubmitting || isPendingUploads} // Disable if uploads are pending
             >
               {isSubmitting ? "Saving..." : "Save Listing"}
             </Button>

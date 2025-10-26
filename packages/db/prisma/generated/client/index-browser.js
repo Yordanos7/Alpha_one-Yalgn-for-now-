@@ -225,6 +225,7 @@ exports.Prisma.ListingScalarFieldEnum = {
   deliveryDays: 'deliveryDays',
   categoryId: 'categoryId',
   images: 'images',
+  videos: 'videos',
   tags: 'tags',
   isPublished: 'isPublished',
   rating: 'rating',

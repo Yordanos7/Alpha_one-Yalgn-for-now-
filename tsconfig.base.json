@@ -19,8 +19,10 @@
     "noFallthroughCasesInSwitch": true,
     "types": ["node"],
     "paths": {
-      "@Alpha/db": ["./packages/db/src"],
-      "@Alpha/*": ["./packages/*/src"]
+      "@alpha/api/*": ["packages/api/src/*"],
+      "@alpha/auth/*": ["packages/auth/src/*"],
+      "@alpha/db/*": ["packages/db/src/*"],
+      "@alpha/server/*": ["apps/server/src/*"]
     }
   }
 }

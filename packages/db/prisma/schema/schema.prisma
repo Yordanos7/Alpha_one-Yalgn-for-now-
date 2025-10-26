@@ -240,6 +240,7 @@ model Listing {
   category      Category? @relation(fields: [categoryId], references: [id])
   categoryId    String?
   images        String[]  @default([])
+  videos        String[]  @default([])
   tags          String[]  @default([])
   isPublished   Boolean   @default(false)
   rating        Float?    @default(0)

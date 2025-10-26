@@ -146,6 +146,7 @@ export default function ProfilePage() {
   const updateUserProfileImage = trpc.user.uploadProfileImage.useMutation();
   const [isUploading, setIsUploading] = useState(false);
 
+  // this is for handling profile image upload and saving
   const handleSaveProfileImage = async () => {
     setIsUploading(true);
     if (selectedFile) {

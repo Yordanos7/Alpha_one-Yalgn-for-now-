@@ -5,6 +5,11 @@ import { messageRouter } from "./message";
 import { jobRouter } from "./job"; // Import the new jobRouter
 import { listingRouter } from "./listing";
 import { categoryRouter } from "./category";
+import { uploadRouter } from "./upload";
+
+export interface UploadResponse {
+  filePath: string;
+}
 
 export const appRouter = router({
   healthCheck: publicProcedure.query(() => {
@@ -22,5 +27,6 @@ export const appRouter = router({
   job: jobRouter, // Add the jobRouter
   listing: listingRouter, // Add the listingRouter here
   category: categoryRouter,
+  upload: uploadRouter,
 });
 export type AppRouter = typeof appRouter;

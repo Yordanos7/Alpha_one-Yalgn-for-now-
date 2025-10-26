@@ -7,18 +7,12 @@
     "outDir": "dist",
     "composite": true,
     "rootDir": "src",
+    "esModuleInterop": true,
     "paths": {
       "@Alpha/auth": ["../../packages/auth/src"],
       "@Alpha/db": ["../../packages/db"]
     }
   },
   "include": ["src/**/*.ts", "src/types/**/*.d.ts"],
-  "references": [
-    {
-      "path": "../auth"
-    },
-    {
-      "path": "../db"
-    }
-  ]
+  "references": []
 }

@@ -12138,6 +12138,7 @@ export namespace Prisma {
     deliveryDays: number
     categoryId: number
     images: number
+    videos: number
     tags: number
     isPublished: number
     rating: number
@@ -12207,6 +12208,7 @@ export namespace Prisma {
     deliveryDays?: true
     categoryId?: true
     images?: true
+    videos?: true
     tags?: true
     isPublished?: true
     rating?: true
@@ -12313,6 +12315,7 @@ export namespace Prisma {
     deliveryDays: number | null
     categoryId: string | null
     images: string[]
+    videos: string[]
     tags: string[]
     isPublished: boolean
     rating: number | null
@@ -12351,6 +12354,7 @@ export namespace Prisma {
     deliveryDays?: boolean
     categoryId?: boolean
     images?: boolean
+    videos?: boolean
     tags?: boolean
     isPublished?: boolean
     rating?: boolean
@@ -12374,6 +12378,7 @@ export namespace Prisma {
     deliveryDays?: boolean
     categoryId?: boolean
     images?: boolean
+    videos?: boolean
     tags?: boolean
     isPublished?: boolean
     rating?: boolean
@@ -12395,6 +12400,7 @@ export namespace Prisma {
     deliveryDays?: boolean
     categoryId?: boolean
     images?: boolean
+    videos?: boolean
     tags?: boolean
     isPublished?: boolean
     rating?: boolean
@@ -12416,6 +12422,7 @@ export namespace Prisma {
     deliveryDays?: boolean
     categoryId?: boolean
     images?: boolean
+    videos?: boolean
     tags?: boolean
     isPublished?: boolean
     rating?: boolean
@@ -12424,7 +12431,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type ListingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "providerId" | "title" | "slug" | "description" | "price" | "currency" | "deliveryDays" | "categoryId" | "images" | "tags" | "isPublished" | "rating" | "reviewCount" | "createdAt" | "updatedAt", ExtArgs["result"]["listing"]>
+  export type ListingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "providerId" | "title" | "slug" | "description" | "price" | "currency" | "deliveryDays" | "categoryId" | "images" | "videos" | "tags" | "isPublished" | "rating" | "reviewCount" | "createdAt" | "updatedAt", ExtArgs["result"]["listing"]>
   export type ListingInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     provider?: boolean | UserDefaultArgs<ExtArgs>
     category?: boolean | Listing$categoryArgs<ExtArgs>
@@ -12458,6 +12465,7 @@ export namespace Prisma {
       deliveryDays: number | null
       categoryId: string | null
       images: string[]
+      videos: string[]
       tags: string[]
       isPublished: boolean
       rating: number | null
@@ -12900,6 +12908,7 @@ export namespace Prisma {
     readonly deliveryDays: FieldRef<"Listing", 'Int'>
     readonly categoryId: FieldRef<"Listing", 'String'>
     readonly images: FieldRef<"Listing", 'String[]'>
+    readonly videos: FieldRef<"Listing", 'String[]'>
     readonly tags: FieldRef<"Listing", 'String[]'>
     readonly isPublished: FieldRef<"Listing", 'Boolean'>
     readonly rating: FieldRef<"Listing", 'Float'>
@@ -30525,6 +30534,7 @@ export namespace Prisma {
     deliveryDays: 'deliveryDays',
     categoryId: 'categoryId',
     images: 'images',
+    videos: 'videos',
     tags: 'tags',
     isPublished: 'isPublished',
     rating: 'rating',
@@ -31663,6 +31673,7 @@ export namespace Prisma {
     deliveryDays?: IntNullableFilter<"Listing"> | number | null
     categoryId?: StringNullableFilter<"Listing"> | string | null
     images?: StringNullableListFilter<"Listing">
+    videos?: StringNullableListFilter<"Listing">
     tags?: StringNullableListFilter<"Listing">
     isPublished?: BoolFilter<"Listing"> | boolean
     rating?: FloatNullableFilter<"Listing"> | number | null
@@ -31685,6 +31696,7 @@ export namespace Prisma {
     deliveryDays?: SortOrderInput | SortOrder
     categoryId?: SortOrderInput | SortOrder
     images?: SortOrder
+    videos?: SortOrder
     tags?: SortOrder
     isPublished?: SortOrder
     rating?: SortOrderInput | SortOrder
@@ -31710,6 +31722,7 @@ export namespace Prisma {
     deliveryDays?: IntNullableFilter<"Listing"> | number | null
     categoryId?: StringNullableFilter<"Listing"> | string | null
     images?: StringNullableListFilter<"Listing">
+    videos?: StringNullableListFilter<"Listing">
     tags?: StringNullableListFilter<"Listing">
     isPublished?: BoolFilter<"Listing"> | boolean
     rating?: FloatNullableFilter<"Listing"> | number | null
@@ -31732,6 +31745,7 @@ export namespace Prisma {
     deliveryDays?: SortOrderInput | SortOrder
     categoryId?: SortOrderInput | SortOrder
     images?: SortOrder
+    videos?: SortOrder
     tags?: SortOrder
     isPublished?: SortOrder
     rating?: SortOrderInput | SortOrder
@@ -31759,6 +31773,7 @@ export namespace Prisma {
     deliveryDays?: IntNullableWithAggregatesFilter<"Listing"> | number | null
     categoryId?: StringNullableWithAggregatesFilter<"Listing"> | string | null
     images?: StringNullableListFilter<"Listing">
+    videos?: StringNullableListFilter<"Listing">
     tags?: StringNullableListFilter<"Listing">
     isPublished?: BoolWithAggregatesFilter<"Listing"> | boolean
     rating?: FloatNullableWithAggregatesFilter<"Listing"> | number | null
@@ -33640,6 +33655,7 @@ export namespace Prisma {
     currency?: $Enums.Currency
     deliveryDays?: number | null
     images?: ListingCreateimagesInput | string[]
+    videos?: ListingCreatevideosInput | string[]
     tags?: ListingCreatetagsInput | string[]
     isPublished?: boolean
     rating?: number | null
@@ -33662,6 +33678,7 @@ export namespace Prisma {
     deliveryDays?: number | null
     categoryId?: string | null
     images?: ListingCreateimagesInput | string[]
+    videos?: ListingCreatevideosInput | string[]
     tags?: ListingCreatetagsInput | string[]
     isPublished?: boolean
     rating?: number | null
@@ -33680,6 +33697,7 @@ export namespace Prisma {
     currency?: EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency
     deliveryDays?: NullableIntFieldUpdateOperationsInput | number | null
     images?: ListingUpdateimagesInput | string[]
+    videos?: ListingUpdatevideosInput | string[]
     tags?: ListingUpdatetagsInput | string[]
     isPublished?: BoolFieldUpdateOperationsInput | boolean
     rating?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -33702,6 +33720,7 @@ export namespace Prisma {
     deliveryDays?: NullableIntFieldUpdateOperationsInput | number | null
     categoryId?: NullableStringFieldUpdateOperationsInput | string | null
     images?: ListingUpdateimagesInput | string[]
+    videos?: ListingUpdatevideosInput | string[]
     tags?: ListingUpdatetagsInput | string[]
     isPublished?: BoolFieldUpdateOperationsInput | boolean
     rating?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -33722,6 +33741,7 @@ export namespace Prisma {
     deliveryDays?: number | null
     categoryId?: string | null
     images?: ListingCreateimagesInput | string[]
+    videos?: ListingCreatevideosInput | string[]
     tags?: ListingCreatetagsInput | string[]
     isPublished?: boolean
     rating?: number | null
@@ -33739,6 +33759,7 @@ export namespace Prisma {
     currency?: EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency
     deliveryDays?: NullableIntFieldUpdateOperationsInput | number | null
     images?: ListingUpdateimagesInput | string[]
+    videos?: ListingUpdatevideosInput | string[]
     tags?: ListingUpdatetagsInput | string[]
     isPublished?: BoolFieldUpdateOperationsInput | boolean
     rating?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -33758,6 +33779,7 @@ export namespace Prisma {
     deliveryDays?: NullableIntFieldUpdateOperationsInput | number | null
     categoryId?: NullableStringFieldUpdateOperationsInput | string | null
     images?: ListingUpdateimagesInput | string[]
+    videos?: ListingUpdatevideosInput | string[]
     tags?: ListingUpdatetagsInput | string[]
     isPublished?: BoolFieldUpdateOperationsInput | boolean
     rating?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -35787,6 +35809,7 @@ export namespace Prisma {
     deliveryDays?: SortOrder
     categoryId?: SortOrder
     images?: SortOrder
+    videos?: SortOrder
     tags?: SortOrder
     isPublished?: SortOrder
     rating?: SortOrder
@@ -37700,6 +37723,10 @@ export namespace Prisma {
     set: string[]
   }
 
+  export type ListingCreatevideosInput = {
+    set: string[]
+  }
+
   export type ListingCreatetagsInput = {
     set: string[]
   }
@@ -37749,6 +37776,11 @@ export namespace Prisma {
   }
 
   export type ListingUpdateimagesInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type ListingUpdatevideosInput = {
     set?: string[]
     push?: string | string[]
   }
@@ -39011,6 +39043,7 @@ export namespace Prisma {
     currency?: $Enums.Currency
     deliveryDays?: number | null
     images?: ListingCreateimagesInput | string[]
+    videos?: ListingCreatevideosInput | string[]
     tags?: ListingCreatetagsInput | string[]
     isPublished?: boolean
     rating?: number | null
@@ -39031,6 +39064,7 @@ export namespace Prisma {
     deliveryDays?: number | null
     categoryId?: string | null
     images?: ListingCreateimagesInput | string[]
+    videos?: ListingCreatevideosInput | string[]
     tags?: ListingCreatetagsInput | string[]
     isPublished?: boolean
     rating?: number | null
@@ -39660,6 +39694,7 @@ export namespace Prisma {
     deliveryDays?: IntNullableFilter<"Listing"> | number | null
     categoryId?: StringNullableFilter<"Listing"> | string | null
     images?: StringNullableListFilter<"Listing">
+    videos?: StringNullableListFilter<"Listing">
     tags?: StringNullableListFilter<"Listing">
     isPublished?: BoolFilter<"Listing"> | boolean
     rating?: FloatNullableFilter<"Listing"> | number | null
@@ -40740,6 +40775,7 @@ export namespace Prisma {
     currency?: $Enums.Currency
     deliveryDays?: number | null
     images?: ListingCreateimagesInput | string[]
+    videos?: ListingCreatevideosInput | string[]
     tags?: ListingCreatetagsInput | string[]
     isPublished?: boolean
     rating?: number | null
@@ -40761,6 +40797,7 @@ export namespace Prisma {
     deliveryDays?: number | null
     categoryId?: string | null
     images?: ListingCreateimagesInput | string[]
+    videos?: ListingCreatevideosInput | string[]
     tags?: ListingCreatetagsInput | string[]
     isPublished?: boolean
     rating?: number | null
@@ -41030,6 +41067,7 @@ export namespace Prisma {
     currency?: $Enums.Currency
     deliveryDays?: number | null
     images?: ListingCreateimagesInput | string[]
+    videos?: ListingCreatevideosInput | string[]
     tags?: ListingCreatetagsInput | string[]
     isPublished?: boolean
     rating?: number | null
@@ -41050,6 +41088,7 @@ export namespace Prisma {
     currency?: $Enums.Currency
     deliveryDays?: number | null
     images?: ListingCreateimagesInput | string[]
+    videos?: ListingCreatevideosInput | string[]
     tags?: ListingCreatetagsInput | string[]
     isPublished?: boolean
     rating?: number | null
@@ -44785,6 +44824,7 @@ export namespace Prisma {
     deliveryDays?: number | null
     categoryId?: string | null
     images?: ListingCreateimagesInput | string[]
+    videos?: ListingCreatevideosInput | string[]
     tags?: ListingCreatetagsInput | string[]
     isPublished?: boolean
     rating?: number | null
@@ -44951,6 +44991,7 @@ export namespace Prisma {
     currency?: EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency
     deliveryDays?: NullableIntFieldUpdateOperationsInput | number | null
     images?: ListingUpdateimagesInput | string[]
+    videos?: ListingUpdatevideosInput | string[]
     tags?: ListingUpdatetagsInput | string[]
     isPublished?: BoolFieldUpdateOperationsInput | boolean
     rating?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -44971,6 +45012,7 @@ export namespace Prisma {
     deliveryDays?: NullableIntFieldUpdateOperationsInput | number | null
     categoryId?: NullableStringFieldUpdateOperationsInput | string | null
     images?: ListingUpdateimagesInput | string[]
+    videos?: ListingUpdatevideosInput | string[]
     tags?: ListingUpdatetagsInput | string[]
     isPublished?: BoolFieldUpdateOperationsInput | boolean
     rating?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -44990,6 +45032,7 @@ export namespace Prisma {
     deliveryDays?: NullableIntFieldUpdateOperationsInput | number | null
     categoryId?: NullableStringFieldUpdateOperationsInput | string | null
     images?: ListingUpdateimagesInput | string[]
+    videos?: ListingUpdatevideosInput | string[]
     tags?: ListingUpdatetagsInput | string[]
     isPublished?: BoolFieldUpdateOperationsInput | boolean
     rating?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -45586,6 +45629,7 @@ export namespace Prisma {
     currency?: EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency
     deliveryDays?: NullableIntFieldUpdateOperationsInput | number | null
     images?: ListingUpdateimagesInput | string[]
+    videos?: ListingUpdatevideosInput | string[]
     tags?: ListingUpdatetagsInput | string[]
     isPublished?: BoolFieldUpdateOperationsInput | boolean
     rating?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -45607,6 +45651,7 @@ export namespace Prisma {
     deliveryDays?: NullableIntFieldUpdateOperationsInput | number | null
     categoryId?: NullableStringFieldUpdateOperationsInput | string | null
     images?: ListingUpdateimagesInput | string[]
+    videos?: ListingUpdatevideosInput | string[]
     tags?: ListingUpdatetagsInput | string[]
     isPublished?: BoolFieldUpdateOperationsInput | boolean
     rating?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -45626,6 +45671,7 @@ export namespace Prisma {
     deliveryDays?: NullableIntFieldUpdateOperationsInput | number | null
     categoryId?: NullableStringFieldUpdateOperationsInput | string | null
     images?: ListingUpdateimagesInput | string[]
+    videos?: ListingUpdatevideosInput | string[]
     tags?: ListingUpdatetagsInput | string[]
     isPublished?: BoolFieldUpdateOperationsInput | boolean
     rating?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -45705,6 +45751,7 @@ export namespace Prisma {
     currency?: $Enums.Currency
     deliveryDays?: number | null
     images?: ListingCreateimagesInput | string[]
+    videos?: ListingCreatevideosInput | string[]
     tags?: ListingCreatetagsInput | string[]
     isPublished?: boolean
     rating?: number | null
@@ -45722,6 +45769,7 @@ export namespace Prisma {
     currency?: EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency
     deliveryDays?: NullableIntFieldUpdateOperationsInput | number | null
     images?: ListingUpdateimagesInput | string[]
+    videos?: ListingUpdatevideosInput | string[]
     tags?: ListingUpdatetagsInput | string[]
     isPublished?: BoolFieldUpdateOperationsInput | boolean
     rating?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -45742,6 +45790,7 @@ export namespace Prisma {
     currency?: EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency
     deliveryDays?: NullableIntFieldUpdateOperationsInput | number | null
     images?: ListingUpdateimagesInput | string[]
+    videos?: ListingUpdatevideosInput | string[]
     tags?: ListingUpdatetagsInput | string[]
     isPublished?: BoolFieldUpdateOperationsInput | boolean
     rating?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -45761,6 +45810,7 @@ export namespace Prisma {
     currency?: EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency
     deliveryDays?: NullableIntFieldUpdateOperationsInput | number | null
     images?: ListingUpdateimagesInput | string[]
+    videos?: ListingUpdatevideosInput | string[]
     tags?: ListingUpdatetagsInput | string[]
     isPublished?: BoolFieldUpdateOperationsInput | boolean
     rating?: NullableFloatFieldUpdateOperationsInput | number | null

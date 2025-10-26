@@ -10,7 +10,8 @@ const createListingSchema = z.object({
   currency: z.enum(["ETB", "USD"]).default("ETB"),
   deliveryDays: z.number().int().positive().optional(),
   categoryId: z.string().optional(),
-  images: z.array(z.string().url()).default([]),
+  images: z.array(z.string()).default([]),
+  videos: z.array(z.string()).default([]),
   tags: z.array(z.string()).default([]),
   isPublished: z.boolean().default(false),
 });
@@ -23,7 +24,8 @@ const updateListingSchema = z.object({
   currency: z.enum(["ETB", "USD"]).optional(),
   deliveryDays: z.number().int().positive().optional(),
   categoryId: z.string().optional(),
-  images: z.array(z.string().url()).optional(),
+  images: z.array(z.string()).optional(),
+  videos: z.array(z.string()).optional(),
   tags: z.array(z.string()).optional(),
   isPublished: z.boolean().optional(),
 });
