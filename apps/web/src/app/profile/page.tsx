@@ -94,6 +94,7 @@ export default function ProfilePage() {
   );
 
   const createListingMutation = trpc.listing.create.useMutation();
+  const updateListingMutation = trpc.listing.update.useMutation(); // Added for "Sell to market" functionality
 
   const [profileForm, setProfileForm] = useState({
     name: "",
@@ -261,6 +262,25 @@ export default function ProfilePage() {
       console.error("Error creating listing:", error);
       toast.error("Error creating listing. Please try again.");
     }
+  };
+
+  const handlePublishListing = async (listingId: string) => {
+    try {
+      await updateListingMutation.mutateAsync({
+        id: listingId,
+        isPublished: true,
+      });
+      toast.success("Listing published successfully!");
+      refetchUserListings(); // Refetch user listings to update the displayed list
+    } catch (error) {
+      console.error("Error publishing listing:", error);
+      toast.error("Error publishing listing. Please try again.");
+    }
+  };
+
+  const isVideo = (url: string) => {
+    const videoExtensions = [".mp4", ".webm", ".ogg"];
+    return videoExtensions.some((ext) => url.toLowerCase().endsWith(ext));
   };
 
   // Placeholder data for demonstration, matching the new design image
@@ -838,15 +858,28 @@ export default function ProfilePage() {
                         <p className="text-green-500 font-bold">
                           {listing.price} {listing.currency}
                         </p>
-                        {listing.images && listing.images.length > 0 && (
-                          <div className="mt-2">
-                            <img
-                              src={listing.images[0]}
-                              alt={listing.title}
-                              className="w-full h-24 object-cover rounded-md"
-                            />
-                          </div>
-                        )}
+                        {listing.images &&
+                          listing.images.length > 0 &&
+                          listing.images[0] && (
+                            <div className="mt-2 w-full h-24 rounded-md overflow-hidden bg-gray-800 flex items-center justify-center">
+                              {isVideo(listing.images[0]) ? (
+                                <video
+                                  src={listing.images[0]}
+                                  className="w-full h-full object-cover"
+                                  muted
+                                  controls={false}
+                                  autoPlay
+                                  loop
+                                />
+                              ) : (
+                                <img
+                                  src={listing.images[0]}
+                                  alt={listing.title}
+                                  className="w-full h-full object-cover"
+                                />
+                              )}
+                            </div>
+                          )}
                         <div className="mt-2 flex flex-wrap gap-1">
                           {listing.tags.map((tag: string, tagIndex: number) => (
                             <Badge
@@ -861,6 +894,16 @@ export default function ProfilePage() {
                         <p className="text-xs text-gray-500 mt-2">
                           {listing.isPublished ? "Published" : "Draft"}
                         </p>
+                        {!listing.isPublished && (
+                          <Button
+                            variant="default"
+                            size="sm"
+                            className="mt-2 bg-blue-500 hover:bg-blue-600"
+                            onClick={() => handlePublishListing(listing.id)}
+                          >
+                            Sell to Market
+                          </Button>
+                        )}
                       </Card>
                     )
                   )}

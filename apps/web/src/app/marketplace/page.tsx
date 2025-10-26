@@ -7,9 +7,7 @@ import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import Sidebar from "@/components/sidebar";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge"; // Import Badge component
-import { useState } from "react";
 import Link from "next/link"; // Import Link for navigation
 import {
   Search,
@@ -138,52 +136,43 @@ const mockListings: Listing[] = [
   },
 ];
 
-const ListingCard = ({
-  listing,
-  onClick,
-}: {
-  listing: Listing;
-  onClick: () => void;
-}) => (
-  <Card
-    className="bg-[#2C2C2C] p-4 rounded-lg flex flex-col items-center cursor-pointer hover:bg-[#3A3A3A] transition-colors"
-    onClick={onClick}
-  >
-    <img
-      src={listing.images[0] || "https://via.placeholder.com/150"}
-      alt={listing.title}
-      className="w-32 h-32 object-cover mb-4 rounded-lg"
-    />
-    <p className="text-lg font-semibold text-center mb-1">{listing.title}</p>
-    <div className="flex items-center mb-2">
-      {[...Array(5)].map((_, i) => (
-        <Star
-          key={i}
-          className={
-            i < Math.floor(listing.rating || 0)
-              ? "text-yellow-500"
-              : "text-gray-500"
-          }
-          size={16}
-          fill={i < Math.floor(listing.rating || 0) ? "currentColor" : "none"}
-        />
-      ))}
-      <span className="text-sm text-gray-400 ml-2">
-        ({listing.rating?.toFixed(1) || "N/A"})
-      </span>
-    </div>
-    <p className="text-md font-bold text-green-500 mb-4">
-      {listing.currency} {listing.price.toFixed(2)}
-    </p>
-    <Button className="bg-green-600 hover:bg-green-700 text-white font-semibold rounded-md px-6 py-2">
-      View Details
-    </Button>
-  </Card>
+const ListingCard = ({ listing }: { listing: Listing }) => (
+  <Link href={`/marketplace/${listing.id}`}>
+    <Card className="bg-[#2C2C2C] p-4 rounded-lg flex flex-col items-center cursor-pointer hover:bg-[#3A3A3A] transition-colors">
+      <img
+        src={listing.images[0] || "https://via.placeholder.com/150"}
+        alt={listing.title}
+        className="w-32 h-32 object-cover mb-4 rounded-lg"
+      />
+      <p className="text-lg font-semibold text-center mb-1">{listing.title}</p>
+      <div className="flex items-center mb-2">
+        {[...Array(5)].map((_, i) => (
+          <Star
+            key={i}
+            className={
+              i < Math.floor(listing.rating || 0)
+                ? "text-yellow-500"
+                : "text-gray-500"
+            }
+            size={16}
+            fill={i < Math.floor(listing.rating || 0) ? "currentColor" : "none"}
+          />
+        ))}
+        <span className="text-sm text-gray-400 ml-2">
+          ({listing.rating?.toFixed(1) || "N/A"})
+        </span>
+      </div>
+      <p className="text-md font-bold text-green-500 mb-4">
+        {listing.currency} {listing.price.toFixed(2)}
+      </p>
+      <Button className="bg-green-600 hover:bg-green-700 text-white font-semibold rounded-md px-6 py-2">
+        View Details
+      </Button>
+    </Card>
+  </Link>
 );
 
 export default function MarketplacePage() {
-  const [selectedListing, setSelectedListing] = useState<Listing | null>(null);
-
   return (
     <div className="flex min-h-screen bg-[#202020] text-white">
       <Sidebar currentPage="marketplace" />
@@ -263,11 +252,7 @@ export default function MarketplacePage() {
           {/* Product Grid */}
           <div className="flex-1 grid grid-cols-3 gap-6">
             {mockListings.map((listing) => (
-              <ListingCard
-                key={listing.id}
-                listing={listing}
-                onClick={() => setSelectedListing(listing)}
-              />
+              <ListingCard key={listing.id} listing={listing} />
             ))}
           </div>
 
@@ -348,140 +333,6 @@ export default function MarketplacePage() {
           </Card>
         </div>
       </main>
-
-      {/* Listing Detail Modal */}
-      <Dialog
-        open={!!selectedListing}
-        onOpenChange={() => setSelectedListing(null)}
-      >
-        <DialogContent className="bg-[#2C2C2C] text-white p-6 rounded-lg max-w-2xl">
-          {selectedListing && (
-            <div className="flex">
-              <div className="flex-shrink-0 mr-6">
-                <img
-                  src={
-                    selectedListing.images[0] ||
-                    "https://via.placeholder.com/150"
-                  }
-                  alt={selectedListing.title}
-                  className="w-64 h-64 object-cover rounded-lg mb-4"
-                />
-                <div className="flex space-x-2">
-                  {selectedListing.images.map((url, index) => (
-                    <img
-                      key={index}
-                      src={url}
-                      alt={`Thumbnail ${index + 1}`}
-                      className="w-16 h-16 object-cover rounded-lg cursor-pointer border-2 border-transparent hover:border-green-500"
-                    />
-                  ))}
-                </div>
-              </div>
-              <div className="flex-1">
-                <h2 className="text-2xl font-bold mb-2">
-                  {selectedListing.title}
-                </h2>
-                <p className="text-xl font-semibold text-green-500 mb-2">
-                  {selectedListing.currency} {selectedListing.price.toFixed(2)}
-                </p>
-                <div className="flex items-center mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className={
-                        i < Math.floor(selectedListing.rating || 0)
-                          ? "text-yellow-500"
-                          : "text-gray-500"
-                      }
-                      size={16}
-                      fill={
-                        i < Math.floor(selectedListing.rating || 0)
-                          ? "currentColor"
-                          : "none"
-                      }
-                    />
-                  ))}
-                  <span className="text-sm text-gray-400 ml-2">
-                    ({selectedListing.rating?.toFixed(1) || "N/A"})
-                  </span>
-                </div>
-
-                <Tabs defaultValue="description" className="w-full mb-6">
-                  <TabsList className="bg-[#3A3A3A] rounded-md p-1">
-                    <TabsTrigger
-                      value="description"
-                      className="data-[state=active]:bg-green-600 data-[state=active]:text-white rounded-sm px-4 py-2"
-                    >
-                      Description
-                    </TabsTrigger>
-                    <TabsTrigger
-                      value="details"
-                      className="data-[state=active]:bg-green-600 data-[state=active]:text-white rounded-sm px-4 py-2"
-                    >
-                      Details
-                    </TabsTrigger>
-                    <TabsTrigger
-                      value="reviews"
-                      className="data-[state=active]:bg-green-600 data-[state=active]:text-white rounded-sm px-4 py-2"
-                    >
-                      Reviews
-                    </TabsTrigger>
-                  </TabsList>
-                  <TabsContent
-                    value="description"
-                    className="mt-4 text-gray-300"
-                  >
-                    <h3 className="font-semibold mb-2">Description</h3>
-                    <p className="mb-4">{selectedListing.description}</p>
-                    <h3 className="font-semibold mb-2">Provider Information</h3>
-                    <p className="mb-4">
-                      {selectedListing.provider.name} (
-                      {selectedListing.provider.accountType})
-                    </p>
-                    {selectedListing.deliveryDays && (
-                      <>
-                        <h3 className="font-semibold mb-2">
-                          Estimated Delivery
-                        </h3>
-                        <p>{selectedListing.deliveryDays} days</p>
-                      </>
-                    )}
-                  </TabsContent>
-                  <TabsContent value="details" className="mt-4 text-gray-300">
-                    <h3 className="font-semibold mb-2">Tags</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {selectedListing.tags.map((tag, index) => (
-                        <Badge
-                          key={index}
-                          variant="secondary"
-                          className="bg-[#3A3A3A] text-white px-3 py-1 rounded-full text-sm"
-                        >
-                          {tag}
-                        </Badge>
-                      ))}
-                    </div>
-                    {/* Add more details here if needed */}
-                  </TabsContent>
-                  <TabsContent value="reviews" className="mt-4 text-gray-300">
-                    <p>Reviews content goes here.</p>
-                  </TabsContent>
-                </Tabs>
-
-                <div className="flex space-x-4">
-                  <Button className="bg-[#3A3A3A] hover:bg-[#4A4A4A] text-gray-300 font-semibold rounded-md px-6 py-2 flex items-center">
-                    <MessageSquare className="mr-2" size={16} />
-                    Message Provider
-                  </Button>
-                  <Button className="bg-green-600 hover:bg-green-700 text-white font-semibold rounded-md px-6 py-2 flex items-center">
-                    <Plus className="mr-2" size={16} />
-                    Add to Cart
-                  </Button>
-                </div>
-              </div>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }
