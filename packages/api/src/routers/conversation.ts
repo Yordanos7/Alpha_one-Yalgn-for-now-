@@ -1,15 +1,18 @@
 import { includes, z } from "zod";
 import { router, publicProcedure, protectedProcedure, t } from "..";
 import { partial } from "zod/mini";
-import { PrismaClient } from "@Alpha/db/prisma/generated/client"; // Explicitly import PrismaClient
+import { TRPCError } from "@trpc/server";
 
 export const conversationRouter = router({
   list: protectedProcedure.query(async ({ ctx }) => {
     const userId = ctx.session?.userId;
     if (!userId) {
-      throw new Error("User not authenticated");
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "User not authenticated",
+      });
     }
-    return ctx.db.conversation.findMany({
+    return ctx.prisma.conversation.findMany({
       where: {
         participants: {
           some: {
@@ -42,9 +45,12 @@ export const conversationRouter = router({
     .query(async ({ ctx, input }) => {
       const userId = ctx.session?.userId;
       if (!userId) {
-        throw new Error("User not authenticated");
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "User not authenticated",
+        });
       }
-      const conversation = await ctx.db.conversation.findUnique({
+      const conversation = await ctx.prisma.conversation.findUnique({
         where: {
           id: input.conversationId,
           participants: {
@@ -84,10 +90,13 @@ export const conversationRouter = router({
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.session?.userId;
       if (!userId) {
-        throw new Error("User not authenticated");
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "User not authenticated",
+        });
       }
       const allParticipantIds = [...new Set([...input.participantIds, userId])];
-      const existingConversation = await ctx.db.conversation.findFirst({
+      const existingConversation = await ctx.prisma.conversation.findFirst({
         where: {
           AND: [
             {
@@ -120,7 +129,7 @@ export const conversationRouter = router({
       ) {
         return existingConversation;
       }
-      return ctx.db.conversation.create({
+      return ctx.prisma.conversation.create({
         data: {
           title: input.title,
           participants: {
