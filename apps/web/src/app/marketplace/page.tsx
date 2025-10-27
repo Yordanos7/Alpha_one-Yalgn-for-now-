@@ -31,6 +31,7 @@ interface Listing {
   deliveryDays?: number;
   categoryId?: string;
   images: string[];
+  videos?: string[];
   tags: string[];
   isPublished: boolean;
   rating?: number; // Added for display purposes, not directly from schema
@@ -54,9 +55,9 @@ const ListingCard = ({ listing }: { listing: Listing }) => {
   return (
     <Link href={`/marketplace/${listing.id}`}>
       <Card className="bg-[#2C2C2C] p-4 rounded-lg flex flex-col items-center cursor-pointer hover:bg-[#3A3A3A] transition-colors">
-        {isVideo(listing.images[0] || "") ? (
+        {isVideo(listing.videos?.[0] || "") ? (
           <video
-            src={listing.images[0]}
+            src={listing.videos?.[0]}
             className="w-32 h-32 object-cover mb-4 rounded-lg"
             controls
             autoPlay

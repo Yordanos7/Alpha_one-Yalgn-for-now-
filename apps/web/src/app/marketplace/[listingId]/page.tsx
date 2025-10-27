@@ -110,6 +110,9 @@ export default function ListingDetailPage({
     return videoExtensions.some((ext) => url.toLowerCase().endsWith(ext));
   };
 
+  console.log("Rendering listing:", listing);
+  console.log("Listing images array:", listing.images);
+  console.log("videoExtensions check:", isVideo(listing.images[0] || ""));
   return (
     <main className=" mx-auto px-4 py-8 md:py-12 bg-background text-foreground">
       <Button variant="outline" onClick={() => router.back()} className="mb-6">
