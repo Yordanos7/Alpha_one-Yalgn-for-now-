@@ -111,7 +111,7 @@ export default function ListingDetailPage({
   };
 
   return (
-    <main className="container mx-auto px-4 py-8 md:py-12 bg-background text-foreground">
+    <main className=" mx-auto px-4 py-8 md:py-12 bg-background text-foreground">
       <Button variant="outline" onClick={() => router.back()} className="mb-6">
         &larr; Back to Marketplace
       </Button>

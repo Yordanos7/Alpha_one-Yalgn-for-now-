@@ -45,41 +45,63 @@ interface Listing {
   updatedAt: Date;
 }
 
-const ListingCard = ({ listing }: { listing: Listing }) => (
-  <Link href={`/marketplace/${listing.id}`}>
-    <Card className="bg-[#2C2C2C] p-4 rounded-lg flex flex-col items-center cursor-pointer hover:bg-[#3A3A3A] transition-colors">
-      <img
-        src={listing.images[0] || "https://via.placeholder.com/150"}
-        alt={listing.title}
-        className="w-32 h-32 object-cover mb-4 rounded-lg"
-      />
-      <p className="text-lg font-semibold text-center mb-1">{listing.title}</p>
-      <div className="flex items-center mb-2">
-        {[...Array(5)].map((_, i) => (
-          <Star
-            key={i}
-            className={
-              i < Math.floor(listing.rating || 0)
-                ? "text-yellow-500"
-                : "text-gray-500"
-            }
-            size={16}
-            fill={i < Math.floor(listing.rating || 0) ? "currentColor" : "none"}
+const ListingCard = ({ listing }: { listing: Listing }) => {
+  const isVideo = (url: string) => {
+    const videoExtensions = [".mp4", ".webm", ".ogg"];
+    return videoExtensions.some((ext) => url.toLowerCase().endsWith(ext));
+  };
+
+  return (
+    <Link href={`/marketplace/${listing.id}`}>
+      <Card className="bg-[#2C2C2C] p-4 rounded-lg flex flex-col items-center cursor-pointer hover:bg-[#3A3A3A] transition-colors">
+        {isVideo(listing.images[0] || "") ? (
+          <video
+            src={listing.images[0]}
+            className="w-32 h-32 object-cover mb-4 rounded-lg"
+            controls
+            autoPlay
+            loop
+            muted
           />
-        ))}
-        <span className="text-sm text-gray-400 ml-2">
-          ({listing.rating?.toFixed(1) || "N/A"})
-        </span>
-      </div>
-      <p className="text-md font-bold text-green-500 mb-4">
-        {listing.currency} {listing.price.toFixed(2)}
-      </p>
-      <Button className="bg-green-600 hover:bg-green-700 text-white font-semibold rounded-md px-6 py-2">
-        View Details
-      </Button>
-    </Card>
-  </Link>
-);
+        ) : (
+          <img
+            src={listing.images[0] || "https://via.placeholder.com/150"}
+            alt={listing.title}
+            className="w-32 h-32 object-cover mb-4 rounded-lg"
+          />
+        )}
+        <p className="text-lg font-semibold text-center mb-1">
+          {listing.title}
+        </p>
+        <div className="flex items-center mb-2">
+          {[...Array(5)].map((_, i) => (
+            <Star
+              key={i}
+              className={
+                i < Math.floor(listing.rating || 0)
+                  ? "text-yellow-500"
+                  : "text-gray-500"
+              }
+              size={16}
+              fill={
+                i < Math.floor(listing.rating || 0) ? "currentColor" : "none"
+              }
+            />
+          ))}
+          <span className="text-sm text-gray-400 ml-2">
+            ({listing.rating?.toFixed(1) || "N/A"})
+          </span>
+        </div>
+        <p className="text-md font-bold text-green-500 mb-4">
+          {listing.currency} {listing.price.toFixed(2)}
+        </p>
+        <Button className="bg-green-600 hover:bg-green-700 text-white font-semibold rounded-md px-6 py-2">
+          View Details
+        </Button>
+      </Card>
+    </Link>
+  );
+};
 
 export default function MarketplacePage() {
   const {
@@ -193,86 +215,13 @@ export default function MarketplacePage() {
         <div className="flex flex-1 space-x-8">
           {/* Product Grid */}
           <div className="flex-1 grid grid-cols-3 gap-6">
-            {listings.map((listing) => (
+            {listings.map((listing: Listing) => (
               <ListingCard key={listing.id} listing={listing} />
             ))}
           </div>
 
           {/* Featured Freelancers Sidebar */}
-          <Card className="w-72 bg-[#2C2C2C] p-4 rounded-lg">
-            <h3 className="text-lg font-semibold mb-4">Featured Freelancers</h3>
-            <div className="space-y-4">
-              {/* Freelancer Card 1 */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <Avatar className="h-10 w-10 mr-3">
-                    <AvatarImage
-                      src="https://github.com/shadcn.png"
-                      alt="@shadcn"
-                    />
-                    <AvatarFallback>SJ</AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <p className="font-semibold">Sarah J</p>
-                    <p className="text-sm text-gray-400">Graphic Designer</p>
-                  </div>
-                </div>
-                <div className="flex items-center">
-                  <Star className="text-yellow-500" size={16} />
-                  <Star className="text-yellow-500" size={16} />
-                  <Star className="text-yellow-500" size={16} />
-                  <Star className="text-yellow-500" size={16} />
-                  <Star className="text-gray-400" size={16} />
-                </div>
-              </div>
-              {/* Freelancer Card 2 */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <Avatar className="h-10 w-10 mr-3">
-                    <AvatarImage
-                      src="https://github.com/shadcn.png"
-                      alt="@shadcn"
-                    />
-                    <AvatarFallback>SJ</AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <p className="font-semibold">Sarah J</p>
-                    <p className="text-sm text-gray-400">Graphic Designer</p>
-                  </div>
-                </div>
-                <div className="flex items-center">
-                  <Star className="text-yellow-500" size={16} />
-                  <Star className="text-yellow-500" size={16} />
-                  <Star className="text-yellow-500" size={16} />
-                  <Star className="text-yellow-500" size={16} />
-                  <Star className="text-gray-400" size={16} />
-                </div>
-              </div>
-              {/* Freelancer Card 3 */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <Avatar className="h-10 w-10 mr-3">
-                    <AvatarImage
-                      src="https://github.com/shadcn.png"
-                      alt="@shadcn"
-                    />
-                    <AvatarFallback>DC</AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <p className="font-semibold">David Chen</p>
-                    <p className="text-sm text-gray-400">Web Developer</p>
-                  </div>
-                </div>
-                <div className="flex items-center">
-                  <Star className="text-yellow-500" size={16} />
-                  <Star className="text-yellow-500" size={16} />
-                  <Star className="text-yellow-500" size={16} />
-                  <Star className="text-yellow-500" size={16} />
-                  <Star className="text-gray-400" size={16} />
-                </div>
-              </div>
-            </div>
-          </Card>
+          <Card className=""></Card>
         </div>
       </main>
     </div>
