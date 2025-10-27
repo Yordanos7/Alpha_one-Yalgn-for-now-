@@ -31,6 +31,7 @@ interface Listing {
     name: string;
   };
   images: string[];
+  videos: string[];
   tags: string[];
   isPublished: boolean;
   rating?: number;
@@ -124,35 +125,35 @@ export default function ListingDetailPage({
         <div className="lg:col-span-2 space-y-6">
           {/* Main Media Display with Navigation */}
           <Card className="p-4 bg-card rounded-lg shadow-sm relative">
-            {listing.images && listing.images.length > 0 ? (
+            {listing.videos && listing.videos.length > 0 ? (
               <div className="relative w-full h-[400px] bg-gray-800 rounded-md overflow-hidden">
-                {isVideo(listing.images[currentMediaIndex]) ? (
-                  <video
-                    src={listing.images[currentMediaIndex]}
-                    controls
-                    autoPlay
-                    loop
-                    muted
-                    className="w-full h-full object-contain"
-                    onError={(e) =>
-                      console.error("Video error:", e.currentTarget.error)
-                    }
-                  />
-                ) : (
-                  <Image
-                    src={
-                      listing.images[currentMediaIndex] ||
-                      "/placeholder-image.jpg"
-                    } // Fallback for Image src
-                    alt={listing.title}
-                    layout="fill"
-                    objectFit="contain"
-                    className="rounded-md"
-                    onError={(e) =>
-                      console.error("Image error:", e.currentTarget.src)
-                    }
-                  />
-                )}
+                <video
+                  src={listing.videos[0]}
+                  controls
+                  autoPlay
+                  loop
+                  muted
+                  className="w-full h-full object-contain"
+                  onError={(e) =>
+                    console.error("Video error:", e.currentTarget.error)
+                  }
+                />
+              </div>
+            ) : listing.images && listing.images.length > 0 ? (
+              <div className="relative w-full h-[400px] bg-gray-800 rounded-md overflow-hidden">
+                <Image
+                  src={
+                    listing.images[currentMediaIndex] ||
+                    "/placeholder-image.jpg"
+                  } // Fallback for Image src
+                  alt={listing.title}
+                  layout="fill"
+                  objectFit="contain"
+                  className="rounded-md"
+                  onError={(e) =>
+                    console.error("Image error:", e.currentTarget.src)
+                  }
+                />
                 {listing.images.length > 1 && (
                   <>
                     <Button

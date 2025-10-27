@@ -12138,8 +12138,8 @@ export namespace Prisma {
     deliveryDays: number
     categoryId: number
     images: number
-    videos: number
     tags: number
+    videos: number
     isPublished: number
     rating: number
     reviewCount: number
@@ -12208,8 +12208,8 @@ export namespace Prisma {
     deliveryDays?: true
     categoryId?: true
     images?: true
-    videos?: true
     tags?: true
+    videos?: true
     isPublished?: true
     rating?: true
     reviewCount?: true
@@ -12315,8 +12315,8 @@ export namespace Prisma {
     deliveryDays: number | null
     categoryId: string | null
     images: string[]
-    videos: string[]
     tags: string[]
+    videos: string[]
     isPublished: boolean
     rating: number | null
     reviewCount: number
@@ -12354,8 +12354,8 @@ export namespace Prisma {
     deliveryDays?: boolean
     categoryId?: boolean
     images?: boolean
-    videos?: boolean
     tags?: boolean
+    videos?: boolean
     isPublished?: boolean
     rating?: boolean
     reviewCount?: boolean
@@ -12378,8 +12378,8 @@ export namespace Prisma {
     deliveryDays?: boolean
     categoryId?: boolean
     images?: boolean
-    videos?: boolean
     tags?: boolean
+    videos?: boolean
     isPublished?: boolean
     rating?: boolean
     reviewCount?: boolean
@@ -12400,8 +12400,8 @@ export namespace Prisma {
     deliveryDays?: boolean
     categoryId?: boolean
     images?: boolean
-    videos?: boolean
     tags?: boolean
+    videos?: boolean
     isPublished?: boolean
     rating?: boolean
     reviewCount?: boolean
@@ -12422,8 +12422,8 @@ export namespace Prisma {
     deliveryDays?: boolean
     categoryId?: boolean
     images?: boolean
-    videos?: boolean
     tags?: boolean
+    videos?: boolean
     isPublished?: boolean
     rating?: boolean
     reviewCount?: boolean
@@ -12431,7 +12431,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type ListingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "providerId" | "title" | "slug" | "description" | "price" | "currency" | "deliveryDays" | "categoryId" | "images" | "videos" | "tags" | "isPublished" | "rating" | "reviewCount" | "createdAt" | "updatedAt", ExtArgs["result"]["listing"]>
+  export type ListingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "providerId" | "title" | "slug" | "description" | "price" | "currency" | "deliveryDays" | "categoryId" | "images" | "tags" | "videos" | "isPublished" | "rating" | "reviewCount" | "createdAt" | "updatedAt", ExtArgs["result"]["listing"]>
   export type ListingInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     provider?: boolean | UserDefaultArgs<ExtArgs>
     category?: boolean | Listing$categoryArgs<ExtArgs>
@@ -12465,8 +12465,8 @@ export namespace Prisma {
       deliveryDays: number | null
       categoryId: string | null
       images: string[]
-      videos: string[]
       tags: string[]
+      videos: string[]
       isPublished: boolean
       rating: number | null
       reviewCount: number
@@ -12908,8 +12908,8 @@ export namespace Prisma {
     readonly deliveryDays: FieldRef<"Listing", 'Int'>
     readonly categoryId: FieldRef<"Listing", 'String'>
     readonly images: FieldRef<"Listing", 'String[]'>
-    readonly videos: FieldRef<"Listing", 'String[]'>
     readonly tags: FieldRef<"Listing", 'String[]'>
+    readonly videos: FieldRef<"Listing", 'String[]'>
     readonly isPublished: FieldRef<"Listing", 'Boolean'>
     readonly rating: FieldRef<"Listing", 'Float'>
     readonly reviewCount: FieldRef<"Listing", 'Int'>
@@ -30534,8 +30534,8 @@ export namespace Prisma {
     deliveryDays: 'deliveryDays',
     categoryId: 'categoryId',
     images: 'images',
-    videos: 'videos',
     tags: 'tags',
+    videos: 'videos',
     isPublished: 'isPublished',
     rating: 'rating',
     reviewCount: 'reviewCount',
@@ -31673,8 +31673,8 @@ export namespace Prisma {
     deliveryDays?: IntNullableFilter<"Listing"> | number | null
     categoryId?: StringNullableFilter<"Listing"> | string | null
     images?: StringNullableListFilter<"Listing">
-    videos?: StringNullableListFilter<"Listing">
     tags?: StringNullableListFilter<"Listing">
+    videos?: StringNullableListFilter<"Listing">
     isPublished?: BoolFilter<"Listing"> | boolean
     rating?: FloatNullableFilter<"Listing"> | number | null
     reviewCount?: IntFilter<"Listing"> | number
@@ -31696,8 +31696,8 @@ export namespace Prisma {
     deliveryDays?: SortOrderInput | SortOrder
     categoryId?: SortOrderInput | SortOrder
     images?: SortOrder
-    videos?: SortOrder
     tags?: SortOrder
+    videos?: SortOrder
     isPublished?: SortOrder
     rating?: SortOrderInput | SortOrder
     reviewCount?: SortOrder
@@ -31722,8 +31722,8 @@ export namespace Prisma {
     deliveryDays?: IntNullableFilter<"Listing"> | number | null
     categoryId?: StringNullableFilter<"Listing"> | string | null
     images?: StringNullableListFilter<"Listing">
-    videos?: StringNullableListFilter<"Listing">
     tags?: StringNullableListFilter<"Listing">
+    videos?: StringNullableListFilter<"Listing">
     isPublished?: BoolFilter<"Listing"> | boolean
     rating?: FloatNullableFilter<"Listing"> | number | null
     reviewCount?: IntFilter<"Listing"> | number
@@ -31745,8 +31745,8 @@ export namespace Prisma {
     deliveryDays?: SortOrderInput | SortOrder
     categoryId?: SortOrderInput | SortOrder
     images?: SortOrder
-    videos?: SortOrder
     tags?: SortOrder
+    videos?: SortOrder
     isPublished?: SortOrder
     rating?: SortOrderInput | SortOrder
     reviewCount?: SortOrder
@@ -31773,8 +31773,8 @@ export namespace Prisma {
     deliveryDays?: IntNullableWithAggregatesFilter<"Listing"> | number | null
     categoryId?: StringNullableWithAggregatesFilter<"Listing"> | string | null
     images?: StringNullableListFilter<"Listing">
-    videos?: StringNullableListFilter<"Listing">
     tags?: StringNullableListFilter<"Listing">
+    videos?: StringNullableListFilter<"Listing">
     isPublished?: BoolWithAggregatesFilter<"Listing"> | boolean
     rating?: FloatNullableWithAggregatesFilter<"Listing"> | number | null
     reviewCount?: IntWithAggregatesFilter<"Listing"> | number
@@ -33655,8 +33655,8 @@ export namespace Prisma {
     currency?: $Enums.Currency
     deliveryDays?: number | null
     images?: ListingCreateimagesInput | string[]
-    videos?: ListingCreatevideosInput | string[]
     tags?: ListingCreatetagsInput | string[]
+    videos?: ListingCreatevideosInput | string[]
     isPublished?: boolean
     rating?: number | null
     reviewCount?: number
@@ -33678,8 +33678,8 @@ export namespace Prisma {
     deliveryDays?: number | null
     categoryId?: string | null
     images?: ListingCreateimagesInput | string[]
-    videos?: ListingCreatevideosInput | string[]
     tags?: ListingCreatetagsInput | string[]
+    videos?: ListingCreatevideosInput | string[]
     isPublished?: boolean
     rating?: number | null
     reviewCount?: number
@@ -33697,8 +33697,8 @@ export namespace Prisma {
     currency?: EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency
     deliveryDays?: NullableIntFieldUpdateOperationsInput | number | null
     images?: ListingUpdateimagesInput | string[]
-    videos?: ListingUpdatevideosInput | string[]
     tags?: ListingUpdatetagsInput | string[]
+    videos?: ListingUpdatevideosInput | string[]
     isPublished?: BoolFieldUpdateOperationsInput | boolean
     rating?: NullableFloatFieldUpdateOperationsInput | number | null
     reviewCount?: IntFieldUpdateOperationsInput | number
@@ -33720,8 +33720,8 @@ export namespace Prisma {
     deliveryDays?: NullableIntFieldUpdateOperationsInput | number | null
     categoryId?: NullableStringFieldUpdateOperationsInput | string | null
     images?: ListingUpdateimagesInput | string[]
-    videos?: ListingUpdatevideosInput | string[]
     tags?: ListingUpdatetagsInput | string[]
+    videos?: ListingUpdatevideosInput | string[]
     isPublished?: BoolFieldUpdateOperationsInput | boolean
     rating?: NullableFloatFieldUpdateOperationsInput | number | null
     reviewCount?: IntFieldUpdateOperationsInput | number
@@ -33741,8 +33741,8 @@ export namespace Prisma {
     deliveryDays?: number | null
     categoryId?: string | null
     images?: ListingCreateimagesInput | string[]
-    videos?: ListingCreatevideosInput | string[]
     tags?: ListingCreatetagsInput | string[]
+    videos?: ListingCreatevideosInput | string[]
     isPublished?: boolean
     rating?: number | null
     reviewCount?: number
@@ -33759,8 +33759,8 @@ export namespace Prisma {
     currency?: EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency
     deliveryDays?: NullableIntFieldUpdateOperationsInput | number | null
     images?: ListingUpdateimagesInput | string[]
-    videos?: ListingUpdatevideosInput | string[]
     tags?: ListingUpdatetagsInput | string[]
+    videos?: ListingUpdatevideosInput | string[]
     isPublished?: BoolFieldUpdateOperationsInput | boolean
     rating?: NullableFloatFieldUpdateOperationsInput | number | null
     reviewCount?: IntFieldUpdateOperationsInput | number
@@ -33779,8 +33779,8 @@ export namespace Prisma {
     deliveryDays?: NullableIntFieldUpdateOperationsInput | number | null
     categoryId?: NullableStringFieldUpdateOperationsInput | string | null
     images?: ListingUpdateimagesInput | string[]
-    videos?: ListingUpdatevideosInput | string[]
     tags?: ListingUpdatetagsInput | string[]
+    videos?: ListingUpdatevideosInput | string[]
     isPublished?: BoolFieldUpdateOperationsInput | boolean
     rating?: NullableFloatFieldUpdateOperationsInput | number | null
     reviewCount?: IntFieldUpdateOperationsInput | number
@@ -35809,8 +35809,8 @@ export namespace Prisma {
     deliveryDays?: SortOrder
     categoryId?: SortOrder
     images?: SortOrder
-    videos?: SortOrder
     tags?: SortOrder
+    videos?: SortOrder
     isPublished?: SortOrder
     rating?: SortOrder
     reviewCount?: SortOrder
@@ -37723,11 +37723,11 @@ export namespace Prisma {
     set: string[]
   }
 
-  export type ListingCreatevideosInput = {
+  export type ListingCreatetagsInput = {
     set: string[]
   }
 
-  export type ListingCreatetagsInput = {
+  export type ListingCreatevideosInput = {
     set: string[]
   }
 
@@ -37780,12 +37780,12 @@ export namespace Prisma {
     push?: string | string[]
   }
 
-  export type ListingUpdatevideosInput = {
+  export type ListingUpdatetagsInput = {
     set?: string[]
     push?: string | string[]
   }
 
-  export type ListingUpdatetagsInput = {
+  export type ListingUpdatevideosInput = {
     set?: string[]
     push?: string | string[]
   }
@@ -39043,8 +39043,8 @@ export namespace Prisma {
     currency?: $Enums.Currency
     deliveryDays?: number | null
     images?: ListingCreateimagesInput | string[]
-    videos?: ListingCreatevideosInput | string[]
     tags?: ListingCreatetagsInput | string[]
+    videos?: ListingCreatevideosInput | string[]
     isPublished?: boolean
     rating?: number | null
     reviewCount?: number
@@ -39064,8 +39064,8 @@ export namespace Prisma {
     deliveryDays?: number | null
     categoryId?: string | null
     images?: ListingCreateimagesInput | string[]
-    videos?: ListingCreatevideosInput | string[]
     tags?: ListingCreatetagsInput | string[]
+    videos?: ListingCreatevideosInput | string[]
     isPublished?: boolean
     rating?: number | null
     reviewCount?: number
@@ -39694,8 +39694,8 @@ export namespace Prisma {
     deliveryDays?: IntNullableFilter<"Listing"> | number | null
     categoryId?: StringNullableFilter<"Listing"> | string | null
     images?: StringNullableListFilter<"Listing">
-    videos?: StringNullableListFilter<"Listing">
     tags?: StringNullableListFilter<"Listing">
+    videos?: StringNullableListFilter<"Listing">
     isPublished?: BoolFilter<"Listing"> | boolean
     rating?: FloatNullableFilter<"Listing"> | number | null
     reviewCount?: IntFilter<"Listing"> | number
@@ -40775,8 +40775,8 @@ export namespace Prisma {
     currency?: $Enums.Currency
     deliveryDays?: number | null
     images?: ListingCreateimagesInput | string[]
-    videos?: ListingCreatevideosInput | string[]
     tags?: ListingCreatetagsInput | string[]
+    videos?: ListingCreatevideosInput | string[]
     isPublished?: boolean
     rating?: number | null
     reviewCount?: number
@@ -40797,8 +40797,8 @@ export namespace Prisma {
     deliveryDays?: number | null
     categoryId?: string | null
     images?: ListingCreateimagesInput | string[]
-    videos?: ListingCreatevideosInput | string[]
     tags?: ListingCreatetagsInput | string[]
+    videos?: ListingCreatevideosInput | string[]
     isPublished?: boolean
     rating?: number | null
     reviewCount?: number
@@ -41067,8 +41067,8 @@ export namespace Prisma {
     currency?: $Enums.Currency
     deliveryDays?: number | null
     images?: ListingCreateimagesInput | string[]
-    videos?: ListingCreatevideosInput | string[]
     tags?: ListingCreatetagsInput | string[]
+    videos?: ListingCreatevideosInput | string[]
     isPublished?: boolean
     rating?: number | null
     reviewCount?: number
@@ -41088,8 +41088,8 @@ export namespace Prisma {
     currency?: $Enums.Currency
     deliveryDays?: number | null
     images?: ListingCreateimagesInput | string[]
-    videos?: ListingCreatevideosInput | string[]
     tags?: ListingCreatetagsInput | string[]
+    videos?: ListingCreatevideosInput | string[]
     isPublished?: boolean
     rating?: number | null
     reviewCount?: number
@@ -44824,8 +44824,8 @@ export namespace Prisma {
     deliveryDays?: number | null
     categoryId?: string | null
     images?: ListingCreateimagesInput | string[]
-    videos?: ListingCreatevideosInput | string[]
     tags?: ListingCreatetagsInput | string[]
+    videos?: ListingCreatevideosInput | string[]
     isPublished?: boolean
     rating?: number | null
     reviewCount?: number
@@ -44991,8 +44991,8 @@ export namespace Prisma {
     currency?: EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency
     deliveryDays?: NullableIntFieldUpdateOperationsInput | number | null
     images?: ListingUpdateimagesInput | string[]
-    videos?: ListingUpdatevideosInput | string[]
     tags?: ListingUpdatetagsInput | string[]
+    videos?: ListingUpdatevideosInput | string[]
     isPublished?: BoolFieldUpdateOperationsInput | boolean
     rating?: NullableFloatFieldUpdateOperationsInput | number | null
     reviewCount?: IntFieldUpdateOperationsInput | number
@@ -45012,8 +45012,8 @@ export namespace Prisma {
     deliveryDays?: NullableIntFieldUpdateOperationsInput | number | null
     categoryId?: NullableStringFieldUpdateOperationsInput | string | null
     images?: ListingUpdateimagesInput | string[]
-    videos?: ListingUpdatevideosInput | string[]
     tags?: ListingUpdatetagsInput | string[]
+    videos?: ListingUpdatevideosInput | string[]
     isPublished?: BoolFieldUpdateOperationsInput | boolean
     rating?: NullableFloatFieldUpdateOperationsInput | number | null
     reviewCount?: IntFieldUpdateOperationsInput | number
@@ -45032,8 +45032,8 @@ export namespace Prisma {
     deliveryDays?: NullableIntFieldUpdateOperationsInput | number | null
     categoryId?: NullableStringFieldUpdateOperationsInput | string | null
     images?: ListingUpdateimagesInput | string[]
-    videos?: ListingUpdatevideosInput | string[]
     tags?: ListingUpdatetagsInput | string[]
+    videos?: ListingUpdatevideosInput | string[]
     isPublished?: BoolFieldUpdateOperationsInput | boolean
     rating?: NullableFloatFieldUpdateOperationsInput | number | null
     reviewCount?: IntFieldUpdateOperationsInput | number
@@ -45629,8 +45629,8 @@ export namespace Prisma {
     currency?: EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency
     deliveryDays?: NullableIntFieldUpdateOperationsInput | number | null
     images?: ListingUpdateimagesInput | string[]
-    videos?: ListingUpdatevideosInput | string[]
     tags?: ListingUpdatetagsInput | string[]
+    videos?: ListingUpdatevideosInput | string[]
     isPublished?: BoolFieldUpdateOperationsInput | boolean
     rating?: NullableFloatFieldUpdateOperationsInput | number | null
     reviewCount?: IntFieldUpdateOperationsInput | number
@@ -45651,8 +45651,8 @@ export namespace Prisma {
     deliveryDays?: NullableIntFieldUpdateOperationsInput | number | null
     categoryId?: NullableStringFieldUpdateOperationsInput | string | null
     images?: ListingUpdateimagesInput | string[]
-    videos?: ListingUpdatevideosInput | string[]
     tags?: ListingUpdatetagsInput | string[]
+    videos?: ListingUpdatevideosInput | string[]
     isPublished?: BoolFieldUpdateOperationsInput | boolean
     rating?: NullableFloatFieldUpdateOperationsInput | number | null
     reviewCount?: IntFieldUpdateOperationsInput | number
@@ -45671,8 +45671,8 @@ export namespace Prisma {
     deliveryDays?: NullableIntFieldUpdateOperationsInput | number | null
     categoryId?: NullableStringFieldUpdateOperationsInput | string | null
     images?: ListingUpdateimagesInput | string[]
-    videos?: ListingUpdatevideosInput | string[]
     tags?: ListingUpdatetagsInput | string[]
+    videos?: ListingUpdatevideosInput | string[]
     isPublished?: BoolFieldUpdateOperationsInput | boolean
     rating?: NullableFloatFieldUpdateOperationsInput | number | null
     reviewCount?: IntFieldUpdateOperationsInput | number
@@ -45751,8 +45751,8 @@ export namespace Prisma {
     currency?: $Enums.Currency
     deliveryDays?: number | null
     images?: ListingCreateimagesInput | string[]
-    videos?: ListingCreatevideosInput | string[]
     tags?: ListingCreatetagsInput | string[]
+    videos?: ListingCreatevideosInput | string[]
     isPublished?: boolean
     rating?: number | null
     reviewCount?: number
@@ -45769,8 +45769,8 @@ export namespace Prisma {
     currency?: EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency
     deliveryDays?: NullableIntFieldUpdateOperationsInput | number | null
     images?: ListingUpdateimagesInput | string[]
-    videos?: ListingUpdatevideosInput | string[]
     tags?: ListingUpdatetagsInput | string[]
+    videos?: ListingUpdatevideosInput | string[]
     isPublished?: BoolFieldUpdateOperationsInput | boolean
     rating?: NullableFloatFieldUpdateOperationsInput | number | null
     reviewCount?: IntFieldUpdateOperationsInput | number
@@ -45790,8 +45790,8 @@ export namespace Prisma {
     currency?: EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency
     deliveryDays?: NullableIntFieldUpdateOperationsInput | number | null
     images?: ListingUpdateimagesInput | string[]
-    videos?: ListingUpdatevideosInput | string[]
     tags?: ListingUpdatetagsInput | string[]
+    videos?: ListingUpdatevideosInput | string[]
     isPublished?: BoolFieldUpdateOperationsInput | boolean
     rating?: NullableFloatFieldUpdateOperationsInput | number | null
     reviewCount?: IntFieldUpdateOperationsInput | number
@@ -45810,8 +45810,8 @@ export namespace Prisma {
     currency?: EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency
     deliveryDays?: NullableIntFieldUpdateOperationsInput | number | null
     images?: ListingUpdateimagesInput | string[]
-    videos?: ListingUpdatevideosInput | string[]
     tags?: ListingUpdatetagsInput | string[]
+    videos?: ListingUpdatevideosInput | string[]
     isPublished?: BoolFieldUpdateOperationsInput | boolean
     rating?: NullableFloatFieldUpdateOperationsInput | number | null
     reviewCount?: IntFieldUpdateOperationsInput | number

@@ -61,7 +61,22 @@ export const listingRouter = router({
     .query(async ({ ctx: { prisma }, input }) => {
       const listing = await prisma.listing.findUnique({
         where: { id: input.id },
-        include: {
+        select: {
+          id: true,
+          title: true,
+          description: true,
+          price: true,
+          currency: true,
+          deliveryDays: true,
+          categoryId: true,
+          images: true,
+          videos: true,
+          tags: true,
+          isPublished: true,
+          rating: true,
+          reviewCount: true,
+          createdAt: true,
+          updatedAt: true,
           provider: {
             select: {
               id: true,
@@ -146,7 +161,22 @@ export const listingRouter = router({
         where,
         cursor: cursor ? { id: cursor } : undefined,
         orderBy: { createdAt: "desc" },
-        include: {
+        select: {
+          id: true,
+          title: true,
+          description: true,
+          price: true,
+          currency: true,
+          deliveryDays: true,
+          categoryId: true,
+          images: true,
+          videos: true,
+          tags: true,
+          isPublished: true,
+          rating: true,
+          reviewCount: true,
+          createdAt: true,
+          updatedAt: true,
           provider: {
             select: {
               id: true,
