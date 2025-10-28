@@ -58,7 +58,7 @@ const ListingCard = ({ listing }: { listing: Listing }) => {
 
   return (
     <Link href={`/marketplace/${listing.id}`} passHref>
-      <Card className="relative group w-full h-64 bg-cover bg-center rounded-lg overflow-hidden cursor-pointer transition-transform duration-300 ease-in-out transform hover:scale-105">
+      <Card className="relative group w-full h-80 bg-cover bg-center rounded-lg overflow-hidden cursor-pointer transition-transform duration-300 ease-in-out transform hover:scale-105">
         {mediaUrl ? (
           isVideo(mediaUrl) ? (
             <video
@@ -81,7 +81,7 @@ const ListingCard = ({ listing }: { listing: Listing }) => {
             style={{ backgroundImage: `url(${placeholderUrl})` }}
           />
         )}
-        <div className="absolute inset-0 bg-black bg-opacity-40 group-hover:bg-opacity-50 transition-all duration-300 z-10" />
+        <div className="absolute inset-0 bg-opacity-100 group-hover:bg-opacity-50 transition-all duration-300 z-10" />
         <div className="absolute bottom-0 left-0 p-4 text-white w-full z-20">
           <h3 className="text-lg font-bold truncate">{listing.title}</h3>
           <div className="flex items-center mt-1">

@@ -186,7 +186,7 @@ export function ListingForm({
   };
 
   return (
-    <Card className="bg-[#1f1d1d] p-6 rounded-lg  ">
+    <Card className="bg-[#1f1d1d] p-6 rounded-lg shadow-lg w-full ">
       <CardHeader>
         <CardTitle className="text-xl font-semibold">
           {initialData ? "Edit Listing" : "Create New Listing"}

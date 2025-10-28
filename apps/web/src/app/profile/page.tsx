@@ -824,7 +824,19 @@ export default function ProfilePage() {
                     <Plus className="mr-2" size={16} /> Post New Product/Service
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="bg-[#2C2C2C] text-white p-6 rounded-lg max-w-3xl">
+                <DialogContent
+                  className="
+  bg-[#2c2c2c] 
+  p-8 
+  w-full 
+  h-screen 
+  max-w-full 
+  rounded-none 
+  overflow-y-auto 
+  flex 
+  flex-col
+"
+                >
                   <DialogHeader>
                     <DialogTitle>Create a new listing</DialogTitle>
                     <DialogDescription>
