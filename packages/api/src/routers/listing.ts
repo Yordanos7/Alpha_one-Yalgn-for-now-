@@ -40,11 +40,13 @@ export const listingRouter = router({
       );
       const userId = user!.id;
 
-      const { categoryId, ...restInput } = input;
+      const { categoryId, images, videos, ...restInput } = input;
 
       const listing = await prisma.listing.create({
         data: {
           ...restInput,
+          images,
+          videos,
           ...(categoryId && { categoryId }), // Only include categoryId if it's not an empty string
           providerId: userId,
           slug: input.title

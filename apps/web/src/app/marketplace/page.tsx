@@ -52,53 +52,55 @@ const ListingCard = ({ listing }: { listing: Listing }) => {
     return videoExtensions.some((ext) => url.toLowerCase().endsWith(ext));
   };
 
+  const mediaUrl = listing.videos?.[0] || listing.images?.[0];
+  const placeholderUrl = "https://via.placeholder.com/150";
+  console.log("Listing in ListingCard:", listing);
   return (
     <Link href={`/marketplace/${listing.id}`}>
-      <Card className="bg-[#2C2C2C] p-4 rounded-lg flex flex-col items-center cursor-pointer hover:bg-[#3A3A3A] transition-colors">
-        {isVideo(listing.videos?.[0] || "") ? (
-          <video
-            src={listing.videos?.[0]}
-            className="w-32 h-32 object-cover mb-4 rounded-lg"
-            controls
-            autoPlay
-            loop
-            muted
-          />
+      <Card className="relative group w-full h-64 bg-cover bg-center rounded-lg overflow-hidden cursor-pointer transition-transform duration-300 ease-in-out transform hover:scale-105">
+        {mediaUrl ? (
+          isVideo(mediaUrl) ? (
+            <video
+              src={mediaUrl}
+              className="absolute inset-0 w-full h-full object-cover"
+              autoPlay
+              loop
+              muted
+            />
+          ) : (
+            <div
+              className="absolute inset-0 w-full h-full bg-cover bg-center"
+              style={{ backgroundImage: `url(${mediaUrl})` }}
+            />
+          )
         ) : (
-          <img
-            src={listing.images[0] || "https://via.placeholder.com/150"}
-            alt={listing.title}
-            className="w-32 h-32 object-cover mb-4 rounded-lg"
+          <div
+            className="absolute inset-0 w-full h-full bg-cover bg-center"
+            style={{ backgroundImage: `url(${placeholderUrl})` }}
           />
         )}
-        <p className="text-lg font-semibold text-center mb-1">
-          {listing.title}
-        </p>
-        <div className="flex items-center mb-2">
-          {[...Array(5)].map((_, i) => (
-            <Star
-              key={i}
-              className={
-                i < Math.floor(listing.rating || 0)
-                  ? "text-yellow-500"
-                  : "text-gray-500"
-              }
-              size={16}
-              fill={
-                i < Math.floor(listing.rating || 0) ? "currentColor" : "none"
-              }
-            />
-          ))}
-          <span className="text-sm text-gray-400 ml-2">
-            ({listing.rating?.toFixed(1) || "N/A"})
-          </span>
+        <div className="absolute inset-0 bg-black bg-opacity-40 group-hover:bg-opacity-50 transition-all duration-300" />
+        <div className="absolute bottom-0 left-0 p-4 text-white w-full">
+          <h3 className="text-lg font-bold truncate">{listing.title}</h3>
+          <div className="flex items-center mt-1">
+            {[...Array(5)].map((_, i) => (
+              <Star
+                key={i}
+                className={`h-4 w-4 ${
+                  i < Math.floor(listing.rating || 0)
+                    ? "text-yellow-400 fill-yellow-400"
+                    : "text-gray-400"
+                }`}
+              />
+            ))}
+            <span className="text-xs ml-1">
+              ({listing.rating?.toFixed(1) || "N/A"})
+            </span>
+          </div>
+          <p className="text-lg font-semibold mt-2">
+            {listing.currency} {listing.price.toFixed(2)}
+          </p>
         </div>
-        <p className="text-md font-bold text-green-500 mb-4">
-          {listing.currency} {listing.price.toFixed(2)}
-        </p>
-        <Button className="bg-green-600 hover:bg-green-700 text-white font-semibold rounded-md px-6 py-2">
-          View Details
-        </Button>
       </Card>
     </Link>
   );

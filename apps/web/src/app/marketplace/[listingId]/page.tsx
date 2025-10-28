@@ -31,7 +31,6 @@ interface Listing {
     name: string;
   };
   images: string[];
-  videos: string[];
   tags: string[];
   isPublished: boolean;
   rating?: number;
@@ -115,45 +114,45 @@ export default function ListingDetailPage({
   console.log("Listing images array:", listing.images);
   console.log("videoExtensions check:", isVideo(listing.images[0] || ""));
   return (
-    <main className=" mx-auto px-4 py-8 md:py-12 bg-background text-foreground">
+    <main className="container mx-auto px-4 py-8 md:py-12 bg-background text-foreground">
       <Button variant="outline" onClick={() => router.back()} className="mb-6">
         &larr; Back to Marketplace
       </Button>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {/* Left Column: Main Media Display and Thumbnails */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="md:col-span-1 lg:col-span-2 space-y-6">
           {/* Main Media Display with Navigation */}
           <Card className="p-4 bg-card rounded-lg shadow-sm relative">
-            {listing.videos && listing.videos.length > 0 ? (
-              <div className="relative w-full h-[400px] bg-gray-800 rounded-md overflow-hidden">
-                <video
-                  src={listing.videos[0]}
-                  controls
-                  autoPlay
-                  loop
-                  muted
-                  className="w-full h-full object-contain"
-                  onError={(e) =>
-                    console.error("Video error:", e.currentTarget.error)
-                  }
-                />
-              </div>
-            ) : listing.images && listing.images.length > 0 ? (
-              <div className="relative w-full h-[400px] bg-gray-800 rounded-md overflow-hidden">
-                <Image
-                  src={
-                    listing.images[currentMediaIndex] ||
-                    "/placeholder-image.jpg"
-                  } // Fallback for Image src
-                  alt={listing.title}
-                  layout="fill"
-                  objectFit="contain"
-                  className="rounded-md"
-                  onError={(e) =>
-                    console.error("Image error:", e.currentTarget.src)
-                  }
-                />
+            {listing.images && listing.images.length > 0 ? (
+              <div className="relative w-full h-[300px] sm:h-[400px] md:h-[500px] bg-gray-800 rounded-md overflow-hidden">
+                {isVideo(listing.images[currentMediaIndex]) ? (
+                  <video
+                    src={listing.images[currentMediaIndex]}
+                    controls
+                    autoPlay
+                    loop
+                    muted
+                    className="w-full h-full object-contain"
+                    onError={(e) =>
+                      console.error("Video error:", e.currentTarget.error)
+                    }
+                  />
+                ) : (
+                  <Image
+                    src={
+                      listing.images[currentMediaIndex] ||
+                      "/placeholder-image.jpg"
+                    } // Fallback for Image src
+                    alt={listing.title}
+                    layout="fill"
+                    objectFit="contain"
+                    className="rounded-md"
+                    onError={(e) =>
+                      console.error("Image error:", e.currentTarget.src)
+                    }
+                  />
+                )}
                 {listing.images.length > 1 && (
                   <>
                     <Button
@@ -195,7 +194,7 @@ export default function ListingDetailPage({
                 {listing.images.map((mediaUrl, index) => (
                   <div
                     key={index}
-                    className={`flex-shrink-0 w-24 h-24 rounded-md overflow-hidden cursor-pointer border-2 ${
+                    className={`flex-shrink-0 w-20 h-20 sm:w-24 sm:h-24 rounded-md overflow-hidden cursor-pointer border-2 ${
                       index === currentMediaIndex
                         ? "border-primary"
                         : "border-transparent"
@@ -260,7 +259,7 @@ export default function ListingDetailPage({
         </div>
 
         {/* Right Column: Product Info and Actions */}
-        <div className="lg:col-span-1 space-y-6">
+        <div className="md:col-span-1 lg:col-span-1 space-y-6">
           {/* Listing Summary */}
           <Card className="p-6 bg-card rounded-lg shadow-sm">
             <CardTitle className="text-2xl font-bold mb-2">

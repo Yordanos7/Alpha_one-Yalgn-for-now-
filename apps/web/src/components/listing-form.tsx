@@ -28,11 +28,10 @@ interface ListingFormProps {
     deliveryDays?: number;
     categoryId?: string;
     images: string[];
-    videos: string[];
     tags: string[];
     isPublished: boolean;
   };
-  onSubmit: (data: any) => void; // Will be replaced with actual tRPC mutation later
+  onSubmit: (data: any) => void;
   onCancel: () => void;
   isSubmitting?: boolean;
 }
@@ -56,9 +55,8 @@ export function ListingForm({
   );
   const [categoryId, setCategoryId] = useState(initialData?.categoryId || "");
   const [images, setImages] = useState<string[]>(initialData?.images || []);
-  const [videos, setVideos] = useState<string[]>(initialData?.videos || []);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-  const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [tags, setTags] = useState<string[]>(initialData?.tags || []);
@@ -83,24 +81,26 @@ export function ListingForm({
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
-      setSelectedFiles(Array.from(event.target.files));
+      const newFiles = Array.from(event.target.files);
+      setSelectedFiles((prevFiles) => [...prevFiles, ...newFiles]);
     }
   };
 
-  const handleRemoveImage = (imageToRemove: string) => {
-    setImages(images.filter((image) => image !== imageToRemove));
+  const handleRemoveImage = (index: number) => {
+    setSelectedFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
   };
 
-  const handleRemoveVideo = (videoToRemove: string) => {
-    setVideos(videos.filter((video) => video !== videoToRemove));
+  const handleRemoveExistingImage = (imageToRemove: string) => {
+    setImages((prevImages) =>
+      prevImages.filter((image) => image !== imageToRemove)
+    );
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsUploadingImage(true);
+    setIsUploading(true);
 
     const uploadedImagePaths: string[] = [];
-    const uploadedVideoPaths: string[] = [];
 
     if (selectedFiles.length > 0) {
       for (const file of selectedFiles) {
@@ -116,13 +116,10 @@ export function ListingForm({
           const result = await response.json();
 
           if (result.success) {
-            if (file.type.startsWith("image/")) {
-              uploadedImagePaths.push(result.path);
-            } else if (file.type.startsWith("video/")) {
-              uploadedVideoPaths.push(result.path);
-            }
+            uploadedImagePaths.push(result.path);
           } else {
-            console.error("Error uploading file:", result);
+            console.error("Error uploading file:", result.error);
+            // Optionally, show an error message to the user
           }
         } catch (error) {
           console.error("Error uploading file:", error);
@@ -131,7 +128,6 @@ export function ListingForm({
     }
 
     const finalImages = [...images, ...uploadedImagePaths];
-    const finalVideos = [...videos, ...uploadedVideoPaths];
 
     onSubmit({
       title,
@@ -141,12 +137,12 @@ export function ListingForm({
       deliveryDays: deliveryDays ? parseInt(deliveryDays) : undefined,
       categoryId,
       images: finalImages,
-      videos: finalVideos,
+      videos: [],
       tags,
       isPublished,
     });
 
-    setIsUploadingImage(false);
+    setIsUploading(false);
   };
 
   return (
@@ -263,54 +259,58 @@ export function ListingForm({
           </div>
 
           <div>
-            <Label htmlFor="images" className="text-gray-300">
-              Images/Videos
-            </Label>
-            <div className="flex items-center space-x-2 mt-1">
-              <Input
-                id="images"
-                type="file"
-                multiple
-                onChange={handleFileChange}
-                className="flex-1 bg-[#3A3A3A] border-none text-white placeholder-gray-400"
-                ref={fileInputRef}
-              />
-            </div>
-            <div className="flex flex-wrap gap-2 mt-3">
-              {images.map((image) => (
-                <Badge
-                  key={image}
-                  variant="secondary"
-                  className="bg-[#3A3A3A] text-white px-3 py-1 rounded-full flex items-center"
-                >
-                  {image.length > 30 ? image.substring(0, 27) + "..." : image}
-                  <X
-                    className="ml-2 cursor-pointer"
-                    size={14}
-                    onClick={() => handleRemoveImage(image)}
+            <Label className="text-gray-300">Images</Label>
+            <div className="mt-2 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+              {images.map((image, index) => (
+                <div key={index} className="relative group">
+                  <img
+                    src={image}
+                    alt={`Existing image ${index + 1}`}
+                    className="w-full h-24 object-cover rounded-md"
                   />
-                </Badge>
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveExistingImage(image)}
+                    className="absolute top-1 right-1 bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <X size={14} />
+                  </button>
+                </div>
               ))}
-              {videos.map((video) => (
-                <Badge
-                  key={video}
-                  variant="secondary"
-                  className="bg-[#3A3A3A] text-white px-3 py-1 rounded-full flex items-center"
-                >
-                  {video.length > 30 ? video.substring(0, 27) + "..." : video}
-                  <X
-                    className="ml-2 cursor-pointer"
-                    size={14}
-                    onClick={() => handleRemoveVideo(video)}
+              {selectedFiles.map((file, index) => (
+                <div key={index} className="relative group">
+                  <img
+                    src={URL.createObjectURL(file)}
+                    alt={`Selected image ${index + 1}`}
+                    className="w-full h-24 object-cover rounded-md"
                   />
-                </Badge>
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveImage(index)}
+                    className="absolute top-1 right-1 bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <X size={14} />
+                  </button>
+                </div>
               ))}
+              <div
+                className="w-full h-24 border-2 border-dashed border-gray-500 rounded-md flex flex-col items-center justify-center cursor-pointer hover:bg-[#3A3A3A]"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <Upload size={24} className="text-gray-400" />
+                <span className="text-sm text-gray-400 mt-1">Add Images</span>
+                <Input
+                  id="images"
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="hidden"
+                  ref={fileInputRef}
+                />
+              </div>
             </div>
-            <p className="text-sm text-gray-500 mt-2">
-              (Upload multiple images/videos for your listing.)
-            </p>
           </div>
-
           <div>
             <Label htmlFor="tags" className="text-gray-300">
               Tags (e.g., keywords, skills)
@@ -372,9 +372,9 @@ export function ListingForm({
             <Button
               type="submit"
               className="bg-green-600 hover:bg-green-700 text-white font-semibold"
-              disabled={isSubmitting || isUploadingImage}
+              disabled={isSubmitting || isUploading}
             >
-              {isSubmitting || isUploadingImage ? "Saving..." : "Save Listing"}
+              {isSubmitting || isUploading ? "Saving..." : "Save Listing"}
             </Button>
           </div>
         </form>
