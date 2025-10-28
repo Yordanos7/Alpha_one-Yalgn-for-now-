@@ -62,8 +62,8 @@ export default function ListingDetailPage({
 
   const listing = listingData as Listing;
 
-  const [currentMediaIndex, setCurrentMediaIndex] = useState(0);
-  const [quantity, setQuantity] = useState(1);
+  const [currentMediaIndex, setCurrentMediaIndex] = useState(0); // this is for image/video carousel
+  const [quantity, setQuantity] = useState(1); // Quantity state for purchase
 
   useEffect(() => {
     if (listing && listing.images && listing.images.length > 0) {
@@ -72,8 +72,6 @@ export default function ListingDetailPage({
   }, [listing]);
 
   useEffect(() => {
-    console.log("Listing images:", listing?.images);
-    console.log("Current media index:", currentMediaIndex);
     if (listing?.images && listing.images.length > 0) {
       console.log("Current media URL:", listing.images[currentMediaIndex]);
       console.log("Is video:", isVideo(listing.images[currentMediaIndex]));
@@ -114,7 +112,7 @@ export default function ListingDetailPage({
   console.log("Listing images array:", listing.images);
   console.log("videoExtensions check:", isVideo(listing.images[0] || ""));
   return (
-    <main className="container mx-auto px-4 py-8 md:py-12 bg-background text-foreground">
+    <main className=" mx-auto px-4 py-8 md:py-12 bg-background text-foreground">
       <Button variant="outline" onClick={() => router.back()} className="mb-6">
         &larr; Back to Marketplace
       </Button>

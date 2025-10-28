@@ -87,8 +87,6 @@ export const listingRouter = router({
               accountType: true,
             },
           },
-          category: true,
-          skills: true,
         },
       });
 
@@ -115,8 +113,6 @@ export const listingRouter = router({
               accountType: true,
             },
           },
-          category: true,
-          skills: true,
         },
         orderBy: { createdAt: "desc" },
       });
@@ -187,8 +183,6 @@ export const listingRouter = router({
               accountType: true,
             },
           },
-          category: true,
-          skills: true,
         },
       });
 

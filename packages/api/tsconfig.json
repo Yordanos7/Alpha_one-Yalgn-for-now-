@@ -10,7 +10,7 @@
     "esModuleInterop": true,
     "paths": {
       "@Alpha/auth": ["../../packages/auth/src"],
-      "@Alpha/db": ["../../packages/db"]
+      "@Alpha/db": ["../../packages/db/src"]
     }
   },
   "include": ["src/**/*.ts", "src/types/**/*.d.ts"],
