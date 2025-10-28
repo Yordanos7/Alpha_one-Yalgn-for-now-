@@ -2,8 +2,9 @@ import { includes, z } from "zod";
 import { router, publicProcedure, protectedProcedure, t } from "..";
 import { partial } from "zod/mini";
 import { TRPCError } from "@trpc/server";
+import type { AppRouter } from "./types";
 
-export const conversationRouter = router({
+export const conversationRouter: AppRouter["conversation"] = router({
   list: protectedProcedure.query(async ({ ctx }) => {
     const userId = ctx.session?.userId;
     if (!userId) {

@@ -54,33 +54,35 @@ const ListingCard = ({ listing }: { listing: Listing }) => {
 
   const mediaUrl = listing.videos?.[0] || listing.images?.[0];
   const placeholderUrl = "https://via.placeholder.com/150";
-  console.log("Listing in ListingCard:", listing);
+  console.log("Listing Media URL:", mediaUrl);
+
   return (
-    <Link href={`/marketplace/${listing.id}`}>
+    <Link href={`/marketplace/${listing.id}`} passHref>
       <Card className="relative group w-full h-64 bg-cover bg-center rounded-lg overflow-hidden cursor-pointer transition-transform duration-300 ease-in-out transform hover:scale-105">
         {mediaUrl ? (
           isVideo(mediaUrl) ? (
             <video
               src={mediaUrl}
-              className="absolute inset-0 w-full h-full object-cover"
+              className="absolute inset-0 w-full h-full object-cover z-0"
               autoPlay
               loop
               muted
+              playsInline
             />
           ) : (
             <div
-              className="absolute inset-0 w-full h-full bg-cover bg-center"
+              className="absolute inset-0 w-full h-full bg-cover bg-center z-0"
               style={{ backgroundImage: `url(${mediaUrl})` }}
             />
           )
         ) : (
           <div
-            className="absolute inset-0 w-full h-full bg-cover bg-center"
+            className="absolute inset-0 w-full h-full bg-cover bg-center z-0"
             style={{ backgroundImage: `url(${placeholderUrl})` }}
           />
         )}
-        <div className="absolute inset-0 bg-black bg-opacity-40 group-hover:bg-opacity-50 transition-all duration-300" />
-        <div className="absolute bottom-0 left-0 p-4 text-white w-full">
+        <div className="absolute inset-0 bg-black bg-opacity-40 group-hover:bg-opacity-50 transition-all duration-300 z-10" />
+        <div className="absolute bottom-0 left-0 p-4 text-white w-full z-20">
           <h3 className="text-lg font-bold truncate">{listing.title}</h3>
           <div className="flex items-center mt-1">
             {[...Array(5)].map((_, i) => (

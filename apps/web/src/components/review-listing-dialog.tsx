@@ -71,7 +71,7 @@ export function ReviewListingDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="bg-[#2C2C2C] text-white p-6 rounded-lg max-w-3xl">
+      <DialogContent className="bg-[#2C2C2C] text-white p-6 rounded-lg sm:max-w-4xl w-full">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold">
             Review Your Listing
@@ -81,57 +81,59 @@ export function ReviewListingDialog({
             decide whether to publish it to the marketplace.
           </DialogDescription>
         </DialogHeader>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 py-4">
-          {/* Listing Details */}
-          <div>
-            <h3 className="text-xl font-semibold mb-2">{listing.title}</h3>
-            <p className="text-gray-300 mb-4">{listing.description}</p>
-            <p className="text-green-500 font-bold text-lg mb-2">
-              {listing.price} {listing.currency}
-            </p>
-            <div className="flex flex-wrap gap-2 mb-4">
-              {listing.tags.map((tag, index) => (
-                <Badge key={index} variant="secondary" className="text-sm">
-                  {tag}
-                </Badge>
-              ))}
-            </div>
-            <p className="text-sm text-gray-400">
-              Status:{" "}
-              <span className="font-semibold">
-                {listing.isPublished ? "Published" : "Draft"}
-              </span>
-            </p>
-          </div>
-
-          {/* Image/Video Preview */}
-          <div>
-            <Label className="text-gray-300 mb-2 block">Media Preview</Label>
-            {listing.images && listing.images.length > 0 ? (
-              <div className="grid grid-cols-2 gap-2">
-                {listing.images.map((imgSrc, index) => (
-                  <div
-                    key={index}
-                    className="relative w-full h-32 rounded-md overflow-hidden"
-                  >
-                    <Image
-                      src={imgSrc}
-                      alt={`Listing media ${index + 1}`}
-                      layout="fill"
-                      objectFit="cover"
-                      className="rounded-md"
-                    />
-                  </div>
+        <div className="max-h-[70vh] overflow-y-auto pr-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 py-4">
+            {/* Listing Details */}
+            <div>
+              <h3 className="text-xl font-semibold mb-2">{listing.title}</h3>
+              <p className="text-gray-300 mb-4">{listing.description}</p>
+              <p className="text-green-500 font-bold text-lg mb-2">
+                {listing.price} {listing.currency}
+              </p>
+              <div className="flex flex-wrap gap-2 mb-4">
+                {listing.tags.map((tag, index) => (
+                  <Badge key={index} variant="secondary" className="text-sm">
+                    {tag}
+                  </Badge>
                 ))}
               </div>
-            ) : (
-              <div className="w-full h-32 bg-[#3A3A3A] rounded-md flex items-center justify-center text-gray-400">
-                No media uploaded
-              </div>
-            )}
+              <p className="text-sm text-gray-400">
+                Status:{" "}
+                <span className="font-semibold">
+                  {listing.isPublished ? "Published" : "Draft"}
+                </span>
+              </p>
+            </div>
+
+            {/* Image/Video Preview */}
+            <div>
+              <Label className="text-gray-300 mb-2 block">Media Preview</Label>
+              {listing.images && listing.images.length > 0 ? (
+                <div className="grid grid-cols-2 gap-2">
+                  {listing.images.map((imgSrc, index) => (
+                    <div
+                      key={index}
+                      className="relative w-full h-32 rounded-md overflow-hidden"
+                    >
+                      <Image
+                        src={imgSrc}
+                        alt={`Listing media ${index + 1}`}
+                        layout="fill"
+                        objectFit="cover"
+                        className="rounded-md"
+                      />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="w-full h-32 bg-[#3A3A3A] rounded-md flex items-center justify-center text-gray-400">
+                  No media uploaded
+                </div>
+              )}
+            </div>
           </div>
         </div>
-        <DialogFooter className="flex justify-end space-x-4 mt-6">
+        <DialogFooter className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-4 mt-6">
           <Button
             type="button"
             variant="outline"

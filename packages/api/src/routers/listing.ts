@@ -2,19 +2,7 @@ import { z } from "zod";
 import { protectedProcedure, publicProcedure, router } from "../index";
 import { TRPCError } from "@trpc/server";
 import { Prisma } from "@prisma/client";
-
-const createListingSchema = z.object({
-  title: z.string().min(1, "Title is required"),
-  description: z.string().min(1, "Description is required"),
-  price: z.number().positive("Price must be a positive number"),
-  currency: z.enum(["ETB", "USD"]).default("ETB"),
-  deliveryDays: z.number().int().positive().optional(),
-  categoryId: z.string().optional(),
-  images: z.array(z.string()).default([]),
-  videos: z.array(z.string()).default([]),
-  tags: z.array(z.string()).default([]),
-  isPublished: z.boolean().default(false),
-});
+import { ListingCreateInput } from "./types";
 
 const updateListingSchema = z.object({
   id: z.string(),
@@ -32,7 +20,7 @@ const updateListingSchema = z.object({
 
 export const listingRouter = router({
   create: protectedProcedure
-    .input(createListingSchema)
+    .input(ListingCreateInput)
     .mutation(async ({ ctx: { prisma, user }, input }) => {
       console.log(
         "Data received in createListing mutation:",

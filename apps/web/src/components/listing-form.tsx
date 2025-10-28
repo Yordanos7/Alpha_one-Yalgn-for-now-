@@ -28,6 +28,7 @@ interface ListingFormProps {
     deliveryDays?: number;
     categoryId?: string;
     images: string[];
+    videos?: string[];
     tags: string[];
     isPublished: boolean;
   };
@@ -55,9 +56,12 @@ export function ListingForm({
   );
   const [categoryId, setCategoryId] = useState(initialData?.categoryId || "");
   const [images, setImages] = useState<string[]>(initialData?.images || []);
+  const [videos, setVideos] = useState<string[]>(initialData?.videos || []);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [selectedVideos, setSelectedVideos] = useState<File[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const videoInputRef = useRef<HTMLInputElement>(null);
 
   const [tags, setTags] = useState<string[]>(initialData?.tags || []);
   const [newTag, setNewTag] = useState("");
@@ -86,6 +90,13 @@ export function ListingForm({
     }
   };
 
+  const handleVideoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      const newFiles = Array.from(event.target.files);
+      setSelectedVideos((prevFiles) => [...prevFiles, ...newFiles]);
+    }
+  };
+
   const handleRemoveImage = (index: number) => {
     setSelectedFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
   };
@@ -96,38 +107,67 @@ export function ListingForm({
     );
   };
 
+  const handleRemoveVideo = (index: number) => {
+    setSelectedVideos((prevFiles) => prevFiles.filter((_, i) => i !== index));
+  };
+
+  const handleRemoveExistingVideo = (videoToRemove: string) => {
+    setVideos((prevVideos) =>
+      prevVideos.filter((video) => video !== videoToRemove)
+    );
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsUploading(true);
 
     const uploadedImagePaths: string[] = [];
+    const uploadedVideoPaths: string[] = [];
+
+    const uploadFile = async (file: File) => {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      try {
+        const response = await fetch("/api/upload", {
+          method: "POST",
+          body: formData,
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          return result.path;
+        } else {
+          console.error("Error uploading file:", result.error);
+          return null;
+        }
+      } catch (error) {
+        console.error("Error uploading file:", error);
+        return null;
+      }
+    };
 
     if (selectedFiles.length > 0) {
       for (const file of selectedFiles) {
-        const formData = new FormData();
-        formData.append("file", file);
+        const path = await uploadFile(file);
+        if (path) {
+          uploadedImagePaths.push(path);
+        }
+      }
+    }
 
-        try {
-          const response = await fetch("/api/upload", {
-            method: "POST",
-            body: formData,
-          });
-
-          const result = await response.json();
-
-          if (result.success) {
-            uploadedImagePaths.push(result.path);
-          } else {
-            console.error("Error uploading file:", result.error);
-            // Optionally, show an error message to the user
-          }
-        } catch (error) {
-          console.error("Error uploading file:", error);
+    if (selectedVideos.length > 0) {
+      for (const file of selectedVideos) {
+        const path = await uploadFile(file);
+        if (path) {
+          uploadedVideoPaths.push(path);
         }
       }
     }
 
     const finalImages = [...images, ...uploadedImagePaths];
+    const finalVideos = [...videos, ...uploadedVideoPaths];
 
     onSubmit({
       title,
@@ -137,7 +177,7 @@ export function ListingForm({
       deliveryDays: deliveryDays ? parseInt(deliveryDays) : undefined,
       categoryId,
       images: finalImages,
-      videos: [],
+      videos: finalVideos,
       tags,
       isPublished,
     });
@@ -146,14 +186,14 @@ export function ListingForm({
   };
 
   return (
-    <Card className="bg-[#2C2C2C] p-6 rounded-lg">
+    <Card className="bg-[#1f1d1d] p-6 rounded-lg  ">
       <CardHeader>
         <CardTitle className="text-xl font-semibold">
           {initialData ? "Edit Listing" : "Create New Listing"}
         </CardTitle>
       </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-6">
+      <CardContent className="">
+        <form onSubmit={handleSubmit} className="space-y-6 ">
           <div>
             <Label htmlFor="title" className="text-gray-300">
               Listing Title
@@ -311,6 +351,59 @@ export function ListingForm({
               </div>
             </div>
           </div>
+
+          <div>
+            <Label className="text-gray-300">Videos</Label>
+            <div className="mt-2 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+              {videos.map((video, index) => (
+                <div key={index} className="relative group">
+                  <video
+                    src={video}
+                    className="w-full h-24 object-cover rounded-md"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveExistingVideo(video)}
+                    className="absolute top-1 right-1 bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <X size={14} />
+                  </button>
+                </div>
+              ))}
+              {selectedVideos.map((file, index) => (
+                <div key={index} className="relative group">
+                  <video
+                    src={URL.createObjectURL(file)}
+                    className="w-full h-24 object-cover rounded-md"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveVideo(index)}
+                    className="absolute top-1 right-1 bg-red-600 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <X size={14} />
+                  </button>
+                </div>
+              ))}
+              <div
+                className="w-full h-24 border-2 border-dashed border-gray-500 rounded-md flex flex-col items-center justify-center cursor-pointer hover:bg-[#3A3A3A]"
+                onClick={() => videoInputRef.current?.click()}
+              >
+                <Upload size={24} className="text-gray-400" />
+                <span className="text-sm text-gray-400 mt-1">Add Videos</span>
+                <Input
+                  id="videos"
+                  type="file"
+                  multiple
+                  accept="video/*"
+                  onChange={handleVideoChange}
+                  className="hidden"
+                  ref={videoInputRef}
+                />
+              </div>
+            </div>
+          </div>
+
           <div>
             <Label htmlFor="tags" className="text-gray-300">
               Tags (e.g., keywords, skills)
