@@ -69,7 +69,7 @@ export function ListingForm({
     initialData?.isPublished || false
   );
 
-  const { data: categories, isPending: isCategoriesPending } =
+  const { data, isPending: isCategoriesPending } =
     trpc.category.getAll.useQuery();
 
   const handleAddTag = () => {
@@ -288,11 +288,13 @@ export function ListingForm({
                     Loading...
                   </SelectItem>
                 ) : (
-                  categories?.map((cat: { id: string; name: string }) => (
-                    <SelectItem key={cat.id} value={cat.id}>
-                      {cat.name}
-                    </SelectItem>
-                  ))
+                  (data?.categories || []).map(
+                    (cat: { id: string; name: string }) => (
+                      <SelectItem key={cat.id} value={cat.id}>
+                        {cat.name}
+                      </SelectItem>
+                    )
+                  )
                 )}
               </SelectContent>
             </Select>

@@ -183,13 +183,13 @@ exports.Prisma.ProfileScalarFieldEnum = {
   education: 'education',
   completedJobs: 'completedJobs',
   successRate: 'successRate',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  goals: 'goals',
   howHear: 'howHear',
   howHearOther: 'howHearOther',
-  goals: 'goals',
   individualFocus: 'individualFocus',
-  organizationPurpose: 'organizationPurpose',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  organizationPurpose: 'organizationPurpose'
 };
 
 exports.Prisma.SkillScalarFieldEnum = {
@@ -207,13 +207,6 @@ exports.Prisma.ProfileSkillScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
-exports.Prisma.CategoryScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
-  slug: 'slug',
-  createdAt: 'createdAt'
-};
-
 exports.Prisma.ListingScalarFieldEnum = {
   id: 'id',
   providerId: 'providerId',
@@ -223,7 +216,7 @@ exports.Prisma.ListingScalarFieldEnum = {
   price: 'price',
   currency: 'currency',
   deliveryDays: 'deliveryDays',
-  categoryId: 'categoryId',
+  category: 'category',
   images: 'images',
   tags: 'tags',
   videos: 'videos',
@@ -443,6 +436,16 @@ exports.Currency = exports.$Enums.Currency = {
   USD: 'USD'
 };
 
+exports.CategoryEnum = exports.$Enums.CategoryEnum = {
+  TECHNOLOGY: 'TECHNOLOGY',
+  CREATIVE: 'CREATIVE',
+  BUSINESS_FINANCE: 'BUSINESS_FINANCE',
+  HEALTHCARE: 'HEALTHCARE',
+  EDUCATION: 'EDUCATION',
+  TRADES_SERVICES: 'TRADES_SERVICES',
+  HOSPITALITY_RETAIL: 'HOSPITALITY_RETAIL'
+};
+
 exports.JobType = exports.$Enums.JobType = {
   FIXED: 'FIXED',
   HOURLY: 'HOURLY'
@@ -494,7 +497,6 @@ exports.Prisma.ModelName = {
   Profile: 'Profile',
   Skill: 'Skill',
   ProfileSkill: 'ProfileSkill',
-  Category: 'Category',
   Listing: 'Listing',
   Job: 'Job',
   Proposal: 'Proposal',

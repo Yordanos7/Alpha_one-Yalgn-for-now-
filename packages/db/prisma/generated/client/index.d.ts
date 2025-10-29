@@ -44,11 +44,6 @@ export type Skill = $Result.DefaultSelection<Prisma.$SkillPayload>
  */
 export type ProfileSkill = $Result.DefaultSelection<Prisma.$ProfileSkillPayload>
 /**
- * Model Category
- * 
- */
-export type Category = $Result.DefaultSelection<Prisma.$CategoryPayload>
-/**
  * Model Listing
  * 
  */
@@ -219,6 +214,19 @@ export const AccountType: {
 
 export type AccountType = (typeof AccountType)[keyof typeof AccountType]
 
+
+export const CategoryEnum: {
+  TECHNOLOGY: 'TECHNOLOGY',
+  CREATIVE: 'CREATIVE',
+  BUSINESS_FINANCE: 'BUSINESS_FINANCE',
+  HEALTHCARE: 'HEALTHCARE',
+  EDUCATION: 'EDUCATION',
+  TRADES_SERVICES: 'TRADES_SERVICES',
+  HOSPITALITY_RETAIL: 'HOSPITALITY_RETAIL'
+};
+
+export type CategoryEnum = (typeof CategoryEnum)[keyof typeof CategoryEnum]
+
 }
 
 export type Role = $Enums.Role
@@ -256,6 +264,10 @@ export const NotificationType: typeof $Enums.NotificationType
 export type AccountType = $Enums.AccountType
 
 export const AccountType: typeof $Enums.AccountType
+
+export type CategoryEnum = $Enums.CategoryEnum
+
+export const CategoryEnum: typeof $Enums.CategoryEnum
 
 /**
  * ##  Prisma Client ʲˢ
@@ -434,16 +446,6 @@ export class PrismaClient<
     * ```
     */
   get profileSkill(): Prisma.ProfileSkillDelegate<ExtArgs, ClientOptions>;
-
-  /**
-   * `prisma.category`: Exposes CRUD operations for the **Category** model.
-    * Example usage:
-    * ```ts
-    * // Fetch zero or more Categories
-    * const categories = await prisma.category.findMany()
-    * ```
-    */
-  get category(): Prisma.CategoryDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.listing`: Exposes CRUD operations for the **Listing** model.
@@ -1051,7 +1053,6 @@ export namespace Prisma {
     Profile: 'Profile',
     Skill: 'Skill',
     ProfileSkill: 'ProfileSkill',
-    Category: 'Category',
     Listing: 'Listing',
     Job: 'Job',
     Proposal: 'Proposal',
@@ -1086,7 +1087,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "session" | "account" | "profile" | "skill" | "profileSkill" | "category" | "listing" | "job" | "proposal" | "contract" | "milestone" | "wallet" | "transaction" | "coinPurchase" | "conversation" | "message" | "review" | "portfolio" | "notification" | "adminNote" | "verification" | "dispute"
+      modelProps: "user" | "session" | "account" | "profile" | "skill" | "profileSkill" | "listing" | "job" | "proposal" | "contract" | "milestone" | "wallet" | "transaction" | "coinPurchase" | "conversation" | "message" | "review" | "portfolio" | "notification" | "adminNote" | "verification" | "dispute"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1531,80 +1532,6 @@ export namespace Prisma {
           count: {
             args: Prisma.ProfileSkillCountArgs<ExtArgs>
             result: $Utils.Optional<ProfileSkillCountAggregateOutputType> | number
-          }
-        }
-      }
-      Category: {
-        payload: Prisma.$CategoryPayload<ExtArgs>
-        fields: Prisma.CategoryFieldRefs
-        operations: {
-          findUnique: {
-            args: Prisma.CategoryFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CategoryPayload> | null
-          }
-          findUniqueOrThrow: {
-            args: Prisma.CategoryFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CategoryPayload>
-          }
-          findFirst: {
-            args: Prisma.CategoryFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CategoryPayload> | null
-          }
-          findFirstOrThrow: {
-            args: Prisma.CategoryFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CategoryPayload>
-          }
-          findMany: {
-            args: Prisma.CategoryFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CategoryPayload>[]
-          }
-          create: {
-            args: Prisma.CategoryCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CategoryPayload>
-          }
-          createMany: {
-            args: Prisma.CategoryCreateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          createManyAndReturn: {
-            args: Prisma.CategoryCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CategoryPayload>[]
-          }
-          delete: {
-            args: Prisma.CategoryDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CategoryPayload>
-          }
-          update: {
-            args: Prisma.CategoryUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CategoryPayload>
-          }
-          deleteMany: {
-            args: Prisma.CategoryDeleteManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateMany: {
-            args: Prisma.CategoryUpdateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateManyAndReturn: {
-            args: Prisma.CategoryUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CategoryPayload>[]
-          }
-          upsert: {
-            args: Prisma.CategoryUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$CategoryPayload>
-          }
-          aggregate: {
-            args: Prisma.CategoryAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateCategory>
-          }
-          groupBy: {
-            args: Prisma.CategoryGroupByArgs<ExtArgs>
-            result: $Utils.Optional<CategoryGroupByOutputType>[]
-          }
-          count: {
-            args: Prisma.CategoryCountArgs<ExtArgs>
-            result: $Utils.Optional<CategoryCountAggregateOutputType> | number
           }
         }
       }
@@ -2894,7 +2821,6 @@ export namespace Prisma {
     profile?: ProfileOmit
     skill?: SkillOmit
     profileSkill?: ProfileSkillOmit
-    category?: CategoryOmit
     listing?: ListingOmit
     job?: JobOmit
     proposal?: ProposalOmit
@@ -3148,13 +3074,13 @@ export namespace Prisma {
    */
 
   export type ProfileCountOutputType = {
-    skills: number
     portfolio: number
+    skills: number
   }
 
   export type ProfileCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    skills?: boolean | ProfileCountOutputTypeCountSkillsArgs
     portfolio?: boolean | ProfileCountOutputTypeCountPortfolioArgs
+    skills?: boolean | ProfileCountOutputTypeCountSkillsArgs
   }
 
   // Custom InputTypes
@@ -3171,15 +3097,15 @@ export namespace Prisma {
   /**
    * ProfileCountOutputType without action
    */
-  export type ProfileCountOutputTypeCountSkillsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ProfileSkillWhereInput
+  export type ProfileCountOutputTypeCountPortfolioArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: PortfolioWhereInput
   }
 
   /**
    * ProfileCountOutputType without action
    */
-  export type ProfileCountOutputTypeCountPortfolioArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: PortfolioWhereInput
+  export type ProfileCountOutputTypeCountSkillsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ProfileSkillWhereInput
   }
 
 
@@ -3189,14 +3115,14 @@ export namespace Prisma {
 
   export type SkillCountOutputType = {
     profiles: number
-    listings: number
     jobs: number
+    listings: number
   }
 
   export type SkillCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     profiles?: boolean | SkillCountOutputTypeCountProfilesArgs
-    listings?: boolean | SkillCountOutputTypeCountListingsArgs
     jobs?: boolean | SkillCountOutputTypeCountJobsArgs
+    listings?: boolean | SkillCountOutputTypeCountListingsArgs
   }
 
   // Custom InputTypes
@@ -3220,45 +3146,14 @@ export namespace Prisma {
   /**
    * SkillCountOutputType without action
    */
-  export type SkillCountOutputTypeCountListingsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ListingWhereInput
+  export type SkillCountOutputTypeCountJobsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: JobWhereInput
   }
 
   /**
    * SkillCountOutputType without action
    */
-  export type SkillCountOutputTypeCountJobsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: JobWhereInput
-  }
-
-
-  /**
-   * Count Type CategoryCountOutputType
-   */
-
-  export type CategoryCountOutputType = {
-    listings: number
-  }
-
-  export type CategoryCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    listings?: boolean | CategoryCountOutputTypeCountListingsArgs
-  }
-
-  // Custom InputTypes
-  /**
-   * CategoryCountOutputType without action
-   */
-  export type CategoryCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the CategoryCountOutputType
-     */
-    select?: CategoryCountOutputTypeSelect<ExtArgs> | null
-  }
-
-  /**
-   * CategoryCountOutputType without action
-   */
-  export type CategoryCountOutputTypeCountListingsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type SkillCountOutputTypeCountListingsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ListingWhereInput
   }
 
@@ -3299,13 +3194,13 @@ export namespace Prisma {
    */
 
   export type JobCountOutputType = {
-    requiredSkills: number
     proposals: number
+    requiredSkills: number
   }
 
   export type JobCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    requiredSkills?: boolean | JobCountOutputTypeCountRequiredSkillsArgs
     proposals?: boolean | JobCountOutputTypeCountProposalsArgs
+    requiredSkills?: boolean | JobCountOutputTypeCountRequiredSkillsArgs
   }
 
   // Custom InputTypes
@@ -3322,15 +3217,15 @@ export namespace Prisma {
   /**
    * JobCountOutputType without action
    */
-  export type JobCountOutputTypeCountRequiredSkillsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: SkillWhereInput
+  export type JobCountOutputTypeCountProposalsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ProposalWhereInput
   }
 
   /**
    * JobCountOutputType without action
    */
-  export type JobCountOutputTypeCountProposalsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ProposalWhereInput
+  export type JobCountOutputTypeCountRequiredSkillsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SkillWhereInput
   }
 
 
@@ -3401,13 +3296,13 @@ export namespace Prisma {
    */
 
   export type ConversationCountOutputType = {
-    participants: number
     messages: number
+    participants: number
   }
 
   export type ConversationCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    participants?: boolean | ConversationCountOutputTypeCountParticipantsArgs
     messages?: boolean | ConversationCountOutputTypeCountMessagesArgs
+    participants?: boolean | ConversationCountOutputTypeCountParticipantsArgs
   }
 
   // Custom InputTypes
@@ -3424,15 +3319,15 @@ export namespace Prisma {
   /**
    * ConversationCountOutputType without action
    */
-  export type ConversationCountOutputTypeCountParticipantsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: UserWhereInput
+  export type ConversationCountOutputTypeCountMessagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MessageWhereInput
   }
 
   /**
    * ConversationCountOutputType without action
    */
-  export type ConversationCountOutputTypeCountMessagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: MessageWhereInput
+  export type ConversationCountOutputTypeCountParticipantsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserWhereInput
   }
 
 
@@ -7528,12 +7423,12 @@ export namespace Prisma {
     availability: string | null
     completedJobs: number | null
     successRate: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
     howHear: string | null
     howHearOther: string | null
     individualFocus: string | null
     organizationPurpose: string | null
-    createdAt: Date | null
-    updatedAt: Date | null
   }
 
   export type ProfileMaxAggregateOutputType = {
@@ -7545,12 +7440,12 @@ export namespace Prisma {
     availability: string | null
     completedJobs: number | null
     successRate: number | null
+    createdAt: Date | null
+    updatedAt: Date | null
     howHear: string | null
     howHearOther: string | null
     individualFocus: string | null
     organizationPurpose: string | null
-    createdAt: Date | null
-    updatedAt: Date | null
   }
 
   export type ProfileCountAggregateOutputType = {
@@ -7564,13 +7459,13 @@ export namespace Prisma {
     education: number
     completedJobs: number
     successRate: number
-    howHear: number
-    howHearOther: number
-    goals: number
-    individualFocus: number
-    organizationPurpose: number
     createdAt: number
     updatedAt: number
+    goals: number
+    howHear: number
+    howHearOther: number
+    individualFocus: number
+    organizationPurpose: number
     _all: number
   }
 
@@ -7596,12 +7491,12 @@ export namespace Prisma {
     availability?: true
     completedJobs?: true
     successRate?: true
+    createdAt?: true
+    updatedAt?: true
     howHear?: true
     howHearOther?: true
     individualFocus?: true
     organizationPurpose?: true
-    createdAt?: true
-    updatedAt?: true
   }
 
   export type ProfileMaxAggregateInputType = {
@@ -7613,12 +7508,12 @@ export namespace Prisma {
     availability?: true
     completedJobs?: true
     successRate?: true
+    createdAt?: true
+    updatedAt?: true
     howHear?: true
     howHearOther?: true
     individualFocus?: true
     organizationPurpose?: true
-    createdAt?: true
-    updatedAt?: true
   }
 
   export type ProfileCountAggregateInputType = {
@@ -7632,13 +7527,13 @@ export namespace Prisma {
     education?: true
     completedJobs?: true
     successRate?: true
-    howHear?: true
-    howHearOther?: true
-    goals?: true
-    individualFocus?: true
-    organizationPurpose?: true
     createdAt?: true
     updatedAt?: true
+    goals?: true
+    howHear?: true
+    howHearOther?: true
+    individualFocus?: true
+    organizationPurpose?: true
     _all?: true
   }
 
@@ -7739,13 +7634,13 @@ export namespace Prisma {
     education: JsonValue | null
     completedJobs: number
     successRate: number | null
-    howHear: string | null
-    howHearOther: string | null
-    goals: string[]
-    individualFocus: string | null
-    organizationPurpose: string | null
     createdAt: Date
     updatedAt: Date
+    goals: string[]
+    howHear: string | null
+    howHearOther: string | null
+    individualFocus: string | null
+    organizationPurpose: string | null
     _count: ProfileCountAggregateOutputType | null
     _avg: ProfileAvgAggregateOutputType | null
     _sum: ProfileSumAggregateOutputType | null
@@ -7778,16 +7673,16 @@ export namespace Prisma {
     education?: boolean
     completedJobs?: boolean
     successRate?: boolean
-    howHear?: boolean
-    howHearOther?: boolean
-    goals?: boolean
-    individualFocus?: boolean
-    organizationPurpose?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
-    skills?: boolean | Profile$skillsArgs<ExtArgs>
+    goals?: boolean
+    howHear?: boolean
+    howHearOther?: boolean
+    individualFocus?: boolean
+    organizationPurpose?: boolean
     portfolio?: boolean | Profile$portfolioArgs<ExtArgs>
+    skills?: boolean | Profile$skillsArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
     _count?: boolean | ProfileCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["profile"]>
 
@@ -7802,13 +7697,13 @@ export namespace Prisma {
     education?: boolean
     completedJobs?: boolean
     successRate?: boolean
-    howHear?: boolean
-    howHearOther?: boolean
-    goals?: boolean
-    individualFocus?: boolean
-    organizationPurpose?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    goals?: boolean
+    howHear?: boolean
+    howHearOther?: boolean
+    individualFocus?: boolean
+    organizationPurpose?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["profile"]>
 
@@ -7823,13 +7718,13 @@ export namespace Prisma {
     education?: boolean
     completedJobs?: boolean
     successRate?: boolean
-    howHear?: boolean
-    howHearOther?: boolean
-    goals?: boolean
-    individualFocus?: boolean
-    organizationPurpose?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    goals?: boolean
+    howHear?: boolean
+    howHearOther?: boolean
+    individualFocus?: boolean
+    organizationPurpose?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["profile"]>
 
@@ -7844,20 +7739,20 @@ export namespace Prisma {
     education?: boolean
     completedJobs?: boolean
     successRate?: boolean
-    howHear?: boolean
-    howHearOther?: boolean
-    goals?: boolean
-    individualFocus?: boolean
-    organizationPurpose?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    goals?: boolean
+    howHear?: boolean
+    howHearOther?: boolean
+    individualFocus?: boolean
+    organizationPurpose?: boolean
   }
 
-  export type ProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "headline" | "hourlyRate" | "currency" | "availability" | "experience" | "education" | "completedJobs" | "successRate" | "howHear" | "howHearOther" | "goals" | "individualFocus" | "organizationPurpose" | "createdAt" | "updatedAt", ExtArgs["result"]["profile"]>
+  export type ProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "headline" | "hourlyRate" | "currency" | "availability" | "experience" | "education" | "completedJobs" | "successRate" | "createdAt" | "updatedAt" | "goals" | "howHear" | "howHearOther" | "individualFocus" | "organizationPurpose", ExtArgs["result"]["profile"]>
   export type ProfileInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
-    skills?: boolean | Profile$skillsArgs<ExtArgs>
     portfolio?: boolean | Profile$portfolioArgs<ExtArgs>
+    skills?: boolean | Profile$skillsArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
     _count?: boolean | ProfileCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ProfileIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7870,9 +7765,9 @@ export namespace Prisma {
   export type $ProfilePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Profile"
     objects: {
-      user: Prisma.$UserPayload<ExtArgs>
-      skills: Prisma.$ProfileSkillPayload<ExtArgs>[]
       portfolio: Prisma.$PortfolioPayload<ExtArgs>[]
+      skills: Prisma.$ProfileSkillPayload<ExtArgs>[]
+      user: Prisma.$UserPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -7885,13 +7780,13 @@ export namespace Prisma {
       education: Prisma.JsonValue | null
       completedJobs: number
       successRate: number | null
-      howHear: string | null
-      howHearOther: string | null
-      goals: string[]
-      individualFocus: string | null
-      organizationPurpose: string | null
       createdAt: Date
       updatedAt: Date
+      goals: string[]
+      howHear: string | null
+      howHearOther: string | null
+      individualFocus: string | null
+      organizationPurpose: string | null
     }, ExtArgs["result"]["profile"]>
     composites: {}
   }
@@ -8286,9 +8181,9 @@ export namespace Prisma {
    */
   export interface Prisma__ProfileClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    skills<T extends Profile$skillsArgs<ExtArgs> = {}>(args?: Subset<T, Profile$skillsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProfileSkillPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     portfolio<T extends Profile$portfolioArgs<ExtArgs> = {}>(args?: Subset<T, Profile$portfolioArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PortfolioPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    skills<T extends Profile$skillsArgs<ExtArgs> = {}>(args?: Subset<T, Profile$skillsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProfileSkillPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -8328,13 +8223,13 @@ export namespace Prisma {
     readonly education: FieldRef<"Profile", 'Json'>
     readonly completedJobs: FieldRef<"Profile", 'Int'>
     readonly successRate: FieldRef<"Profile", 'Float'>
-    readonly howHear: FieldRef<"Profile", 'String'>
-    readonly howHearOther: FieldRef<"Profile", 'String'>
-    readonly goals: FieldRef<"Profile", 'String[]'>
-    readonly individualFocus: FieldRef<"Profile", 'String'>
-    readonly organizationPurpose: FieldRef<"Profile", 'String'>
     readonly createdAt: FieldRef<"Profile", 'DateTime'>
     readonly updatedAt: FieldRef<"Profile", 'DateTime'>
+    readonly goals: FieldRef<"Profile", 'String[]'>
+    readonly howHear: FieldRef<"Profile", 'String'>
+    readonly howHearOther: FieldRef<"Profile", 'String'>
+    readonly individualFocus: FieldRef<"Profile", 'String'>
+    readonly organizationPurpose: FieldRef<"Profile", 'String'>
   }
     
 
@@ -8731,30 +8626,6 @@ export namespace Prisma {
   }
 
   /**
-   * Profile.skills
-   */
-  export type Profile$skillsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the ProfileSkill
-     */
-    select?: ProfileSkillSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the ProfileSkill
-     */
-    omit?: ProfileSkillOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ProfileSkillInclude<ExtArgs> | null
-    where?: ProfileSkillWhereInput
-    orderBy?: ProfileSkillOrderByWithRelationInput | ProfileSkillOrderByWithRelationInput[]
-    cursor?: ProfileSkillWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: ProfileSkillScalarFieldEnum | ProfileSkillScalarFieldEnum[]
-  }
-
-  /**
    * Profile.portfolio
    */
   export type Profile$portfolioArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -8776,6 +8647,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: PortfolioScalarFieldEnum | PortfolioScalarFieldEnum[]
+  }
+
+  /**
+   * Profile.skills
+   */
+  export type Profile$skillsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ProfileSkill
+     */
+    select?: ProfileSkillSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ProfileSkill
+     */
+    omit?: ProfileSkillOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ProfileSkillInclude<ExtArgs> | null
+    where?: ProfileSkillWhereInput
+    orderBy?: ProfileSkillOrderByWithRelationInput | ProfileSkillOrderByWithRelationInput[]
+    cursor?: ProfileSkillWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ProfileSkillScalarFieldEnum | ProfileSkillScalarFieldEnum[]
   }
 
   /**
@@ -8954,8 +8849,8 @@ export namespace Prisma {
     slug?: boolean
     createdAt?: boolean
     profiles?: boolean | Skill$profilesArgs<ExtArgs>
-    listings?: boolean | Skill$listingsArgs<ExtArgs>
     jobs?: boolean | Skill$jobsArgs<ExtArgs>
+    listings?: boolean | Skill$listingsArgs<ExtArgs>
     _count?: boolean | SkillCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["skill"]>
 
@@ -8983,8 +8878,8 @@ export namespace Prisma {
   export type SkillOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "slug" | "createdAt", ExtArgs["result"]["skill"]>
   export type SkillInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     profiles?: boolean | Skill$profilesArgs<ExtArgs>
-    listings?: boolean | Skill$listingsArgs<ExtArgs>
     jobs?: boolean | Skill$jobsArgs<ExtArgs>
+    listings?: boolean | Skill$listingsArgs<ExtArgs>
     _count?: boolean | SkillCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type SkillIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -8994,8 +8889,8 @@ export namespace Prisma {
     name: "Skill"
     objects: {
       profiles: Prisma.$ProfileSkillPayload<ExtArgs>[]
-      listings: Prisma.$ListingPayload<ExtArgs>[]
       jobs: Prisma.$JobPayload<ExtArgs>[]
+      listings: Prisma.$ListingPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -9397,8 +9292,8 @@ export namespace Prisma {
   export interface Prisma__SkillClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     profiles<T extends Skill$profilesArgs<ExtArgs> = {}>(args?: Subset<T, Skill$profilesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProfileSkillPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    listings<T extends Skill$listingsArgs<ExtArgs> = {}>(args?: Subset<T, Skill$listingsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ListingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     jobs<T extends Skill$jobsArgs<ExtArgs> = {}>(args?: Subset<T, Skill$jobsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    listings<T extends Skill$listingsArgs<ExtArgs> = {}>(args?: Subset<T, Skill$listingsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ListingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -9844,30 +9739,6 @@ export namespace Prisma {
   }
 
   /**
-   * Skill.listings
-   */
-  export type Skill$listingsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Listing
-     */
-    select?: ListingSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Listing
-     */
-    omit?: ListingOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ListingInclude<ExtArgs> | null
-    where?: ListingWhereInput
-    orderBy?: ListingOrderByWithRelationInput | ListingOrderByWithRelationInput[]
-    cursor?: ListingWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: ListingScalarFieldEnum | ListingScalarFieldEnum[]
-  }
-
-  /**
    * Skill.jobs
    */
   export type Skill$jobsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -9889,6 +9760,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: JobScalarFieldEnum | JobScalarFieldEnum[]
+  }
+
+  /**
+   * Skill.listings
+   */
+  export type Skill$listingsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Listing
+     */
+    select?: ListingSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Listing
+     */
+    omit?: ListingOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ListingInclude<ExtArgs> | null
+    where?: ListingWhereInput
+    orderBy?: ListingOrderByWithRelationInput | ListingOrderByWithRelationInput[]
+    cursor?: ListingWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ListingScalarFieldEnum | ListingScalarFieldEnum[]
   }
 
   /**
@@ -11011,1063 +10906,6 @@ export namespace Prisma {
 
 
   /**
-   * Model Category
-   */
-
-  export type AggregateCategory = {
-    _count: CategoryCountAggregateOutputType | null
-    _min: CategoryMinAggregateOutputType | null
-    _max: CategoryMaxAggregateOutputType | null
-  }
-
-  export type CategoryMinAggregateOutputType = {
-    id: string | null
-    name: string | null
-    slug: string | null
-    createdAt: Date | null
-  }
-
-  export type CategoryMaxAggregateOutputType = {
-    id: string | null
-    name: string | null
-    slug: string | null
-    createdAt: Date | null
-  }
-
-  export type CategoryCountAggregateOutputType = {
-    id: number
-    name: number
-    slug: number
-    createdAt: number
-    _all: number
-  }
-
-
-  export type CategoryMinAggregateInputType = {
-    id?: true
-    name?: true
-    slug?: true
-    createdAt?: true
-  }
-
-  export type CategoryMaxAggregateInputType = {
-    id?: true
-    name?: true
-    slug?: true
-    createdAt?: true
-  }
-
-  export type CategoryCountAggregateInputType = {
-    id?: true
-    name?: true
-    slug?: true
-    createdAt?: true
-    _all?: true
-  }
-
-  export type CategoryAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which Category to aggregate.
-     */
-    where?: CategoryWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Categories to fetch.
-     */
-    orderBy?: CategoryOrderByWithRelationInput | CategoryOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the start position
-     */
-    cursor?: CategoryWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Categories from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Categories.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Count returned Categories
-    **/
-    _count?: true | CategoryCountAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the minimum value
-    **/
-    _min?: CategoryMinAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the maximum value
-    **/
-    _max?: CategoryMaxAggregateInputType
-  }
-
-  export type GetCategoryAggregateType<T extends CategoryAggregateArgs> = {
-        [P in keyof T & keyof AggregateCategory]: P extends '_count' | 'count'
-      ? T[P] extends true
-        ? number
-        : GetScalarType<T[P], AggregateCategory[P]>
-      : GetScalarType<T[P], AggregateCategory[P]>
-  }
-
-
-
-
-  export type CategoryGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: CategoryWhereInput
-    orderBy?: CategoryOrderByWithAggregationInput | CategoryOrderByWithAggregationInput[]
-    by: CategoryScalarFieldEnum[] | CategoryScalarFieldEnum
-    having?: CategoryScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
-    _count?: CategoryCountAggregateInputType | true
-    _min?: CategoryMinAggregateInputType
-    _max?: CategoryMaxAggregateInputType
-  }
-
-  export type CategoryGroupByOutputType = {
-    id: string
-    name: string
-    slug: string
-    createdAt: Date
-    _count: CategoryCountAggregateOutputType | null
-    _min: CategoryMinAggregateOutputType | null
-    _max: CategoryMaxAggregateOutputType | null
-  }
-
-  type GetCategoryGroupByPayload<T extends CategoryGroupByArgs> = Prisma.PrismaPromise<
-    Array<
-      PickEnumerable<CategoryGroupByOutputType, T['by']> &
-        {
-          [P in ((keyof T) & (keyof CategoryGroupByOutputType))]: P extends '_count'
-            ? T[P] extends boolean
-              ? number
-              : GetScalarType<T[P], CategoryGroupByOutputType[P]>
-            : GetScalarType<T[P], CategoryGroupByOutputType[P]>
-        }
-      >
-    >
-
-
-  export type CategorySelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    name?: boolean
-    slug?: boolean
-    createdAt?: boolean
-    listings?: boolean | Category$listingsArgs<ExtArgs>
-    _count?: boolean | CategoryCountOutputTypeDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["category"]>
-
-  export type CategorySelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    name?: boolean
-    slug?: boolean
-    createdAt?: boolean
-  }, ExtArgs["result"]["category"]>
-
-  export type CategorySelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    name?: boolean
-    slug?: boolean
-    createdAt?: boolean
-  }, ExtArgs["result"]["category"]>
-
-  export type CategorySelectScalar = {
-    id?: boolean
-    name?: boolean
-    slug?: boolean
-    createdAt?: boolean
-  }
-
-  export type CategoryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "slug" | "createdAt", ExtArgs["result"]["category"]>
-  export type CategoryInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    listings?: boolean | Category$listingsArgs<ExtArgs>
-    _count?: boolean | CategoryCountOutputTypeDefaultArgs<ExtArgs>
-  }
-  export type CategoryIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
-  export type CategoryIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
-
-  export type $CategoryPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "Category"
-    objects: {
-      listings: Prisma.$ListingPayload<ExtArgs>[]
-    }
-    scalars: $Extensions.GetPayloadResult<{
-      id: string
-      name: string
-      slug: string
-      createdAt: Date
-    }, ExtArgs["result"]["category"]>
-    composites: {}
-  }
-
-  type CategoryGetPayload<S extends boolean | null | undefined | CategoryDefaultArgs> = $Result.GetResult<Prisma.$CategoryPayload, S>
-
-  type CategoryCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<CategoryFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: CategoryCountAggregateInputType | true
-    }
-
-  export interface CategoryDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Category'], meta: { name: 'Category' } }
-    /**
-     * Find zero or one Category that matches the filter.
-     * @param {CategoryFindUniqueArgs} args - Arguments to find a Category
-     * @example
-     * // Get one Category
-     * const category = await prisma.category.findUnique({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUnique<T extends CategoryFindUniqueArgs>(args: SelectSubset<T, CategoryFindUniqueArgs<ExtArgs>>): Prisma__CategoryClient<$Result.GetResult<Prisma.$CategoryPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find one Category that matches the filter or throw an error with `error.code='P2025'`
-     * if no matches were found.
-     * @param {CategoryFindUniqueOrThrowArgs} args - Arguments to find a Category
-     * @example
-     * // Get one Category
-     * const category = await prisma.category.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUniqueOrThrow<T extends CategoryFindUniqueOrThrowArgs>(args: SelectSubset<T, CategoryFindUniqueOrThrowArgs<ExtArgs>>): Prisma__CategoryClient<$Result.GetResult<Prisma.$CategoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first Category that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {CategoryFindFirstArgs} args - Arguments to find a Category
-     * @example
-     * // Get one Category
-     * const category = await prisma.category.findFirst({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirst<T extends CategoryFindFirstArgs>(args?: SelectSubset<T, CategoryFindFirstArgs<ExtArgs>>): Prisma__CategoryClient<$Result.GetResult<Prisma.$CategoryPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first Category that matches the filter or
-     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {CategoryFindFirstOrThrowArgs} args - Arguments to find a Category
-     * @example
-     * // Get one Category
-     * const category = await prisma.category.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirstOrThrow<T extends CategoryFindFirstOrThrowArgs>(args?: SelectSubset<T, CategoryFindFirstOrThrowArgs<ExtArgs>>): Prisma__CategoryClient<$Result.GetResult<Prisma.$CategoryPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find zero or more Categories that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {CategoryFindManyArgs} args - Arguments to filter and select certain fields only.
-     * @example
-     * // Get all Categories
-     * const categories = await prisma.category.findMany()
-     * 
-     * // Get first 10 Categories
-     * const categories = await prisma.category.findMany({ take: 10 })
-     * 
-     * // Only select the `id`
-     * const categoryWithIdOnly = await prisma.category.findMany({ select: { id: true } })
-     * 
-     */
-    findMany<T extends CategoryFindManyArgs>(args?: SelectSubset<T, CategoryFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CategoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
-
-    /**
-     * Create a Category.
-     * @param {CategoryCreateArgs} args - Arguments to create a Category.
-     * @example
-     * // Create one Category
-     * const Category = await prisma.category.create({
-     *   data: {
-     *     // ... data to create a Category
-     *   }
-     * })
-     * 
-     */
-    create<T extends CategoryCreateArgs>(args: SelectSubset<T, CategoryCreateArgs<ExtArgs>>): Prisma__CategoryClient<$Result.GetResult<Prisma.$CategoryPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Create many Categories.
-     * @param {CategoryCreateManyArgs} args - Arguments to create many Categories.
-     * @example
-     * // Create many Categories
-     * const category = await prisma.category.createMany({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     *     
-     */
-    createMany<T extends CategoryCreateManyArgs>(args?: SelectSubset<T, CategoryCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Create many Categories and returns the data saved in the database.
-     * @param {CategoryCreateManyAndReturnArgs} args - Arguments to create many Categories.
-     * @example
-     * // Create many Categories
-     * const category = await prisma.category.createManyAndReturn({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Create many Categories and only return the `id`
-     * const categoryWithIdOnly = await prisma.category.createManyAndReturn({
-     *   select: { id: true },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    createManyAndReturn<T extends CategoryCreateManyAndReturnArgs>(args?: SelectSubset<T, CategoryCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CategoryPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Delete a Category.
-     * @param {CategoryDeleteArgs} args - Arguments to delete one Category.
-     * @example
-     * // Delete one Category
-     * const Category = await prisma.category.delete({
-     *   where: {
-     *     // ... filter to delete one Category
-     *   }
-     * })
-     * 
-     */
-    delete<T extends CategoryDeleteArgs>(args: SelectSubset<T, CategoryDeleteArgs<ExtArgs>>): Prisma__CategoryClient<$Result.GetResult<Prisma.$CategoryPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Update one Category.
-     * @param {CategoryUpdateArgs} args - Arguments to update one Category.
-     * @example
-     * // Update one Category
-     * const category = await prisma.category.update({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    update<T extends CategoryUpdateArgs>(args: SelectSubset<T, CategoryUpdateArgs<ExtArgs>>): Prisma__CategoryClient<$Result.GetResult<Prisma.$CategoryPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Delete zero or more Categories.
-     * @param {CategoryDeleteManyArgs} args - Arguments to filter Categories to delete.
-     * @example
-     * // Delete a few Categories
-     * const { count } = await prisma.category.deleteMany({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     * 
-     */
-    deleteMany<T extends CategoryDeleteManyArgs>(args?: SelectSubset<T, CategoryDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more Categories.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {CategoryUpdateManyArgs} args - Arguments to update one or more rows.
-     * @example
-     * // Update many Categories
-     * const category = await prisma.category.updateMany({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    updateMany<T extends CategoryUpdateManyArgs>(args: SelectSubset<T, CategoryUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more Categories and returns the data updated in the database.
-     * @param {CategoryUpdateManyAndReturnArgs} args - Arguments to update many Categories.
-     * @example
-     * // Update many Categories
-     * const category = await prisma.category.updateManyAndReturn({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Update zero or more Categories and only return the `id`
-     * const categoryWithIdOnly = await prisma.category.updateManyAndReturn({
-     *   select: { id: true },
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    updateManyAndReturn<T extends CategoryUpdateManyAndReturnArgs>(args: SelectSubset<T, CategoryUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$CategoryPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Create or update one Category.
-     * @param {CategoryUpsertArgs} args - Arguments to update or create a Category.
-     * @example
-     * // Update or create a Category
-     * const category = await prisma.category.upsert({
-     *   create: {
-     *     // ... data to create a Category
-     *   },
-     *   update: {
-     *     // ... in case it already exists, update
-     *   },
-     *   where: {
-     *     // ... the filter for the Category we want to update
-     *   }
-     * })
-     */
-    upsert<T extends CategoryUpsertArgs>(args: SelectSubset<T, CategoryUpsertArgs<ExtArgs>>): Prisma__CategoryClient<$Result.GetResult<Prisma.$CategoryPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-
-    /**
-     * Count the number of Categories.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {CategoryCountArgs} args - Arguments to filter Categories to count.
-     * @example
-     * // Count the number of Categories
-     * const count = await prisma.category.count({
-     *   where: {
-     *     // ... the filter for the Categories we want to count
-     *   }
-     * })
-    **/
-    count<T extends CategoryCountArgs>(
-      args?: Subset<T, CategoryCountArgs>,
-    ): Prisma.PrismaPromise<
-      T extends $Utils.Record<'select', any>
-        ? T['select'] extends true
-          ? number
-          : GetScalarType<T['select'], CategoryCountAggregateOutputType>
-        : number
-    >
-
-    /**
-     * Allows you to perform aggregations operations on a Category.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {CategoryAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
-     * @example
-     * // Ordered by age ascending
-     * // Where email contains prisma.io
-     * // Limited to the 10 users
-     * const aggregations = await prisma.user.aggregate({
-     *   _avg: {
-     *     age: true,
-     *   },
-     *   where: {
-     *     email: {
-     *       contains: "prisma.io",
-     *     },
-     *   },
-     *   orderBy: {
-     *     age: "asc",
-     *   },
-     *   take: 10,
-     * })
-    **/
-    aggregate<T extends CategoryAggregateArgs>(args: Subset<T, CategoryAggregateArgs>): Prisma.PrismaPromise<GetCategoryAggregateType<T>>
-
-    /**
-     * Group by Category.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {CategoryGroupByArgs} args - Group by arguments.
-     * @example
-     * // Group by city, order by createdAt, get count
-     * const result = await prisma.user.groupBy({
-     *   by: ['city', 'createdAt'],
-     *   orderBy: {
-     *     createdAt: true
-     *   },
-     *   _count: {
-     *     _all: true
-     *   },
-     * })
-     * 
-    **/
-    groupBy<
-      T extends CategoryGroupByArgs,
-      HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
-      >,
-      OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: CategoryGroupByArgs['orderBy'] }
-        : { orderBy?: CategoryGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends MaybeTupleToUnion<T['by']>,
-      ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
-      HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
-      InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
-      : HavingValid extends False
-      ? {
-          [P in HavingFields]: P extends ByFields
-            ? never
-            : P extends string
-            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-            : [
-                Error,
-                'Field ',
-                P,
-                ` in "having" needs to be provided in "by"`,
-              ]
-        }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "skip", you also need to provide "orderBy"'
-      : ByValid extends True
-      ? {}
-      : {
-          [P in OrderFields]: P extends ByFields
-            ? never
-            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-        }[OrderFields]
-    >(args: SubsetIntersection<T, CategoryGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetCategoryGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
-  /**
-   * Fields of the Category model
-   */
-  readonly fields: CategoryFieldRefs;
-  }
-
-  /**
-   * The delegate class that acts as a "Promise-like" for Category.
-   * Why is this prefixed with `Prisma__`?
-   * Because we want to prevent naming conflicts as mentioned in
-   * https://github.com/prisma/prisma-client-js/issues/707
-   */
-  export interface Prisma__CategoryClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
-    readonly [Symbol.toStringTag]: "PrismaPromise"
-    listings<T extends Category$listingsArgs<ExtArgs> = {}>(args?: Subset<T, Category$listingsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ListingPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
-    /**
-     * Attaches a callback for only the rejection of the Promise.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of the callback.
-     */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
-    /**
-     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
-     * resolved value cannot be modified from the callback.
-     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
-     * @returns A Promise for the completion of the callback.
-     */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
-  }
-
-
-
-
-  /**
-   * Fields of the Category model
-   */
-  interface CategoryFieldRefs {
-    readonly id: FieldRef<"Category", 'String'>
-    readonly name: FieldRef<"Category", 'String'>
-    readonly slug: FieldRef<"Category", 'String'>
-    readonly createdAt: FieldRef<"Category", 'DateTime'>
-  }
-    
-
-  // Custom InputTypes
-  /**
-   * Category findUnique
-   */
-  export type CategoryFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Category
-     */
-    select?: CategorySelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Category
-     */
-    omit?: CategoryOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CategoryInclude<ExtArgs> | null
-    /**
-     * Filter, which Category to fetch.
-     */
-    where: CategoryWhereUniqueInput
-  }
-
-  /**
-   * Category findUniqueOrThrow
-   */
-  export type CategoryFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Category
-     */
-    select?: CategorySelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Category
-     */
-    omit?: CategoryOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CategoryInclude<ExtArgs> | null
-    /**
-     * Filter, which Category to fetch.
-     */
-    where: CategoryWhereUniqueInput
-  }
-
-  /**
-   * Category findFirst
-   */
-  export type CategoryFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Category
-     */
-    select?: CategorySelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Category
-     */
-    omit?: CategoryOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CategoryInclude<ExtArgs> | null
-    /**
-     * Filter, which Category to fetch.
-     */
-    where?: CategoryWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Categories to fetch.
-     */
-    orderBy?: CategoryOrderByWithRelationInput | CategoryOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Categories.
-     */
-    cursor?: CategoryWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Categories from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Categories.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Categories.
-     */
-    distinct?: CategoryScalarFieldEnum | CategoryScalarFieldEnum[]
-  }
-
-  /**
-   * Category findFirstOrThrow
-   */
-  export type CategoryFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Category
-     */
-    select?: CategorySelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Category
-     */
-    omit?: CategoryOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CategoryInclude<ExtArgs> | null
-    /**
-     * Filter, which Category to fetch.
-     */
-    where?: CategoryWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Categories to fetch.
-     */
-    orderBy?: CategoryOrderByWithRelationInput | CategoryOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Categories.
-     */
-    cursor?: CategoryWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Categories from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Categories.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Categories.
-     */
-    distinct?: CategoryScalarFieldEnum | CategoryScalarFieldEnum[]
-  }
-
-  /**
-   * Category findMany
-   */
-  export type CategoryFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Category
-     */
-    select?: CategorySelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Category
-     */
-    omit?: CategoryOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CategoryInclude<ExtArgs> | null
-    /**
-     * Filter, which Categories to fetch.
-     */
-    where?: CategoryWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Categories to fetch.
-     */
-    orderBy?: CategoryOrderByWithRelationInput | CategoryOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for listing Categories.
-     */
-    cursor?: CategoryWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Categories from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Categories.
-     */
-    skip?: number
-    distinct?: CategoryScalarFieldEnum | CategoryScalarFieldEnum[]
-  }
-
-  /**
-   * Category create
-   */
-  export type CategoryCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Category
-     */
-    select?: CategorySelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Category
-     */
-    omit?: CategoryOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CategoryInclude<ExtArgs> | null
-    /**
-     * The data needed to create a Category.
-     */
-    data: XOR<CategoryCreateInput, CategoryUncheckedCreateInput>
-  }
-
-  /**
-   * Category createMany
-   */
-  export type CategoryCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to create many Categories.
-     */
-    data: CategoryCreateManyInput | CategoryCreateManyInput[]
-    skipDuplicates?: boolean
-  }
-
-  /**
-   * Category createManyAndReturn
-   */
-  export type CategoryCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Category
-     */
-    select?: CategorySelectCreateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the Category
-     */
-    omit?: CategoryOmit<ExtArgs> | null
-    /**
-     * The data used to create many Categories.
-     */
-    data: CategoryCreateManyInput | CategoryCreateManyInput[]
-    skipDuplicates?: boolean
-  }
-
-  /**
-   * Category update
-   */
-  export type CategoryUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Category
-     */
-    select?: CategorySelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Category
-     */
-    omit?: CategoryOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CategoryInclude<ExtArgs> | null
-    /**
-     * The data needed to update a Category.
-     */
-    data: XOR<CategoryUpdateInput, CategoryUncheckedUpdateInput>
-    /**
-     * Choose, which Category to update.
-     */
-    where: CategoryWhereUniqueInput
-  }
-
-  /**
-   * Category updateMany
-   */
-  export type CategoryUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to update Categories.
-     */
-    data: XOR<CategoryUpdateManyMutationInput, CategoryUncheckedUpdateManyInput>
-    /**
-     * Filter which Categories to update
-     */
-    where?: CategoryWhereInput
-    /**
-     * Limit how many Categories to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * Category updateManyAndReturn
-   */
-  export type CategoryUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Category
-     */
-    select?: CategorySelectUpdateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the Category
-     */
-    omit?: CategoryOmit<ExtArgs> | null
-    /**
-     * The data used to update Categories.
-     */
-    data: XOR<CategoryUpdateManyMutationInput, CategoryUncheckedUpdateManyInput>
-    /**
-     * Filter which Categories to update
-     */
-    where?: CategoryWhereInput
-    /**
-     * Limit how many Categories to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * Category upsert
-   */
-  export type CategoryUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Category
-     */
-    select?: CategorySelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Category
-     */
-    omit?: CategoryOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CategoryInclude<ExtArgs> | null
-    /**
-     * The filter to search for the Category to update in case it exists.
-     */
-    where: CategoryWhereUniqueInput
-    /**
-     * In case the Category found by the `where` argument doesn't exist, create a new Category with this data.
-     */
-    create: XOR<CategoryCreateInput, CategoryUncheckedCreateInput>
-    /**
-     * In case the Category was found with the provided `where` argument, update it with this data.
-     */
-    update: XOR<CategoryUpdateInput, CategoryUncheckedUpdateInput>
-  }
-
-  /**
-   * Category delete
-   */
-  export type CategoryDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Category
-     */
-    select?: CategorySelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Category
-     */
-    omit?: CategoryOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CategoryInclude<ExtArgs> | null
-    /**
-     * Filter which Category to delete.
-     */
-    where: CategoryWhereUniqueInput
-  }
-
-  /**
-   * Category deleteMany
-   */
-  export type CategoryDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which Categories to delete
-     */
-    where?: CategoryWhereInput
-    /**
-     * Limit how many Categories to delete.
-     */
-    limit?: number
-  }
-
-  /**
-   * Category.listings
-   */
-  export type Category$listingsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Listing
-     */
-    select?: ListingSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Listing
-     */
-    omit?: ListingOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ListingInclude<ExtArgs> | null
-    where?: ListingWhereInput
-    orderBy?: ListingOrderByWithRelationInput | ListingOrderByWithRelationInput[]
-    cursor?: ListingWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: ListingScalarFieldEnum | ListingScalarFieldEnum[]
-  }
-
-  /**
-   * Category without action
-   */
-  export type CategoryDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Category
-     */
-    select?: CategorySelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Category
-     */
-    omit?: CategoryOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CategoryInclude<ExtArgs> | null
-  }
-
-
-  /**
    * Model Listing
    */
 
@@ -12102,7 +10940,7 @@ export namespace Prisma {
     price: number | null
     currency: $Enums.Currency | null
     deliveryDays: number | null
-    categoryId: string | null
+    category: $Enums.CategoryEnum | null
     isPublished: boolean | null
     rating: number | null
     reviewCount: number | null
@@ -12119,7 +10957,7 @@ export namespace Prisma {
     price: number | null
     currency: $Enums.Currency | null
     deliveryDays: number | null
-    categoryId: string | null
+    category: $Enums.CategoryEnum | null
     isPublished: boolean | null
     rating: number | null
     reviewCount: number | null
@@ -12136,7 +10974,7 @@ export namespace Prisma {
     price: number
     currency: number
     deliveryDays: number
-    categoryId: number
+    category: number
     images: number
     tags: number
     videos: number
@@ -12172,7 +11010,7 @@ export namespace Prisma {
     price?: true
     currency?: true
     deliveryDays?: true
-    categoryId?: true
+    category?: true
     isPublished?: true
     rating?: true
     reviewCount?: true
@@ -12189,7 +11027,7 @@ export namespace Prisma {
     price?: true
     currency?: true
     deliveryDays?: true
-    categoryId?: true
+    category?: true
     isPublished?: true
     rating?: true
     reviewCount?: true
@@ -12206,7 +11044,7 @@ export namespace Prisma {
     price?: true
     currency?: true
     deliveryDays?: true
-    categoryId?: true
+    category?: true
     images?: true
     tags?: true
     videos?: true
@@ -12313,7 +11151,7 @@ export namespace Prisma {
     price: number
     currency: $Enums.Currency
     deliveryDays: number | null
-    categoryId: string | null
+    category: $Enums.CategoryEnum | null
     images: string[]
     tags: string[]
     videos: string[]
@@ -12352,7 +11190,7 @@ export namespace Prisma {
     price?: boolean
     currency?: boolean
     deliveryDays?: boolean
-    categoryId?: boolean
+    category?: boolean
     images?: boolean
     tags?: boolean
     videos?: boolean
@@ -12362,7 +11200,6 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     provider?: boolean | UserDefaultArgs<ExtArgs>
-    category?: boolean | Listing$categoryArgs<ExtArgs>
     skills?: boolean | Listing$skillsArgs<ExtArgs>
     _count?: boolean | ListingCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["listing"]>
@@ -12376,7 +11213,7 @@ export namespace Prisma {
     price?: boolean
     currency?: boolean
     deliveryDays?: boolean
-    categoryId?: boolean
+    category?: boolean
     images?: boolean
     tags?: boolean
     videos?: boolean
@@ -12386,7 +11223,6 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     provider?: boolean | UserDefaultArgs<ExtArgs>
-    category?: boolean | Listing$categoryArgs<ExtArgs>
   }, ExtArgs["result"]["listing"]>
 
   export type ListingSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -12398,7 +11234,7 @@ export namespace Prisma {
     price?: boolean
     currency?: boolean
     deliveryDays?: boolean
-    categoryId?: boolean
+    category?: boolean
     images?: boolean
     tags?: boolean
     videos?: boolean
@@ -12408,7 +11244,6 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     provider?: boolean | UserDefaultArgs<ExtArgs>
-    category?: boolean | Listing$categoryArgs<ExtArgs>
   }, ExtArgs["result"]["listing"]>
 
   export type ListingSelectScalar = {
@@ -12420,7 +11255,7 @@ export namespace Prisma {
     price?: boolean
     currency?: boolean
     deliveryDays?: boolean
-    categoryId?: boolean
+    category?: boolean
     images?: boolean
     tags?: boolean
     videos?: boolean
@@ -12431,27 +11266,23 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type ListingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "providerId" | "title" | "slug" | "description" | "price" | "currency" | "deliveryDays" | "categoryId" | "images" | "tags" | "videos" | "isPublished" | "rating" | "reviewCount" | "createdAt" | "updatedAt", ExtArgs["result"]["listing"]>
+  export type ListingOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "providerId" | "title" | "slug" | "description" | "price" | "currency" | "deliveryDays" | "category" | "images" | "tags" | "videos" | "isPublished" | "rating" | "reviewCount" | "createdAt" | "updatedAt", ExtArgs["result"]["listing"]>
   export type ListingInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     provider?: boolean | UserDefaultArgs<ExtArgs>
-    category?: boolean | Listing$categoryArgs<ExtArgs>
     skills?: boolean | Listing$skillsArgs<ExtArgs>
     _count?: boolean | ListingCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ListingIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     provider?: boolean | UserDefaultArgs<ExtArgs>
-    category?: boolean | Listing$categoryArgs<ExtArgs>
   }
   export type ListingIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     provider?: boolean | UserDefaultArgs<ExtArgs>
-    category?: boolean | Listing$categoryArgs<ExtArgs>
   }
 
   export type $ListingPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Listing"
     objects: {
       provider: Prisma.$UserPayload<ExtArgs>
-      category: Prisma.$CategoryPayload<ExtArgs> | null
       skills: Prisma.$SkillPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -12463,7 +11294,7 @@ export namespace Prisma {
       price: number
       currency: $Enums.Currency
       deliveryDays: number | null
-      categoryId: string | null
+      category: $Enums.CategoryEnum | null
       images: string[]
       tags: string[]
       videos: string[]
@@ -12867,7 +11698,6 @@ export namespace Prisma {
   export interface Prisma__ListingClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     provider<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    category<T extends Listing$categoryArgs<ExtArgs> = {}>(args?: Subset<T, Listing$categoryArgs<ExtArgs>>): Prisma__CategoryClient<$Result.GetResult<Prisma.$CategoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     skills<T extends Listing$skillsArgs<ExtArgs> = {}>(args?: Subset<T, Listing$skillsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SkillPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -12906,7 +11736,7 @@ export namespace Prisma {
     readonly price: FieldRef<"Listing", 'Float'>
     readonly currency: FieldRef<"Listing", 'Currency'>
     readonly deliveryDays: FieldRef<"Listing", 'Int'>
-    readonly categoryId: FieldRef<"Listing", 'String'>
+    readonly category: FieldRef<"Listing", 'CategoryEnum'>
     readonly images: FieldRef<"Listing", 'String[]'>
     readonly tags: FieldRef<"Listing", 'String[]'>
     readonly videos: FieldRef<"Listing", 'String[]'>
@@ -13311,25 +12141,6 @@ export namespace Prisma {
   }
 
   /**
-   * Listing.category
-   */
-  export type Listing$categoryArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Category
-     */
-    select?: CategorySelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Category
-     */
-    omit?: CategoryOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: CategoryInclude<ExtArgs> | null
-    where?: CategoryWhereInput
-  }
-
-  /**
    * Listing.skills
    */
   export type Listing$skillsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -13658,10 +12469,10 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     closedAt?: boolean
-    seeker?: boolean | UserDefaultArgs<ExtArgs>
-    requiredSkills?: boolean | Job$requiredSkillsArgs<ExtArgs>
-    proposals?: boolean | Job$proposalsArgs<ExtArgs>
     contract?: boolean | Job$contractArgs<ExtArgs>
+    seeker?: boolean | UserDefaultArgs<ExtArgs>
+    proposals?: boolean | Job$proposalsArgs<ExtArgs>
+    requiredSkills?: boolean | Job$requiredSkillsArgs<ExtArgs>
     _count?: boolean | JobCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["job"]>
 
@@ -13726,10 +12537,10 @@ export namespace Prisma {
 
   export type JobOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "seekerId" | "title" | "slug" | "description" | "type" | "budgetMin" | "budgetMax" | "currency" | "deadline" | "status" | "attachments" | "location" | "createdAt" | "updatedAt" | "closedAt", ExtArgs["result"]["job"]>
   export type JobInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    seeker?: boolean | UserDefaultArgs<ExtArgs>
-    requiredSkills?: boolean | Job$requiredSkillsArgs<ExtArgs>
-    proposals?: boolean | Job$proposalsArgs<ExtArgs>
     contract?: boolean | Job$contractArgs<ExtArgs>
+    seeker?: boolean | UserDefaultArgs<ExtArgs>
+    proposals?: boolean | Job$proposalsArgs<ExtArgs>
+    requiredSkills?: boolean | Job$requiredSkillsArgs<ExtArgs>
     _count?: boolean | JobCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type JobIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -13742,10 +12553,10 @@ export namespace Prisma {
   export type $JobPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Job"
     objects: {
-      seeker: Prisma.$UserPayload<ExtArgs>
-      requiredSkills: Prisma.$SkillPayload<ExtArgs>[]
-      proposals: Prisma.$ProposalPayload<ExtArgs>[]
       contract: Prisma.$ContractPayload<ExtArgs> | null
+      seeker: Prisma.$UserPayload<ExtArgs>
+      proposals: Prisma.$ProposalPayload<ExtArgs>[]
+      requiredSkills: Prisma.$SkillPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -14158,10 +12969,10 @@ export namespace Prisma {
    */
   export interface Prisma__JobClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    seeker<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    requiredSkills<T extends Job$requiredSkillsArgs<ExtArgs> = {}>(args?: Subset<T, Job$requiredSkillsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SkillPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    proposals<T extends Job$proposalsArgs<ExtArgs> = {}>(args?: Subset<T, Job$proposalsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProposalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     contract<T extends Job$contractArgs<ExtArgs> = {}>(args?: Subset<T, Job$contractArgs<ExtArgs>>): Prisma__ContractClient<$Result.GetResult<Prisma.$ContractPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    seeker<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    proposals<T extends Job$proposalsArgs<ExtArgs> = {}>(args?: Subset<T, Job$proposalsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProposalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    requiredSkills<T extends Job$requiredSkillsArgs<ExtArgs> = {}>(args?: Subset<T, Job$requiredSkillsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SkillPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -14603,27 +13414,22 @@ export namespace Prisma {
   }
 
   /**
-   * Job.requiredSkills
+   * Job.contract
    */
-  export type Job$requiredSkillsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Job$contractArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Skill
+     * Select specific fields to fetch from the Contract
      */
-    select?: SkillSelect<ExtArgs> | null
+    select?: ContractSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Skill
+     * Omit specific fields from the Contract
      */
-    omit?: SkillOmit<ExtArgs> | null
+    omit?: ContractOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: SkillInclude<ExtArgs> | null
-    where?: SkillWhereInput
-    orderBy?: SkillOrderByWithRelationInput | SkillOrderByWithRelationInput[]
-    cursor?: SkillWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: SkillScalarFieldEnum | SkillScalarFieldEnum[]
+    include?: ContractInclude<ExtArgs> | null
+    where?: ContractWhereInput
   }
 
   /**
@@ -14651,22 +13457,27 @@ export namespace Prisma {
   }
 
   /**
-   * Job.contract
+   * Job.requiredSkills
    */
-  export type Job$contractArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Job$requiredSkillsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Contract
+     * Select specific fields to fetch from the Skill
      */
-    select?: ContractSelect<ExtArgs> | null
+    select?: SkillSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Contract
+     * Omit specific fields from the Skill
      */
-    omit?: ContractOmit<ExtArgs> | null
+    omit?: SkillOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: ContractInclude<ExtArgs> | null
-    where?: ContractWhereInput
+    include?: SkillInclude<ExtArgs> | null
+    where?: SkillWhereInput
+    orderBy?: SkillOrderByWithRelationInput | SkillOrderByWithRelationInput[]
+    cursor?: SkillWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: SkillScalarFieldEnum | SkillScalarFieldEnum[]
   }
 
   /**
@@ -16120,11 +14931,11 @@ export namespace Prisma {
     endDate?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    job?: boolean | JobDefaultArgs<ExtArgs>
     client?: boolean | UserDefaultArgs<ExtArgs>
+    job?: boolean | JobDefaultArgs<ExtArgs>
     provider?: boolean | UserDefaultArgs<ExtArgs>
-    milestones?: boolean | Contract$milestonesArgs<ExtArgs>
     dispute?: boolean | Contract$disputeArgs<ExtArgs>
+    milestones?: boolean | Contract$milestonesArgs<ExtArgs>
     _count?: boolean | ContractCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["contract"]>
 
@@ -16141,8 +14952,8 @@ export namespace Prisma {
     endDate?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    job?: boolean | JobDefaultArgs<ExtArgs>
     client?: boolean | UserDefaultArgs<ExtArgs>
+    job?: boolean | JobDefaultArgs<ExtArgs>
     provider?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["contract"]>
 
@@ -16159,8 +14970,8 @@ export namespace Prisma {
     endDate?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    job?: boolean | JobDefaultArgs<ExtArgs>
     client?: boolean | UserDefaultArgs<ExtArgs>
+    job?: boolean | JobDefaultArgs<ExtArgs>
     provider?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["contract"]>
 
@@ -16181,32 +14992,32 @@ export namespace Prisma {
 
   export type ContractOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "jobId" | "clientId" | "providerId" | "totalAmount" | "currency" | "status" | "escrowId" | "startDate" | "endDate" | "createdAt" | "updatedAt", ExtArgs["result"]["contract"]>
   export type ContractInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    job?: boolean | JobDefaultArgs<ExtArgs>
     client?: boolean | UserDefaultArgs<ExtArgs>
+    job?: boolean | JobDefaultArgs<ExtArgs>
     provider?: boolean | UserDefaultArgs<ExtArgs>
-    milestones?: boolean | Contract$milestonesArgs<ExtArgs>
     dispute?: boolean | Contract$disputeArgs<ExtArgs>
+    milestones?: boolean | Contract$milestonesArgs<ExtArgs>
     _count?: boolean | ContractCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ContractIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    job?: boolean | JobDefaultArgs<ExtArgs>
     client?: boolean | UserDefaultArgs<ExtArgs>
+    job?: boolean | JobDefaultArgs<ExtArgs>
     provider?: boolean | UserDefaultArgs<ExtArgs>
   }
   export type ContractIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    job?: boolean | JobDefaultArgs<ExtArgs>
     client?: boolean | UserDefaultArgs<ExtArgs>
+    job?: boolean | JobDefaultArgs<ExtArgs>
     provider?: boolean | UserDefaultArgs<ExtArgs>
   }
 
   export type $ContractPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Contract"
     objects: {
-      job: Prisma.$JobPayload<ExtArgs>
       client: Prisma.$UserPayload<ExtArgs>
+      job: Prisma.$JobPayload<ExtArgs>
       provider: Prisma.$UserPayload<ExtArgs>
-      milestones: Prisma.$MilestonePayload<ExtArgs>[]
       dispute: Prisma.$DisputePayload<ExtArgs> | null
+      milestones: Prisma.$MilestonePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -16615,11 +15426,11 @@ export namespace Prisma {
    */
   export interface Prisma__ContractClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    job<T extends JobDefaultArgs<ExtArgs> = {}>(args?: Subset<T, JobDefaultArgs<ExtArgs>>): Prisma__JobClient<$Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     client<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    job<T extends JobDefaultArgs<ExtArgs> = {}>(args?: Subset<T, JobDefaultArgs<ExtArgs>>): Prisma__JobClient<$Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     provider<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    milestones<T extends Contract$milestonesArgs<ExtArgs> = {}>(args?: Subset<T, Contract$milestonesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MilestonePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     dispute<T extends Contract$disputeArgs<ExtArgs> = {}>(args?: Subset<T, Contract$disputeArgs<ExtArgs>>): Prisma__DisputeClient<$Result.GetResult<Prisma.$DisputePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    milestones<T extends Contract$milestonesArgs<ExtArgs> = {}>(args?: Subset<T, Contract$milestonesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MilestonePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -17057,6 +15868,25 @@ export namespace Prisma {
   }
 
   /**
+   * Contract.dispute
+   */
+  export type Contract$disputeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Dispute
+     */
+    select?: DisputeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Dispute
+     */
+    omit?: DisputeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: DisputeInclude<ExtArgs> | null
+    where?: DisputeWhereInput
+  }
+
+  /**
    * Contract.milestones
    */
   export type Contract$milestonesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -17078,25 +15908,6 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: MilestoneScalarFieldEnum | MilestoneScalarFieldEnum[]
-  }
-
-  /**
-   * Contract.dispute
-   */
-  export type Contract$disputeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Dispute
-     */
-    select?: DisputeSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Dispute
-     */
-    omit?: DisputeOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: DisputeInclude<ExtArgs> | null
-    where?: DisputeWhereInput
   }
 
   /**
@@ -18447,8 +17258,8 @@ export namespace Prisma {
     balance?: boolean
     currency?: boolean
     createdAt?: boolean
-    user?: boolean | UserDefaultArgs<ExtArgs>
     transactions?: boolean | Wallet$transactionsArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
     _count?: boolean | WalletCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["wallet"]>
 
@@ -18480,8 +17291,8 @@ export namespace Prisma {
 
   export type WalletOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "balance" | "currency" | "createdAt", ExtArgs["result"]["wallet"]>
   export type WalletInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    user?: boolean | UserDefaultArgs<ExtArgs>
     transactions?: boolean | Wallet$transactionsArgs<ExtArgs>
+    user?: boolean | UserDefaultArgs<ExtArgs>
     _count?: boolean | WalletCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type WalletIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -18494,8 +17305,8 @@ export namespace Prisma {
   export type $WalletPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Wallet"
     objects: {
-      user: Prisma.$UserPayload<ExtArgs>
       transactions: Prisma.$TransactionPayload<ExtArgs>[]
+      user: Prisma.$UserPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -18897,8 +17708,8 @@ export namespace Prisma {
    */
   export interface Prisma__WalletClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     transactions<T extends Wallet$transactionsArgs<ExtArgs> = {}>(args?: Subset<T, Wallet$transactionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -21780,8 +20591,8 @@ export namespace Prisma {
     projectId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
-    participants?: boolean | Conversation$participantsArgs<ExtArgs>
     messages?: boolean | Conversation$messagesArgs<ExtArgs>
+    participants?: boolean | Conversation$participantsArgs<ExtArgs>
     _count?: boolean | ConversationCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["conversation"]>
 
@@ -21811,8 +20622,8 @@ export namespace Prisma {
 
   export type ConversationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "projectId" | "createdAt" | "updatedAt", ExtArgs["result"]["conversation"]>
   export type ConversationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    participants?: boolean | Conversation$participantsArgs<ExtArgs>
     messages?: boolean | Conversation$messagesArgs<ExtArgs>
+    participants?: boolean | Conversation$participantsArgs<ExtArgs>
     _count?: boolean | ConversationCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ConversationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -21821,8 +20632,8 @@ export namespace Prisma {
   export type $ConversationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Conversation"
     objects: {
-      participants: Prisma.$UserPayload<ExtArgs>[]
       messages: Prisma.$MessagePayload<ExtArgs>[]
+      participants: Prisma.$UserPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -22224,8 +21035,8 @@ export namespace Prisma {
    */
   export interface Prisma__ConversationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    participants<T extends Conversation$participantsArgs<ExtArgs> = {}>(args?: Subset<T, Conversation$participantsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     messages<T extends Conversation$messagesArgs<ExtArgs> = {}>(args?: Subset<T, Conversation$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    participants<T extends Conversation$participantsArgs<ExtArgs> = {}>(args?: Subset<T, Conversation$participantsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -22648,30 +21459,6 @@ export namespace Prisma {
   }
 
   /**
-   * Conversation.participants
-   */
-  export type Conversation$participantsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the User
-     */
-    select?: UserSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the User
-     */
-    omit?: UserOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: UserInclude<ExtArgs> | null
-    where?: UserWhereInput
-    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
-    cursor?: UserWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
-  }
-
-  /**
    * Conversation.messages
    */
   export type Conversation$messagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -22693,6 +21480,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: MessageScalarFieldEnum | MessageScalarFieldEnum[]
+  }
+
+  /**
+   * Conversation.participants
+   */
+  export type Conversation$participantsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
+    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
+    cursor?: UserWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
   }
 
   /**
@@ -30480,13 +29291,13 @@ export namespace Prisma {
     education: 'education',
     completedJobs: 'completedJobs',
     successRate: 'successRate',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    goals: 'goals',
     howHear: 'howHear',
     howHearOther: 'howHearOther',
-    goals: 'goals',
     individualFocus: 'individualFocus',
-    organizationPurpose: 'organizationPurpose',
-    createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    organizationPurpose: 'organizationPurpose'
   };
 
   export type ProfileScalarFieldEnum = (typeof ProfileScalarFieldEnum)[keyof typeof ProfileScalarFieldEnum]
@@ -30513,16 +29324,6 @@ export namespace Prisma {
   export type ProfileSkillScalarFieldEnum = (typeof ProfileSkillScalarFieldEnum)[keyof typeof ProfileSkillScalarFieldEnum]
 
 
-  export const CategoryScalarFieldEnum: {
-    id: 'id',
-    name: 'name',
-    slug: 'slug',
-    createdAt: 'createdAt'
-  };
-
-  export type CategoryScalarFieldEnum = (typeof CategoryScalarFieldEnum)[keyof typeof CategoryScalarFieldEnum]
-
-
   export const ListingScalarFieldEnum: {
     id: 'id',
     providerId: 'providerId',
@@ -30532,7 +29333,7 @@ export namespace Prisma {
     price: 'price',
     currency: 'currency',
     deliveryDays: 'deliveryDays',
-    categoryId: 'categoryId',
+    category: 'category',
     images: 'images',
     tags: 'tags',
     videos: 'videos',
@@ -30921,6 +29722,20 @@ export namespace Prisma {
    * Reference to a field of type 'QueryMode'
    */
   export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+  /**
+   * Reference to a field of type 'CategoryEnum'
+   */
+  export type EnumCategoryEnumFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CategoryEnum'>
+    
+
+
+  /**
+   * Reference to a field of type 'CategoryEnum[]'
+   */
+  export type ListEnumCategoryEnumFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'CategoryEnum[]'>
     
 
 
@@ -31383,16 +30198,16 @@ export namespace Prisma {
     education?: JsonNullableFilter<"Profile">
     completedJobs?: IntFilter<"Profile"> | number
     successRate?: FloatNullableFilter<"Profile"> | number | null
-    howHear?: StringNullableFilter<"Profile"> | string | null
-    howHearOther?: StringNullableFilter<"Profile"> | string | null
-    goals?: StringNullableListFilter<"Profile">
-    individualFocus?: StringNullableFilter<"Profile"> | string | null
-    organizationPurpose?: StringNullableFilter<"Profile"> | string | null
     createdAt?: DateTimeFilter<"Profile"> | Date | string
     updatedAt?: DateTimeFilter<"Profile"> | Date | string
-    user?: XOR<UserScalarRelationFilter, UserWhereInput>
-    skills?: ProfileSkillListRelationFilter
+    goals?: StringNullableListFilter<"Profile">
+    howHear?: StringNullableFilter<"Profile"> | string | null
+    howHearOther?: StringNullableFilter<"Profile"> | string | null
+    individualFocus?: StringNullableFilter<"Profile"> | string | null
+    organizationPurpose?: StringNullableFilter<"Profile"> | string | null
     portfolio?: PortfolioListRelationFilter
+    skills?: ProfileSkillListRelationFilter
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
 
   export type ProfileOrderByWithRelationInput = {
@@ -31406,16 +30221,16 @@ export namespace Prisma {
     education?: SortOrderInput | SortOrder
     completedJobs?: SortOrder
     successRate?: SortOrderInput | SortOrder
-    howHear?: SortOrderInput | SortOrder
-    howHearOther?: SortOrderInput | SortOrder
-    goals?: SortOrder
-    individualFocus?: SortOrderInput | SortOrder
-    organizationPurpose?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    user?: UserOrderByWithRelationInput
-    skills?: ProfileSkillOrderByRelationAggregateInput
+    goals?: SortOrder
+    howHear?: SortOrderInput | SortOrder
+    howHearOther?: SortOrderInput | SortOrder
+    individualFocus?: SortOrderInput | SortOrder
+    organizationPurpose?: SortOrderInput | SortOrder
     portfolio?: PortfolioOrderByRelationAggregateInput
+    skills?: ProfileSkillOrderByRelationAggregateInput
+    user?: UserOrderByWithRelationInput
   }
 
   export type ProfileWhereUniqueInput = Prisma.AtLeast<{
@@ -31432,16 +30247,16 @@ export namespace Prisma {
     education?: JsonNullableFilter<"Profile">
     completedJobs?: IntFilter<"Profile"> | number
     successRate?: FloatNullableFilter<"Profile"> | number | null
-    howHear?: StringNullableFilter<"Profile"> | string | null
-    howHearOther?: StringNullableFilter<"Profile"> | string | null
-    goals?: StringNullableListFilter<"Profile">
-    individualFocus?: StringNullableFilter<"Profile"> | string | null
-    organizationPurpose?: StringNullableFilter<"Profile"> | string | null
     createdAt?: DateTimeFilter<"Profile"> | Date | string
     updatedAt?: DateTimeFilter<"Profile"> | Date | string
-    user?: XOR<UserScalarRelationFilter, UserWhereInput>
-    skills?: ProfileSkillListRelationFilter
+    goals?: StringNullableListFilter<"Profile">
+    howHear?: StringNullableFilter<"Profile"> | string | null
+    howHearOther?: StringNullableFilter<"Profile"> | string | null
+    individualFocus?: StringNullableFilter<"Profile"> | string | null
+    organizationPurpose?: StringNullableFilter<"Profile"> | string | null
     portfolio?: PortfolioListRelationFilter
+    skills?: ProfileSkillListRelationFilter
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id" | "userId">
 
   export type ProfileOrderByWithAggregationInput = {
@@ -31455,13 +30270,13 @@ export namespace Prisma {
     education?: SortOrderInput | SortOrder
     completedJobs?: SortOrder
     successRate?: SortOrderInput | SortOrder
-    howHear?: SortOrderInput | SortOrder
-    howHearOther?: SortOrderInput | SortOrder
-    goals?: SortOrder
-    individualFocus?: SortOrderInput | SortOrder
-    organizationPurpose?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    goals?: SortOrder
+    howHear?: SortOrderInput | SortOrder
+    howHearOther?: SortOrderInput | SortOrder
+    individualFocus?: SortOrderInput | SortOrder
+    organizationPurpose?: SortOrderInput | SortOrder
     _count?: ProfileCountOrderByAggregateInput
     _avg?: ProfileAvgOrderByAggregateInput
     _max?: ProfileMaxOrderByAggregateInput
@@ -31483,13 +30298,13 @@ export namespace Prisma {
     education?: JsonNullableWithAggregatesFilter<"Profile">
     completedJobs?: IntWithAggregatesFilter<"Profile"> | number
     successRate?: FloatNullableWithAggregatesFilter<"Profile"> | number | null
-    howHear?: StringNullableWithAggregatesFilter<"Profile"> | string | null
-    howHearOther?: StringNullableWithAggregatesFilter<"Profile"> | string | null
-    goals?: StringNullableListFilter<"Profile">
-    individualFocus?: StringNullableWithAggregatesFilter<"Profile"> | string | null
-    organizationPurpose?: StringNullableWithAggregatesFilter<"Profile"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Profile"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Profile"> | Date | string
+    goals?: StringNullableListFilter<"Profile">
+    howHear?: StringNullableWithAggregatesFilter<"Profile"> | string | null
+    howHearOther?: StringNullableWithAggregatesFilter<"Profile"> | string | null
+    individualFocus?: StringNullableWithAggregatesFilter<"Profile"> | string | null
+    organizationPurpose?: StringNullableWithAggregatesFilter<"Profile"> | string | null
   }
 
   export type SkillWhereInput = {
@@ -31501,8 +30316,8 @@ export namespace Prisma {
     slug?: StringFilter<"Skill"> | string
     createdAt?: DateTimeFilter<"Skill"> | Date | string
     profiles?: ProfileSkillListRelationFilter
-    listings?: ListingListRelationFilter
     jobs?: JobListRelationFilter
+    listings?: ListingListRelationFilter
   }
 
   export type SkillOrderByWithRelationInput = {
@@ -31511,8 +30326,8 @@ export namespace Prisma {
     slug?: SortOrder
     createdAt?: SortOrder
     profiles?: ProfileSkillOrderByRelationAggregateInput
-    listings?: ListingOrderByRelationAggregateInput
     jobs?: JobOrderByRelationAggregateInput
+    listings?: ListingOrderByRelationAggregateInput
   }
 
   export type SkillWhereUniqueInput = Prisma.AtLeast<{
@@ -31524,8 +30339,8 @@ export namespace Prisma {
     NOT?: SkillWhereInput | SkillWhereInput[]
     createdAt?: DateTimeFilter<"Skill"> | Date | string
     profiles?: ProfileSkillListRelationFilter
-    listings?: ListingListRelationFilter
     jobs?: JobListRelationFilter
+    listings?: ListingListRelationFilter
   }, "id" | "name" | "slug">
 
   export type SkillOrderByWithAggregationInput = {
@@ -31609,56 +30424,6 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"ProfileSkill"> | Date | string
   }
 
-  export type CategoryWhereInput = {
-    AND?: CategoryWhereInput | CategoryWhereInput[]
-    OR?: CategoryWhereInput[]
-    NOT?: CategoryWhereInput | CategoryWhereInput[]
-    id?: StringFilter<"Category"> | string
-    name?: StringFilter<"Category"> | string
-    slug?: StringFilter<"Category"> | string
-    createdAt?: DateTimeFilter<"Category"> | Date | string
-    listings?: ListingListRelationFilter
-  }
-
-  export type CategoryOrderByWithRelationInput = {
-    id?: SortOrder
-    name?: SortOrder
-    slug?: SortOrder
-    createdAt?: SortOrder
-    listings?: ListingOrderByRelationAggregateInput
-  }
-
-  export type CategoryWhereUniqueInput = Prisma.AtLeast<{
-    id?: string
-    name?: string
-    slug?: string
-    AND?: CategoryWhereInput | CategoryWhereInput[]
-    OR?: CategoryWhereInput[]
-    NOT?: CategoryWhereInput | CategoryWhereInput[]
-    createdAt?: DateTimeFilter<"Category"> | Date | string
-    listings?: ListingListRelationFilter
-  }, "id" | "name" | "slug">
-
-  export type CategoryOrderByWithAggregationInput = {
-    id?: SortOrder
-    name?: SortOrder
-    slug?: SortOrder
-    createdAt?: SortOrder
-    _count?: CategoryCountOrderByAggregateInput
-    _max?: CategoryMaxOrderByAggregateInput
-    _min?: CategoryMinOrderByAggregateInput
-  }
-
-  export type CategoryScalarWhereWithAggregatesInput = {
-    AND?: CategoryScalarWhereWithAggregatesInput | CategoryScalarWhereWithAggregatesInput[]
-    OR?: CategoryScalarWhereWithAggregatesInput[]
-    NOT?: CategoryScalarWhereWithAggregatesInput | CategoryScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"Category"> | string
-    name?: StringWithAggregatesFilter<"Category"> | string
-    slug?: StringWithAggregatesFilter<"Category"> | string
-    createdAt?: DateTimeWithAggregatesFilter<"Category"> | Date | string
-  }
-
   export type ListingWhereInput = {
     AND?: ListingWhereInput | ListingWhereInput[]
     OR?: ListingWhereInput[]
@@ -31671,7 +30436,7 @@ export namespace Prisma {
     price?: FloatFilter<"Listing"> | number
     currency?: EnumCurrencyFilter<"Listing"> | $Enums.Currency
     deliveryDays?: IntNullableFilter<"Listing"> | number | null
-    categoryId?: StringNullableFilter<"Listing"> | string | null
+    category?: EnumCategoryEnumNullableFilter<"Listing"> | $Enums.CategoryEnum | null
     images?: StringNullableListFilter<"Listing">
     tags?: StringNullableListFilter<"Listing">
     videos?: StringNullableListFilter<"Listing">
@@ -31681,7 +30446,6 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Listing"> | Date | string
     updatedAt?: DateTimeFilter<"Listing"> | Date | string
     provider?: XOR<UserScalarRelationFilter, UserWhereInput>
-    category?: XOR<CategoryNullableScalarRelationFilter, CategoryWhereInput> | null
     skills?: SkillListRelationFilter
   }
 
@@ -31694,7 +30458,7 @@ export namespace Prisma {
     price?: SortOrder
     currency?: SortOrder
     deliveryDays?: SortOrderInput | SortOrder
-    categoryId?: SortOrderInput | SortOrder
+    category?: SortOrderInput | SortOrder
     images?: SortOrder
     tags?: SortOrder
     videos?: SortOrder
@@ -31704,7 +30468,6 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     provider?: UserOrderByWithRelationInput
-    category?: CategoryOrderByWithRelationInput
     skills?: SkillOrderByRelationAggregateInput
   }
 
@@ -31720,7 +30483,7 @@ export namespace Prisma {
     price?: FloatFilter<"Listing"> | number
     currency?: EnumCurrencyFilter<"Listing"> | $Enums.Currency
     deliveryDays?: IntNullableFilter<"Listing"> | number | null
-    categoryId?: StringNullableFilter<"Listing"> | string | null
+    category?: EnumCategoryEnumNullableFilter<"Listing"> | $Enums.CategoryEnum | null
     images?: StringNullableListFilter<"Listing">
     tags?: StringNullableListFilter<"Listing">
     videos?: StringNullableListFilter<"Listing">
@@ -31730,7 +30493,6 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Listing"> | Date | string
     updatedAt?: DateTimeFilter<"Listing"> | Date | string
     provider?: XOR<UserScalarRelationFilter, UserWhereInput>
-    category?: XOR<CategoryNullableScalarRelationFilter, CategoryWhereInput> | null
     skills?: SkillListRelationFilter
   }, "id" | "slug">
 
@@ -31743,7 +30505,7 @@ export namespace Prisma {
     price?: SortOrder
     currency?: SortOrder
     deliveryDays?: SortOrderInput | SortOrder
-    categoryId?: SortOrderInput | SortOrder
+    category?: SortOrderInput | SortOrder
     images?: SortOrder
     tags?: SortOrder
     videos?: SortOrder
@@ -31771,7 +30533,7 @@ export namespace Prisma {
     price?: FloatWithAggregatesFilter<"Listing"> | number
     currency?: EnumCurrencyWithAggregatesFilter<"Listing"> | $Enums.Currency
     deliveryDays?: IntNullableWithAggregatesFilter<"Listing"> | number | null
-    categoryId?: StringNullableWithAggregatesFilter<"Listing"> | string | null
+    category?: EnumCategoryEnumNullableWithAggregatesFilter<"Listing"> | $Enums.CategoryEnum | null
     images?: StringNullableListFilter<"Listing">
     tags?: StringNullableListFilter<"Listing">
     videos?: StringNullableListFilter<"Listing">
@@ -31802,10 +30564,10 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Job"> | Date | string
     updatedAt?: DateTimeFilter<"Job"> | Date | string
     closedAt?: DateTimeNullableFilter<"Job"> | Date | string | null
-    seeker?: XOR<UserScalarRelationFilter, UserWhereInput>
-    requiredSkills?: SkillListRelationFilter
-    proposals?: ProposalListRelationFilter
     contract?: XOR<ContractNullableScalarRelationFilter, ContractWhereInput> | null
+    seeker?: XOR<UserScalarRelationFilter, UserWhereInput>
+    proposals?: ProposalListRelationFilter
+    requiredSkills?: SkillListRelationFilter
   }
 
   export type JobOrderByWithRelationInput = {
@@ -31825,10 +30587,10 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     closedAt?: SortOrderInput | SortOrder
-    seeker?: UserOrderByWithRelationInput
-    requiredSkills?: SkillOrderByRelationAggregateInput
-    proposals?: ProposalOrderByRelationAggregateInput
     contract?: ContractOrderByWithRelationInput
+    seeker?: UserOrderByWithRelationInput
+    proposals?: ProposalOrderByRelationAggregateInput
+    requiredSkills?: SkillOrderByRelationAggregateInput
   }
 
   export type JobWhereUniqueInput = Prisma.AtLeast<{
@@ -31851,10 +30613,10 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Job"> | Date | string
     updatedAt?: DateTimeFilter<"Job"> | Date | string
     closedAt?: DateTimeNullableFilter<"Job"> | Date | string | null
-    seeker?: XOR<UserScalarRelationFilter, UserWhereInput>
-    requiredSkills?: SkillListRelationFilter
-    proposals?: ProposalListRelationFilter
     contract?: XOR<ContractNullableScalarRelationFilter, ContractWhereInput> | null
+    seeker?: XOR<UserScalarRelationFilter, UserWhereInput>
+    proposals?: ProposalListRelationFilter
+    requiredSkills?: SkillListRelationFilter
   }, "id" | "slug">
 
   export type JobOrderByWithAggregationInput = {
@@ -32009,11 +30771,11 @@ export namespace Prisma {
     endDate?: DateTimeNullableFilter<"Contract"> | Date | string | null
     createdAt?: DateTimeFilter<"Contract"> | Date | string
     updatedAt?: DateTimeFilter<"Contract"> | Date | string
-    job?: XOR<JobScalarRelationFilter, JobWhereInput>
     client?: XOR<UserScalarRelationFilter, UserWhereInput>
+    job?: XOR<JobScalarRelationFilter, JobWhereInput>
     provider?: XOR<UserScalarRelationFilter, UserWhereInput>
-    milestones?: MilestoneListRelationFilter
     dispute?: XOR<DisputeNullableScalarRelationFilter, DisputeWhereInput> | null
+    milestones?: MilestoneListRelationFilter
   }
 
   export type ContractOrderByWithRelationInput = {
@@ -32029,11 +30791,11 @@ export namespace Prisma {
     endDate?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    job?: JobOrderByWithRelationInput
     client?: UserOrderByWithRelationInput
+    job?: JobOrderByWithRelationInput
     provider?: UserOrderByWithRelationInput
-    milestones?: MilestoneOrderByRelationAggregateInput
     dispute?: DisputeOrderByWithRelationInput
+    milestones?: MilestoneOrderByRelationAggregateInput
   }
 
   export type ContractWhereUniqueInput = Prisma.AtLeast<{
@@ -32052,11 +30814,11 @@ export namespace Prisma {
     endDate?: DateTimeNullableFilter<"Contract"> | Date | string | null
     createdAt?: DateTimeFilter<"Contract"> | Date | string
     updatedAt?: DateTimeFilter<"Contract"> | Date | string
-    job?: XOR<JobScalarRelationFilter, JobWhereInput>
     client?: XOR<UserScalarRelationFilter, UserWhereInput>
+    job?: XOR<JobScalarRelationFilter, JobWhereInput>
     provider?: XOR<UserScalarRelationFilter, UserWhereInput>
-    milestones?: MilestoneListRelationFilter
     dispute?: XOR<DisputeNullableScalarRelationFilter, DisputeWhereInput> | null
+    milestones?: MilestoneListRelationFilter
   }, "id" | "jobId">
 
   export type ContractOrderByWithAggregationInput = {
@@ -32178,8 +30940,8 @@ export namespace Prisma {
     balance?: FloatFilter<"Wallet"> | number
     currency?: EnumCurrencyFilter<"Wallet"> | $Enums.Currency
     createdAt?: DateTimeFilter<"Wallet"> | Date | string
-    user?: XOR<UserScalarRelationFilter, UserWhereInput>
     transactions?: TransactionListRelationFilter
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
 
   export type WalletOrderByWithRelationInput = {
@@ -32188,8 +30950,8 @@ export namespace Prisma {
     balance?: SortOrder
     currency?: SortOrder
     createdAt?: SortOrder
-    user?: UserOrderByWithRelationInput
     transactions?: TransactionOrderByRelationAggregateInput
+    user?: UserOrderByWithRelationInput
   }
 
   export type WalletWhereUniqueInput = Prisma.AtLeast<{
@@ -32201,8 +30963,8 @@ export namespace Prisma {
     balance?: FloatFilter<"Wallet"> | number
     currency?: EnumCurrencyFilter<"Wallet"> | $Enums.Currency
     createdAt?: DateTimeFilter<"Wallet"> | Date | string
-    user?: XOR<UserScalarRelationFilter, UserWhereInput>
     transactions?: TransactionListRelationFilter
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id" | "userId">
 
   export type WalletOrderByWithAggregationInput = {
@@ -32377,8 +31139,8 @@ export namespace Prisma {
     projectId?: StringNullableFilter<"Conversation"> | string | null
     createdAt?: DateTimeFilter<"Conversation"> | Date | string
     updatedAt?: DateTimeFilter<"Conversation"> | Date | string
-    participants?: UserListRelationFilter
     messages?: MessageListRelationFilter
+    participants?: UserListRelationFilter
   }
 
   export type ConversationOrderByWithRelationInput = {
@@ -32387,8 +31149,8 @@ export namespace Prisma {
     projectId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-    participants?: UserOrderByRelationAggregateInput
     messages?: MessageOrderByRelationAggregateInput
+    participants?: UserOrderByRelationAggregateInput
   }
 
   export type ConversationWhereUniqueInput = Prisma.AtLeast<{
@@ -32400,8 +31162,8 @@ export namespace Prisma {
     projectId?: StringNullableFilter<"Conversation"> | string | null
     createdAt?: DateTimeFilter<"Conversation"> | Date | string
     updatedAt?: DateTimeFilter<"Conversation"> | Date | string
-    participants?: UserListRelationFilter
     messages?: MessageListRelationFilter
+    participants?: UserListRelationFilter
   }, "id">
 
   export type ConversationOrderByWithAggregationInput = {
@@ -33341,16 +32103,16 @@ export namespace Prisma {
     education?: NullableJsonNullValueInput | InputJsonValue
     completedJobs?: number
     successRate?: number | null
-    howHear?: string | null
-    howHearOther?: string | null
-    goals?: ProfileCreategoalsInput | string[]
-    individualFocus?: string | null
-    organizationPurpose?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    user: UserCreateNestedOneWithoutProfileInput
-    skills?: ProfileSkillCreateNestedManyWithoutProfileInput
+    goals?: ProfileCreategoalsInput | string[]
+    howHear?: string | null
+    howHearOther?: string | null
+    individualFocus?: string | null
+    organizationPurpose?: string | null
     portfolio?: PortfolioCreateNestedManyWithoutProfileInput
+    skills?: ProfileSkillCreateNestedManyWithoutProfileInput
+    user: UserCreateNestedOneWithoutProfileInput
   }
 
   export type ProfileUncheckedCreateInput = {
@@ -33364,15 +32126,15 @@ export namespace Prisma {
     education?: NullableJsonNullValueInput | InputJsonValue
     completedJobs?: number
     successRate?: number | null
-    howHear?: string | null
-    howHearOther?: string | null
-    goals?: ProfileCreategoalsInput | string[]
-    individualFocus?: string | null
-    organizationPurpose?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    skills?: ProfileSkillUncheckedCreateNestedManyWithoutProfileInput
+    goals?: ProfileCreategoalsInput | string[]
+    howHear?: string | null
+    howHearOther?: string | null
+    individualFocus?: string | null
+    organizationPurpose?: string | null
     portfolio?: PortfolioUncheckedCreateNestedManyWithoutProfileInput
+    skills?: ProfileSkillUncheckedCreateNestedManyWithoutProfileInput
   }
 
   export type ProfileUpdateInput = {
@@ -33385,16 +32147,16 @@ export namespace Prisma {
     education?: NullableJsonNullValueInput | InputJsonValue
     completedJobs?: IntFieldUpdateOperationsInput | number
     successRate?: NullableFloatFieldUpdateOperationsInput | number | null
-    howHear?: NullableStringFieldUpdateOperationsInput | string | null
-    howHearOther?: NullableStringFieldUpdateOperationsInput | string | null
-    goals?: ProfileUpdategoalsInput | string[]
-    individualFocus?: NullableStringFieldUpdateOperationsInput | string | null
-    organizationPurpose?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    user?: UserUpdateOneRequiredWithoutProfileNestedInput
-    skills?: ProfileSkillUpdateManyWithoutProfileNestedInput
+    goals?: ProfileUpdategoalsInput | string[]
+    howHear?: NullableStringFieldUpdateOperationsInput | string | null
+    howHearOther?: NullableStringFieldUpdateOperationsInput | string | null
+    individualFocus?: NullableStringFieldUpdateOperationsInput | string | null
+    organizationPurpose?: NullableStringFieldUpdateOperationsInput | string | null
     portfolio?: PortfolioUpdateManyWithoutProfileNestedInput
+    skills?: ProfileSkillUpdateManyWithoutProfileNestedInput
+    user?: UserUpdateOneRequiredWithoutProfileNestedInput
   }
 
   export type ProfileUncheckedUpdateInput = {
@@ -33408,15 +32170,15 @@ export namespace Prisma {
     education?: NullableJsonNullValueInput | InputJsonValue
     completedJobs?: IntFieldUpdateOperationsInput | number
     successRate?: NullableFloatFieldUpdateOperationsInput | number | null
-    howHear?: NullableStringFieldUpdateOperationsInput | string | null
-    howHearOther?: NullableStringFieldUpdateOperationsInput | string | null
-    goals?: ProfileUpdategoalsInput | string[]
-    individualFocus?: NullableStringFieldUpdateOperationsInput | string | null
-    organizationPurpose?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    skills?: ProfileSkillUncheckedUpdateManyWithoutProfileNestedInput
+    goals?: ProfileUpdategoalsInput | string[]
+    howHear?: NullableStringFieldUpdateOperationsInput | string | null
+    howHearOther?: NullableStringFieldUpdateOperationsInput | string | null
+    individualFocus?: NullableStringFieldUpdateOperationsInput | string | null
+    organizationPurpose?: NullableStringFieldUpdateOperationsInput | string | null
     portfolio?: PortfolioUncheckedUpdateManyWithoutProfileNestedInput
+    skills?: ProfileSkillUncheckedUpdateManyWithoutProfileNestedInput
   }
 
   export type ProfileCreateManyInput = {
@@ -33430,13 +32192,13 @@ export namespace Prisma {
     education?: NullableJsonNullValueInput | InputJsonValue
     completedJobs?: number
     successRate?: number | null
-    howHear?: string | null
-    howHearOther?: string | null
-    goals?: ProfileCreategoalsInput | string[]
-    individualFocus?: string | null
-    organizationPurpose?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    goals?: ProfileCreategoalsInput | string[]
+    howHear?: string | null
+    howHearOther?: string | null
+    individualFocus?: string | null
+    organizationPurpose?: string | null
   }
 
   export type ProfileUpdateManyMutationInput = {
@@ -33449,13 +32211,13 @@ export namespace Prisma {
     education?: NullableJsonNullValueInput | InputJsonValue
     completedJobs?: IntFieldUpdateOperationsInput | number
     successRate?: NullableFloatFieldUpdateOperationsInput | number | null
-    howHear?: NullableStringFieldUpdateOperationsInput | string | null
-    howHearOther?: NullableStringFieldUpdateOperationsInput | string | null
-    goals?: ProfileUpdategoalsInput | string[]
-    individualFocus?: NullableStringFieldUpdateOperationsInput | string | null
-    organizationPurpose?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    goals?: ProfileUpdategoalsInput | string[]
+    howHear?: NullableStringFieldUpdateOperationsInput | string | null
+    howHearOther?: NullableStringFieldUpdateOperationsInput | string | null
+    individualFocus?: NullableStringFieldUpdateOperationsInput | string | null
+    organizationPurpose?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ProfileUncheckedUpdateManyInput = {
@@ -33469,13 +32231,13 @@ export namespace Prisma {
     education?: NullableJsonNullValueInput | InputJsonValue
     completedJobs?: IntFieldUpdateOperationsInput | number
     successRate?: NullableFloatFieldUpdateOperationsInput | number | null
-    howHear?: NullableStringFieldUpdateOperationsInput | string | null
-    howHearOther?: NullableStringFieldUpdateOperationsInput | string | null
-    goals?: ProfileUpdategoalsInput | string[]
-    individualFocus?: NullableStringFieldUpdateOperationsInput | string | null
-    organizationPurpose?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    goals?: ProfileUpdategoalsInput | string[]
+    howHear?: NullableStringFieldUpdateOperationsInput | string | null
+    howHearOther?: NullableStringFieldUpdateOperationsInput | string | null
+    individualFocus?: NullableStringFieldUpdateOperationsInput | string | null
+    organizationPurpose?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type SkillCreateInput = {
@@ -33484,8 +32246,8 @@ export namespace Prisma {
     slug: string
     createdAt?: Date | string
     profiles?: ProfileSkillCreateNestedManyWithoutSkillInput
-    listings?: ListingCreateNestedManyWithoutSkillsInput
     jobs?: JobCreateNestedManyWithoutRequiredSkillsInput
+    listings?: ListingCreateNestedManyWithoutSkillsInput
   }
 
   export type SkillUncheckedCreateInput = {
@@ -33494,8 +32256,8 @@ export namespace Prisma {
     slug: string
     createdAt?: Date | string
     profiles?: ProfileSkillUncheckedCreateNestedManyWithoutSkillInput
-    listings?: ListingUncheckedCreateNestedManyWithoutSkillsInput
     jobs?: JobUncheckedCreateNestedManyWithoutRequiredSkillsInput
+    listings?: ListingUncheckedCreateNestedManyWithoutSkillsInput
   }
 
   export type SkillUpdateInput = {
@@ -33504,8 +32266,8 @@ export namespace Prisma {
     slug?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     profiles?: ProfileSkillUpdateManyWithoutSkillNestedInput
-    listings?: ListingUpdateManyWithoutSkillsNestedInput
     jobs?: JobUpdateManyWithoutRequiredSkillsNestedInput
+    listings?: ListingUpdateManyWithoutSkillsNestedInput
   }
 
   export type SkillUncheckedUpdateInput = {
@@ -33514,8 +32276,8 @@ export namespace Prisma {
     slug?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     profiles?: ProfileSkillUncheckedUpdateManyWithoutSkillNestedInput
-    listings?: ListingUncheckedUpdateManyWithoutSkillsNestedInput
     jobs?: JobUncheckedUpdateManyWithoutRequiredSkillsNestedInput
+    listings?: ListingUncheckedUpdateManyWithoutSkillsNestedInput
   }
 
   export type SkillCreateManyInput = {
@@ -33593,59 +32355,6 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type CategoryCreateInput = {
-    id?: string
-    name: string
-    slug: string
-    createdAt?: Date | string
-    listings?: ListingCreateNestedManyWithoutCategoryInput
-  }
-
-  export type CategoryUncheckedCreateInput = {
-    id?: string
-    name: string
-    slug: string
-    createdAt?: Date | string
-    listings?: ListingUncheckedCreateNestedManyWithoutCategoryInput
-  }
-
-  export type CategoryUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    slug?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    listings?: ListingUpdateManyWithoutCategoryNestedInput
-  }
-
-  export type CategoryUncheckedUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    slug?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    listings?: ListingUncheckedUpdateManyWithoutCategoryNestedInput
-  }
-
-  export type CategoryCreateManyInput = {
-    id?: string
-    name: string
-    slug: string
-    createdAt?: Date | string
-  }
-
-  export type CategoryUpdateManyMutationInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    slug?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type CategoryUncheckedUpdateManyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    slug?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
   export type ListingCreateInput = {
     id?: string
     title: string
@@ -33654,6 +32363,7 @@ export namespace Prisma {
     price: number
     currency?: $Enums.Currency
     deliveryDays?: number | null
+    category?: $Enums.CategoryEnum | null
     images?: ListingCreateimagesInput | string[]
     tags?: ListingCreatetagsInput | string[]
     videos?: ListingCreatevideosInput | string[]
@@ -33663,7 +32373,6 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     provider: UserCreateNestedOneWithoutListingsInput
-    category?: CategoryCreateNestedOneWithoutListingsInput
     skills?: SkillCreateNestedManyWithoutListingsInput
   }
 
@@ -33676,7 +32385,7 @@ export namespace Prisma {
     price: number
     currency?: $Enums.Currency
     deliveryDays?: number | null
-    categoryId?: string | null
+    category?: $Enums.CategoryEnum | null
     images?: ListingCreateimagesInput | string[]
     tags?: ListingCreatetagsInput | string[]
     videos?: ListingCreatevideosInput | string[]
@@ -33696,6 +32405,7 @@ export namespace Prisma {
     price?: FloatFieldUpdateOperationsInput | number
     currency?: EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency
     deliveryDays?: NullableIntFieldUpdateOperationsInput | number | null
+    category?: NullableEnumCategoryEnumFieldUpdateOperationsInput | $Enums.CategoryEnum | null
     images?: ListingUpdateimagesInput | string[]
     tags?: ListingUpdatetagsInput | string[]
     videos?: ListingUpdatevideosInput | string[]
@@ -33705,7 +32415,6 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     provider?: UserUpdateOneRequiredWithoutListingsNestedInput
-    category?: CategoryUpdateOneWithoutListingsNestedInput
     skills?: SkillUpdateManyWithoutListingsNestedInput
   }
 
@@ -33718,7 +32427,7 @@ export namespace Prisma {
     price?: FloatFieldUpdateOperationsInput | number
     currency?: EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency
     deliveryDays?: NullableIntFieldUpdateOperationsInput | number | null
-    categoryId?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: NullableEnumCategoryEnumFieldUpdateOperationsInput | $Enums.CategoryEnum | null
     images?: ListingUpdateimagesInput | string[]
     tags?: ListingUpdatetagsInput | string[]
     videos?: ListingUpdatevideosInput | string[]
@@ -33739,7 +32448,7 @@ export namespace Prisma {
     price: number
     currency?: $Enums.Currency
     deliveryDays?: number | null
-    categoryId?: string | null
+    category?: $Enums.CategoryEnum | null
     images?: ListingCreateimagesInput | string[]
     tags?: ListingCreatetagsInput | string[]
     videos?: ListingCreatevideosInput | string[]
@@ -33758,6 +32467,7 @@ export namespace Prisma {
     price?: FloatFieldUpdateOperationsInput | number
     currency?: EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency
     deliveryDays?: NullableIntFieldUpdateOperationsInput | number | null
+    category?: NullableEnumCategoryEnumFieldUpdateOperationsInput | $Enums.CategoryEnum | null
     images?: ListingUpdateimagesInput | string[]
     tags?: ListingUpdatetagsInput | string[]
     videos?: ListingUpdatevideosInput | string[]
@@ -33777,7 +32487,7 @@ export namespace Prisma {
     price?: FloatFieldUpdateOperationsInput | number
     currency?: EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency
     deliveryDays?: NullableIntFieldUpdateOperationsInput | number | null
-    categoryId?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: NullableEnumCategoryEnumFieldUpdateOperationsInput | $Enums.CategoryEnum | null
     images?: ListingUpdateimagesInput | string[]
     tags?: ListingUpdatetagsInput | string[]
     videos?: ListingUpdatevideosInput | string[]
@@ -33804,10 +32514,10 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     closedAt?: Date | string | null
-    seeker: UserCreateNestedOneWithoutJobsPostedInput
-    requiredSkills?: SkillCreateNestedManyWithoutJobsInput
-    proposals?: ProposalCreateNestedManyWithoutJobInput
     contract?: ContractCreateNestedOneWithoutJobInput
+    seeker: UserCreateNestedOneWithoutJobsPostedInput
+    proposals?: ProposalCreateNestedManyWithoutJobInput
+    requiredSkills?: SkillCreateNestedManyWithoutJobsInput
   }
 
   export type JobUncheckedCreateInput = {
@@ -33827,9 +32537,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     closedAt?: Date | string | null
-    requiredSkills?: SkillUncheckedCreateNestedManyWithoutJobsInput
-    proposals?: ProposalUncheckedCreateNestedManyWithoutJobInput
     contract?: ContractUncheckedCreateNestedOneWithoutJobInput
+    proposals?: ProposalUncheckedCreateNestedManyWithoutJobInput
+    requiredSkills?: SkillUncheckedCreateNestedManyWithoutJobsInput
   }
 
   export type JobUpdateInput = {
@@ -33848,10 +32558,10 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    seeker?: UserUpdateOneRequiredWithoutJobsPostedNestedInput
-    requiredSkills?: SkillUpdateManyWithoutJobsNestedInput
-    proposals?: ProposalUpdateManyWithoutJobNestedInput
     contract?: ContractUpdateOneWithoutJobNestedInput
+    seeker?: UserUpdateOneRequiredWithoutJobsPostedNestedInput
+    proposals?: ProposalUpdateManyWithoutJobNestedInput
+    requiredSkills?: SkillUpdateManyWithoutJobsNestedInput
   }
 
   export type JobUncheckedUpdateInput = {
@@ -33871,9 +32581,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    requiredSkills?: SkillUncheckedUpdateManyWithoutJobsNestedInput
-    proposals?: ProposalUncheckedUpdateManyWithoutJobNestedInput
     contract?: ContractUncheckedUpdateOneWithoutJobNestedInput
+    proposals?: ProposalUncheckedUpdateManyWithoutJobNestedInput
+    requiredSkills?: SkillUncheckedUpdateManyWithoutJobsNestedInput
   }
 
   export type JobCreateManyInput = {
@@ -34038,11 +32748,11 @@ export namespace Prisma {
     endDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    job: JobCreateNestedOneWithoutContractInput
     client: UserCreateNestedOneWithoutContractsAsClientInput
+    job: JobCreateNestedOneWithoutContractInput
     provider: UserCreateNestedOneWithoutContractsAsProviderInput
-    milestones?: MilestoneCreateNestedManyWithoutContractInput
     dispute?: DisputeCreateNestedOneWithoutContractInput
+    milestones?: MilestoneCreateNestedManyWithoutContractInput
   }
 
   export type ContractUncheckedCreateInput = {
@@ -34058,8 +32768,8 @@ export namespace Prisma {
     endDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    milestones?: MilestoneUncheckedCreateNestedManyWithoutContractInput
     dispute?: DisputeUncheckedCreateNestedOneWithoutContractInput
+    milestones?: MilestoneUncheckedCreateNestedManyWithoutContractInput
   }
 
   export type ContractUpdateInput = {
@@ -34072,11 +32782,11 @@ export namespace Prisma {
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    job?: JobUpdateOneRequiredWithoutContractNestedInput
     client?: UserUpdateOneRequiredWithoutContractsAsClientNestedInput
+    job?: JobUpdateOneRequiredWithoutContractNestedInput
     provider?: UserUpdateOneRequiredWithoutContractsAsProviderNestedInput
-    milestones?: MilestoneUpdateManyWithoutContractNestedInput
     dispute?: DisputeUpdateOneWithoutContractNestedInput
+    milestones?: MilestoneUpdateManyWithoutContractNestedInput
   }
 
   export type ContractUncheckedUpdateInput = {
@@ -34092,8 +32802,8 @@ export namespace Prisma {
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    milestones?: MilestoneUncheckedUpdateManyWithoutContractNestedInput
     dispute?: DisputeUncheckedUpdateOneWithoutContractNestedInput
+    milestones?: MilestoneUncheckedUpdateManyWithoutContractNestedInput
   }
 
   export type ContractCreateManyInput = {
@@ -34219,8 +32929,8 @@ export namespace Prisma {
     balance?: number
     currency?: $Enums.Currency
     createdAt?: Date | string
-    user: UserCreateNestedOneWithoutWalletInput
     transactions?: TransactionCreateNestedManyWithoutWalletInput
+    user: UserCreateNestedOneWithoutWalletInput
   }
 
   export type WalletUncheckedCreateInput = {
@@ -34237,8 +32947,8 @@ export namespace Prisma {
     balance?: FloatFieldUpdateOperationsInput | number
     currency?: EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    user?: UserUpdateOneRequiredWithoutWalletNestedInput
     transactions?: TransactionUpdateManyWithoutWalletNestedInput
+    user?: UserUpdateOneRequiredWithoutWalletNestedInput
   }
 
   export type WalletUncheckedUpdateInput = {
@@ -34424,8 +33134,8 @@ export namespace Prisma {
     projectId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    participants?: UserCreateNestedManyWithoutConversationsInput
     messages?: MessageCreateNestedManyWithoutConversationInput
+    participants?: UserCreateNestedManyWithoutConversationsInput
   }
 
   export type ConversationUncheckedCreateInput = {
@@ -34434,8 +33144,8 @@ export namespace Prisma {
     projectId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    participants?: UserUncheckedCreateNestedManyWithoutConversationsInput
     messages?: MessageUncheckedCreateNestedManyWithoutConversationInput
+    participants?: UserUncheckedCreateNestedManyWithoutConversationsInput
   }
 
   export type ConversationUpdateInput = {
@@ -34444,8 +33154,8 @@ export namespace Prisma {
     projectId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    participants?: UserUpdateManyWithoutConversationsNestedInput
     messages?: MessageUpdateManyWithoutConversationNestedInput
+    participants?: UserUpdateManyWithoutConversationsNestedInput
   }
 
   export type ConversationUncheckedUpdateInput = {
@@ -34454,8 +33164,8 @@ export namespace Prisma {
     projectId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    participants?: UserUncheckedUpdateManyWithoutConversationsNestedInput
     messages?: MessageUncheckedUpdateManyWithoutConversationNestedInput
+    participants?: UserUncheckedUpdateManyWithoutConversationsNestedInput
   }
 
   export type ConversationCreateManyInput = {
@@ -35527,23 +34237,23 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
-  export type ProfileSkillListRelationFilter = {
-    every?: ProfileSkillWhereInput
-    some?: ProfileSkillWhereInput
-    none?: ProfileSkillWhereInput
-  }
-
   export type PortfolioListRelationFilter = {
     every?: PortfolioWhereInput
     some?: PortfolioWhereInput
     none?: PortfolioWhereInput
   }
 
-  export type ProfileSkillOrderByRelationAggregateInput = {
-    _count?: SortOrder
+  export type ProfileSkillListRelationFilter = {
+    every?: ProfileSkillWhereInput
+    some?: ProfileSkillWhereInput
+    none?: ProfileSkillWhereInput
   }
 
   export type PortfolioOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type ProfileSkillOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -35558,13 +34268,13 @@ export namespace Prisma {
     education?: SortOrder
     completedJobs?: SortOrder
     successRate?: SortOrder
-    howHear?: SortOrder
-    howHearOther?: SortOrder
-    goals?: SortOrder
-    individualFocus?: SortOrder
-    organizationPurpose?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    goals?: SortOrder
+    howHear?: SortOrder
+    howHearOther?: SortOrder
+    individualFocus?: SortOrder
+    organizationPurpose?: SortOrder
   }
 
   export type ProfileAvgOrderByAggregateInput = {
@@ -35582,12 +34292,12 @@ export namespace Prisma {
     availability?: SortOrder
     completedJobs?: SortOrder
     successRate?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
     howHear?: SortOrder
     howHearOther?: SortOrder
     individualFocus?: SortOrder
     organizationPurpose?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
   }
 
   export type ProfileMinOrderByAggregateInput = {
@@ -35599,12 +34309,12 @@ export namespace Prisma {
     availability?: SortOrder
     completedJobs?: SortOrder
     successRate?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
     howHear?: SortOrder
     howHearOther?: SortOrder
     individualFocus?: SortOrder
     organizationPurpose?: SortOrder
-    createdAt?: SortOrder
-    updatedAt?: SortOrder
   }
 
   export type ProfileSumOrderByAggregateInput = {
@@ -35733,27 +34443,6 @@ export namespace Prisma {
     level?: SortOrder
   }
 
-  export type CategoryCountOrderByAggregateInput = {
-    id?: SortOrder
-    name?: SortOrder
-    slug?: SortOrder
-    createdAt?: SortOrder
-  }
-
-  export type CategoryMaxOrderByAggregateInput = {
-    id?: SortOrder
-    name?: SortOrder
-    slug?: SortOrder
-    createdAt?: SortOrder
-  }
-
-  export type CategoryMinOrderByAggregateInput = {
-    id?: SortOrder
-    name?: SortOrder
-    slug?: SortOrder
-    createdAt?: SortOrder
-  }
-
   export type FloatFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel>
     in?: number[] | ListFloatFieldRefInput<$PrismaModel>
@@ -35783,9 +34472,11 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
-  export type CategoryNullableScalarRelationFilter = {
-    is?: CategoryWhereInput | null
-    isNot?: CategoryWhereInput | null
+  export type EnumCategoryEnumNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.CategoryEnum | EnumCategoryEnumFieldRefInput<$PrismaModel> | null
+    in?: $Enums.CategoryEnum[] | ListEnumCategoryEnumFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.CategoryEnum[] | ListEnumCategoryEnumFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumCategoryEnumNullableFilter<$PrismaModel> | $Enums.CategoryEnum | null
   }
 
   export type SkillListRelationFilter = {
@@ -35807,7 +34498,7 @@ export namespace Prisma {
     price?: SortOrder
     currency?: SortOrder
     deliveryDays?: SortOrder
-    categoryId?: SortOrder
+    category?: SortOrder
     images?: SortOrder
     tags?: SortOrder
     videos?: SortOrder
@@ -35834,7 +34525,7 @@ export namespace Prisma {
     price?: SortOrder
     currency?: SortOrder
     deliveryDays?: SortOrder
-    categoryId?: SortOrder
+    category?: SortOrder
     isPublished?: SortOrder
     rating?: SortOrder
     reviewCount?: SortOrder
@@ -35851,7 +34542,7 @@ export namespace Prisma {
     price?: SortOrder
     currency?: SortOrder
     deliveryDays?: SortOrder
-    categoryId?: SortOrder
+    category?: SortOrder
     isPublished?: SortOrder
     rating?: SortOrder
     reviewCount?: SortOrder
@@ -35906,6 +34597,16 @@ export namespace Prisma {
     _sum?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedIntNullableFilter<$PrismaModel>
     _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type EnumCategoryEnumNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.CategoryEnum | EnumCategoryEnumFieldRefInput<$PrismaModel> | null
+    in?: $Enums.CategoryEnum[] | ListEnumCategoryEnumFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.CategoryEnum[] | ListEnumCategoryEnumFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumCategoryEnumNullableWithAggregatesFilter<$PrismaModel> | $Enums.CategoryEnum | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumCategoryEnumNullableFilter<$PrismaModel>
+    _max?: NestedEnumCategoryEnumNullableFilter<$PrismaModel>
   }
 
   export type EnumJobTypeFilter<$PrismaModel = never> = {
@@ -36091,15 +34792,15 @@ export namespace Prisma {
     not?: NestedEnumPaymentStatusFilter<$PrismaModel> | $Enums.PaymentStatus
   }
 
+  export type DisputeNullableScalarRelationFilter = {
+    is?: DisputeWhereInput | null
+    isNot?: DisputeWhereInput | null
+  }
+
   export type MilestoneListRelationFilter = {
     every?: MilestoneWhereInput
     some?: MilestoneWhereInput
     none?: MilestoneWhereInput
-  }
-
-  export type DisputeNullableScalarRelationFilter = {
-    is?: DisputeWhereInput | null
-    isNot?: DisputeWhereInput | null
   }
 
   export type MilestoneOrderByRelationAggregateInput = {
@@ -37416,10 +36117,11 @@ export namespace Prisma {
     set: string[]
   }
 
-  export type UserCreateNestedOneWithoutProfileInput = {
-    create?: XOR<UserCreateWithoutProfileInput, UserUncheckedCreateWithoutProfileInput>
-    connectOrCreate?: UserCreateOrConnectWithoutProfileInput
-    connect?: UserWhereUniqueInput
+  export type PortfolioCreateNestedManyWithoutProfileInput = {
+    create?: XOR<PortfolioCreateWithoutProfileInput, PortfolioUncheckedCreateWithoutProfileInput> | PortfolioCreateWithoutProfileInput[] | PortfolioUncheckedCreateWithoutProfileInput[]
+    connectOrCreate?: PortfolioCreateOrConnectWithoutProfileInput | PortfolioCreateOrConnectWithoutProfileInput[]
+    createMany?: PortfolioCreateManyProfileInputEnvelope
+    connect?: PortfolioWhereUniqueInput | PortfolioWhereUniqueInput[]
   }
 
   export type ProfileSkillCreateNestedManyWithoutProfileInput = {
@@ -37429,7 +36131,13 @@ export namespace Prisma {
     connect?: ProfileSkillWhereUniqueInput | ProfileSkillWhereUniqueInput[]
   }
 
-  export type PortfolioCreateNestedManyWithoutProfileInput = {
+  export type UserCreateNestedOneWithoutProfileInput = {
+    create?: XOR<UserCreateWithoutProfileInput, UserUncheckedCreateWithoutProfileInput>
+    connectOrCreate?: UserCreateOrConnectWithoutProfileInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type PortfolioUncheckedCreateNestedManyWithoutProfileInput = {
     create?: XOR<PortfolioCreateWithoutProfileInput, PortfolioUncheckedCreateWithoutProfileInput> | PortfolioCreateWithoutProfileInput[] | PortfolioUncheckedCreateWithoutProfileInput[]
     connectOrCreate?: PortfolioCreateOrConnectWithoutProfileInput | PortfolioCreateOrConnectWithoutProfileInput[]
     createMany?: PortfolioCreateManyProfileInputEnvelope
@@ -37441,13 +36149,6 @@ export namespace Prisma {
     connectOrCreate?: ProfileSkillCreateOrConnectWithoutProfileInput | ProfileSkillCreateOrConnectWithoutProfileInput[]
     createMany?: ProfileSkillCreateManyProfileInputEnvelope
     connect?: ProfileSkillWhereUniqueInput | ProfileSkillWhereUniqueInput[]
-  }
-
-  export type PortfolioUncheckedCreateNestedManyWithoutProfileInput = {
-    create?: XOR<PortfolioCreateWithoutProfileInput, PortfolioUncheckedCreateWithoutProfileInput> | PortfolioCreateWithoutProfileInput[] | PortfolioUncheckedCreateWithoutProfileInput[]
-    connectOrCreate?: PortfolioCreateOrConnectWithoutProfileInput | PortfolioCreateOrConnectWithoutProfileInput[]
-    createMany?: PortfolioCreateManyProfileInputEnvelope
-    connect?: PortfolioWhereUniqueInput | PortfolioWhereUniqueInput[]
   }
 
   export type NullableFloatFieldUpdateOperationsInput = {
@@ -37467,12 +36168,18 @@ export namespace Prisma {
     push?: string | string[]
   }
 
-  export type UserUpdateOneRequiredWithoutProfileNestedInput = {
-    create?: XOR<UserCreateWithoutProfileInput, UserUncheckedCreateWithoutProfileInput>
-    connectOrCreate?: UserCreateOrConnectWithoutProfileInput
-    upsert?: UserUpsertWithoutProfileInput
-    connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutProfileInput, UserUpdateWithoutProfileInput>, UserUncheckedUpdateWithoutProfileInput>
+  export type PortfolioUpdateManyWithoutProfileNestedInput = {
+    create?: XOR<PortfolioCreateWithoutProfileInput, PortfolioUncheckedCreateWithoutProfileInput> | PortfolioCreateWithoutProfileInput[] | PortfolioUncheckedCreateWithoutProfileInput[]
+    connectOrCreate?: PortfolioCreateOrConnectWithoutProfileInput | PortfolioCreateOrConnectWithoutProfileInput[]
+    upsert?: PortfolioUpsertWithWhereUniqueWithoutProfileInput | PortfolioUpsertWithWhereUniqueWithoutProfileInput[]
+    createMany?: PortfolioCreateManyProfileInputEnvelope
+    set?: PortfolioWhereUniqueInput | PortfolioWhereUniqueInput[]
+    disconnect?: PortfolioWhereUniqueInput | PortfolioWhereUniqueInput[]
+    delete?: PortfolioWhereUniqueInput | PortfolioWhereUniqueInput[]
+    connect?: PortfolioWhereUniqueInput | PortfolioWhereUniqueInput[]
+    update?: PortfolioUpdateWithWhereUniqueWithoutProfileInput | PortfolioUpdateWithWhereUniqueWithoutProfileInput[]
+    updateMany?: PortfolioUpdateManyWithWhereWithoutProfileInput | PortfolioUpdateManyWithWhereWithoutProfileInput[]
+    deleteMany?: PortfolioScalarWhereInput | PortfolioScalarWhereInput[]
   }
 
   export type ProfileSkillUpdateManyWithoutProfileNestedInput = {
@@ -37489,7 +36196,15 @@ export namespace Prisma {
     deleteMany?: ProfileSkillScalarWhereInput | ProfileSkillScalarWhereInput[]
   }
 
-  export type PortfolioUpdateManyWithoutProfileNestedInput = {
+  export type UserUpdateOneRequiredWithoutProfileNestedInput = {
+    create?: XOR<UserCreateWithoutProfileInput, UserUncheckedCreateWithoutProfileInput>
+    connectOrCreate?: UserCreateOrConnectWithoutProfileInput
+    upsert?: UserUpsertWithoutProfileInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutProfileInput, UserUpdateWithoutProfileInput>, UserUncheckedUpdateWithoutProfileInput>
+  }
+
+  export type PortfolioUncheckedUpdateManyWithoutProfileNestedInput = {
     create?: XOR<PortfolioCreateWithoutProfileInput, PortfolioUncheckedCreateWithoutProfileInput> | PortfolioCreateWithoutProfileInput[] | PortfolioUncheckedCreateWithoutProfileInput[]
     connectOrCreate?: PortfolioCreateOrConnectWithoutProfileInput | PortfolioCreateOrConnectWithoutProfileInput[]
     upsert?: PortfolioUpsertWithWhereUniqueWithoutProfileInput | PortfolioUpsertWithWhereUniqueWithoutProfileInput[]
@@ -37517,20 +36232,6 @@ export namespace Prisma {
     deleteMany?: ProfileSkillScalarWhereInput | ProfileSkillScalarWhereInput[]
   }
 
-  export type PortfolioUncheckedUpdateManyWithoutProfileNestedInput = {
-    create?: XOR<PortfolioCreateWithoutProfileInput, PortfolioUncheckedCreateWithoutProfileInput> | PortfolioCreateWithoutProfileInput[] | PortfolioUncheckedCreateWithoutProfileInput[]
-    connectOrCreate?: PortfolioCreateOrConnectWithoutProfileInput | PortfolioCreateOrConnectWithoutProfileInput[]
-    upsert?: PortfolioUpsertWithWhereUniqueWithoutProfileInput | PortfolioUpsertWithWhereUniqueWithoutProfileInput[]
-    createMany?: PortfolioCreateManyProfileInputEnvelope
-    set?: PortfolioWhereUniqueInput | PortfolioWhereUniqueInput[]
-    disconnect?: PortfolioWhereUniqueInput | PortfolioWhereUniqueInput[]
-    delete?: PortfolioWhereUniqueInput | PortfolioWhereUniqueInput[]
-    connect?: PortfolioWhereUniqueInput | PortfolioWhereUniqueInput[]
-    update?: PortfolioUpdateWithWhereUniqueWithoutProfileInput | PortfolioUpdateWithWhereUniqueWithoutProfileInput[]
-    updateMany?: PortfolioUpdateManyWithWhereWithoutProfileInput | PortfolioUpdateManyWithWhereWithoutProfileInput[]
-    deleteMany?: PortfolioScalarWhereInput | PortfolioScalarWhereInput[]
-  }
-
   export type ProfileSkillCreateNestedManyWithoutSkillInput = {
     create?: XOR<ProfileSkillCreateWithoutSkillInput, ProfileSkillUncheckedCreateWithoutSkillInput> | ProfileSkillCreateWithoutSkillInput[] | ProfileSkillUncheckedCreateWithoutSkillInput[]
     connectOrCreate?: ProfileSkillCreateOrConnectWithoutSkillInput | ProfileSkillCreateOrConnectWithoutSkillInput[]
@@ -37538,16 +36239,16 @@ export namespace Prisma {
     connect?: ProfileSkillWhereUniqueInput | ProfileSkillWhereUniqueInput[]
   }
 
-  export type ListingCreateNestedManyWithoutSkillsInput = {
-    create?: XOR<ListingCreateWithoutSkillsInput, ListingUncheckedCreateWithoutSkillsInput> | ListingCreateWithoutSkillsInput[] | ListingUncheckedCreateWithoutSkillsInput[]
-    connectOrCreate?: ListingCreateOrConnectWithoutSkillsInput | ListingCreateOrConnectWithoutSkillsInput[]
-    connect?: ListingWhereUniqueInput | ListingWhereUniqueInput[]
-  }
-
   export type JobCreateNestedManyWithoutRequiredSkillsInput = {
     create?: XOR<JobCreateWithoutRequiredSkillsInput, JobUncheckedCreateWithoutRequiredSkillsInput> | JobCreateWithoutRequiredSkillsInput[] | JobUncheckedCreateWithoutRequiredSkillsInput[]
     connectOrCreate?: JobCreateOrConnectWithoutRequiredSkillsInput | JobCreateOrConnectWithoutRequiredSkillsInput[]
     connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+  }
+
+  export type ListingCreateNestedManyWithoutSkillsInput = {
+    create?: XOR<ListingCreateWithoutSkillsInput, ListingUncheckedCreateWithoutSkillsInput> | ListingCreateWithoutSkillsInput[] | ListingUncheckedCreateWithoutSkillsInput[]
+    connectOrCreate?: ListingCreateOrConnectWithoutSkillsInput | ListingCreateOrConnectWithoutSkillsInput[]
+    connect?: ListingWhereUniqueInput | ListingWhereUniqueInput[]
   }
 
   export type ProfileSkillUncheckedCreateNestedManyWithoutSkillInput = {
@@ -37557,16 +36258,16 @@ export namespace Prisma {
     connect?: ProfileSkillWhereUniqueInput | ProfileSkillWhereUniqueInput[]
   }
 
-  export type ListingUncheckedCreateNestedManyWithoutSkillsInput = {
-    create?: XOR<ListingCreateWithoutSkillsInput, ListingUncheckedCreateWithoutSkillsInput> | ListingCreateWithoutSkillsInput[] | ListingUncheckedCreateWithoutSkillsInput[]
-    connectOrCreate?: ListingCreateOrConnectWithoutSkillsInput | ListingCreateOrConnectWithoutSkillsInput[]
-    connect?: ListingWhereUniqueInput | ListingWhereUniqueInput[]
-  }
-
   export type JobUncheckedCreateNestedManyWithoutRequiredSkillsInput = {
     create?: XOR<JobCreateWithoutRequiredSkillsInput, JobUncheckedCreateWithoutRequiredSkillsInput> | JobCreateWithoutRequiredSkillsInput[] | JobUncheckedCreateWithoutRequiredSkillsInput[]
     connectOrCreate?: JobCreateOrConnectWithoutRequiredSkillsInput | JobCreateOrConnectWithoutRequiredSkillsInput[]
     connect?: JobWhereUniqueInput | JobWhereUniqueInput[]
+  }
+
+  export type ListingUncheckedCreateNestedManyWithoutSkillsInput = {
+    create?: XOR<ListingCreateWithoutSkillsInput, ListingUncheckedCreateWithoutSkillsInput> | ListingCreateWithoutSkillsInput[] | ListingUncheckedCreateWithoutSkillsInput[]
+    connectOrCreate?: ListingCreateOrConnectWithoutSkillsInput | ListingCreateOrConnectWithoutSkillsInput[]
+    connect?: ListingWhereUniqueInput | ListingWhereUniqueInput[]
   }
 
   export type ProfileSkillUpdateManyWithoutSkillNestedInput = {
@@ -37583,19 +36284,6 @@ export namespace Prisma {
     deleteMany?: ProfileSkillScalarWhereInput | ProfileSkillScalarWhereInput[]
   }
 
-  export type ListingUpdateManyWithoutSkillsNestedInput = {
-    create?: XOR<ListingCreateWithoutSkillsInput, ListingUncheckedCreateWithoutSkillsInput> | ListingCreateWithoutSkillsInput[] | ListingUncheckedCreateWithoutSkillsInput[]
-    connectOrCreate?: ListingCreateOrConnectWithoutSkillsInput | ListingCreateOrConnectWithoutSkillsInput[]
-    upsert?: ListingUpsertWithWhereUniqueWithoutSkillsInput | ListingUpsertWithWhereUniqueWithoutSkillsInput[]
-    set?: ListingWhereUniqueInput | ListingWhereUniqueInput[]
-    disconnect?: ListingWhereUniqueInput | ListingWhereUniqueInput[]
-    delete?: ListingWhereUniqueInput | ListingWhereUniqueInput[]
-    connect?: ListingWhereUniqueInput | ListingWhereUniqueInput[]
-    update?: ListingUpdateWithWhereUniqueWithoutSkillsInput | ListingUpdateWithWhereUniqueWithoutSkillsInput[]
-    updateMany?: ListingUpdateManyWithWhereWithoutSkillsInput | ListingUpdateManyWithWhereWithoutSkillsInput[]
-    deleteMany?: ListingScalarWhereInput | ListingScalarWhereInput[]
-  }
-
   export type JobUpdateManyWithoutRequiredSkillsNestedInput = {
     create?: XOR<JobCreateWithoutRequiredSkillsInput, JobUncheckedCreateWithoutRequiredSkillsInput> | JobCreateWithoutRequiredSkillsInput[] | JobUncheckedCreateWithoutRequiredSkillsInput[]
     connectOrCreate?: JobCreateOrConnectWithoutRequiredSkillsInput | JobCreateOrConnectWithoutRequiredSkillsInput[]
@@ -37607,6 +36295,19 @@ export namespace Prisma {
     update?: JobUpdateWithWhereUniqueWithoutRequiredSkillsInput | JobUpdateWithWhereUniqueWithoutRequiredSkillsInput[]
     updateMany?: JobUpdateManyWithWhereWithoutRequiredSkillsInput | JobUpdateManyWithWhereWithoutRequiredSkillsInput[]
     deleteMany?: JobScalarWhereInput | JobScalarWhereInput[]
+  }
+
+  export type ListingUpdateManyWithoutSkillsNestedInput = {
+    create?: XOR<ListingCreateWithoutSkillsInput, ListingUncheckedCreateWithoutSkillsInput> | ListingCreateWithoutSkillsInput[] | ListingUncheckedCreateWithoutSkillsInput[]
+    connectOrCreate?: ListingCreateOrConnectWithoutSkillsInput | ListingCreateOrConnectWithoutSkillsInput[]
+    upsert?: ListingUpsertWithWhereUniqueWithoutSkillsInput | ListingUpsertWithWhereUniqueWithoutSkillsInput[]
+    set?: ListingWhereUniqueInput | ListingWhereUniqueInput[]
+    disconnect?: ListingWhereUniqueInput | ListingWhereUniqueInput[]
+    delete?: ListingWhereUniqueInput | ListingWhereUniqueInput[]
+    connect?: ListingWhereUniqueInput | ListingWhereUniqueInput[]
+    update?: ListingUpdateWithWhereUniqueWithoutSkillsInput | ListingUpdateWithWhereUniqueWithoutSkillsInput[]
+    updateMany?: ListingUpdateManyWithWhereWithoutSkillsInput | ListingUpdateManyWithWhereWithoutSkillsInput[]
+    deleteMany?: ListingScalarWhereInput | ListingScalarWhereInput[]
   }
 
   export type ProfileSkillUncheckedUpdateManyWithoutSkillNestedInput = {
@@ -37623,19 +36324,6 @@ export namespace Prisma {
     deleteMany?: ProfileSkillScalarWhereInput | ProfileSkillScalarWhereInput[]
   }
 
-  export type ListingUncheckedUpdateManyWithoutSkillsNestedInput = {
-    create?: XOR<ListingCreateWithoutSkillsInput, ListingUncheckedCreateWithoutSkillsInput> | ListingCreateWithoutSkillsInput[] | ListingUncheckedCreateWithoutSkillsInput[]
-    connectOrCreate?: ListingCreateOrConnectWithoutSkillsInput | ListingCreateOrConnectWithoutSkillsInput[]
-    upsert?: ListingUpsertWithWhereUniqueWithoutSkillsInput | ListingUpsertWithWhereUniqueWithoutSkillsInput[]
-    set?: ListingWhereUniqueInput | ListingWhereUniqueInput[]
-    disconnect?: ListingWhereUniqueInput | ListingWhereUniqueInput[]
-    delete?: ListingWhereUniqueInput | ListingWhereUniqueInput[]
-    connect?: ListingWhereUniqueInput | ListingWhereUniqueInput[]
-    update?: ListingUpdateWithWhereUniqueWithoutSkillsInput | ListingUpdateWithWhereUniqueWithoutSkillsInput[]
-    updateMany?: ListingUpdateManyWithWhereWithoutSkillsInput | ListingUpdateManyWithWhereWithoutSkillsInput[]
-    deleteMany?: ListingScalarWhereInput | ListingScalarWhereInput[]
-  }
-
   export type JobUncheckedUpdateManyWithoutRequiredSkillsNestedInput = {
     create?: XOR<JobCreateWithoutRequiredSkillsInput, JobUncheckedCreateWithoutRequiredSkillsInput> | JobCreateWithoutRequiredSkillsInput[] | JobUncheckedCreateWithoutRequiredSkillsInput[]
     connectOrCreate?: JobCreateOrConnectWithoutRequiredSkillsInput | JobCreateOrConnectWithoutRequiredSkillsInput[]
@@ -37647,6 +36335,19 @@ export namespace Prisma {
     update?: JobUpdateWithWhereUniqueWithoutRequiredSkillsInput | JobUpdateWithWhereUniqueWithoutRequiredSkillsInput[]
     updateMany?: JobUpdateManyWithWhereWithoutRequiredSkillsInput | JobUpdateManyWithWhereWithoutRequiredSkillsInput[]
     deleteMany?: JobScalarWhereInput | JobScalarWhereInput[]
+  }
+
+  export type ListingUncheckedUpdateManyWithoutSkillsNestedInput = {
+    create?: XOR<ListingCreateWithoutSkillsInput, ListingUncheckedCreateWithoutSkillsInput> | ListingCreateWithoutSkillsInput[] | ListingUncheckedCreateWithoutSkillsInput[]
+    connectOrCreate?: ListingCreateOrConnectWithoutSkillsInput | ListingCreateOrConnectWithoutSkillsInput[]
+    upsert?: ListingUpsertWithWhereUniqueWithoutSkillsInput | ListingUpsertWithWhereUniqueWithoutSkillsInput[]
+    set?: ListingWhereUniqueInput | ListingWhereUniqueInput[]
+    disconnect?: ListingWhereUniqueInput | ListingWhereUniqueInput[]
+    delete?: ListingWhereUniqueInput | ListingWhereUniqueInput[]
+    connect?: ListingWhereUniqueInput | ListingWhereUniqueInput[]
+    update?: ListingUpdateWithWhereUniqueWithoutSkillsInput | ListingUpdateWithWhereUniqueWithoutSkillsInput[]
+    updateMany?: ListingUpdateManyWithWhereWithoutSkillsInput | ListingUpdateManyWithWhereWithoutSkillsInput[]
+    deleteMany?: ListingScalarWhereInput | ListingScalarWhereInput[]
   }
 
   export type ProfileCreateNestedOneWithoutSkillsInput = {
@@ -37677,48 +36378,6 @@ export namespace Prisma {
     update?: XOR<XOR<SkillUpdateToOneWithWhereWithoutProfilesInput, SkillUpdateWithoutProfilesInput>, SkillUncheckedUpdateWithoutProfilesInput>
   }
 
-  export type ListingCreateNestedManyWithoutCategoryInput = {
-    create?: XOR<ListingCreateWithoutCategoryInput, ListingUncheckedCreateWithoutCategoryInput> | ListingCreateWithoutCategoryInput[] | ListingUncheckedCreateWithoutCategoryInput[]
-    connectOrCreate?: ListingCreateOrConnectWithoutCategoryInput | ListingCreateOrConnectWithoutCategoryInput[]
-    createMany?: ListingCreateManyCategoryInputEnvelope
-    connect?: ListingWhereUniqueInput | ListingWhereUniqueInput[]
-  }
-
-  export type ListingUncheckedCreateNestedManyWithoutCategoryInput = {
-    create?: XOR<ListingCreateWithoutCategoryInput, ListingUncheckedCreateWithoutCategoryInput> | ListingCreateWithoutCategoryInput[] | ListingUncheckedCreateWithoutCategoryInput[]
-    connectOrCreate?: ListingCreateOrConnectWithoutCategoryInput | ListingCreateOrConnectWithoutCategoryInput[]
-    createMany?: ListingCreateManyCategoryInputEnvelope
-    connect?: ListingWhereUniqueInput | ListingWhereUniqueInput[]
-  }
-
-  export type ListingUpdateManyWithoutCategoryNestedInput = {
-    create?: XOR<ListingCreateWithoutCategoryInput, ListingUncheckedCreateWithoutCategoryInput> | ListingCreateWithoutCategoryInput[] | ListingUncheckedCreateWithoutCategoryInput[]
-    connectOrCreate?: ListingCreateOrConnectWithoutCategoryInput | ListingCreateOrConnectWithoutCategoryInput[]
-    upsert?: ListingUpsertWithWhereUniqueWithoutCategoryInput | ListingUpsertWithWhereUniqueWithoutCategoryInput[]
-    createMany?: ListingCreateManyCategoryInputEnvelope
-    set?: ListingWhereUniqueInput | ListingWhereUniqueInput[]
-    disconnect?: ListingWhereUniqueInput | ListingWhereUniqueInput[]
-    delete?: ListingWhereUniqueInput | ListingWhereUniqueInput[]
-    connect?: ListingWhereUniqueInput | ListingWhereUniqueInput[]
-    update?: ListingUpdateWithWhereUniqueWithoutCategoryInput | ListingUpdateWithWhereUniqueWithoutCategoryInput[]
-    updateMany?: ListingUpdateManyWithWhereWithoutCategoryInput | ListingUpdateManyWithWhereWithoutCategoryInput[]
-    deleteMany?: ListingScalarWhereInput | ListingScalarWhereInput[]
-  }
-
-  export type ListingUncheckedUpdateManyWithoutCategoryNestedInput = {
-    create?: XOR<ListingCreateWithoutCategoryInput, ListingUncheckedCreateWithoutCategoryInput> | ListingCreateWithoutCategoryInput[] | ListingUncheckedCreateWithoutCategoryInput[]
-    connectOrCreate?: ListingCreateOrConnectWithoutCategoryInput | ListingCreateOrConnectWithoutCategoryInput[]
-    upsert?: ListingUpsertWithWhereUniqueWithoutCategoryInput | ListingUpsertWithWhereUniqueWithoutCategoryInput[]
-    createMany?: ListingCreateManyCategoryInputEnvelope
-    set?: ListingWhereUniqueInput | ListingWhereUniqueInput[]
-    disconnect?: ListingWhereUniqueInput | ListingWhereUniqueInput[]
-    delete?: ListingWhereUniqueInput | ListingWhereUniqueInput[]
-    connect?: ListingWhereUniqueInput | ListingWhereUniqueInput[]
-    update?: ListingUpdateWithWhereUniqueWithoutCategoryInput | ListingUpdateWithWhereUniqueWithoutCategoryInput[]
-    updateMany?: ListingUpdateManyWithWhereWithoutCategoryInput | ListingUpdateManyWithWhereWithoutCategoryInput[]
-    deleteMany?: ListingScalarWhereInput | ListingScalarWhereInput[]
-  }
-
   export type ListingCreateimagesInput = {
     set: string[]
   }
@@ -37735,12 +36394,6 @@ export namespace Prisma {
     create?: XOR<UserCreateWithoutListingsInput, UserUncheckedCreateWithoutListingsInput>
     connectOrCreate?: UserCreateOrConnectWithoutListingsInput
     connect?: UserWhereUniqueInput
-  }
-
-  export type CategoryCreateNestedOneWithoutListingsInput = {
-    create?: XOR<CategoryCreateWithoutListingsInput, CategoryUncheckedCreateWithoutListingsInput>
-    connectOrCreate?: CategoryCreateOrConnectWithoutListingsInput
-    connect?: CategoryWhereUniqueInput
   }
 
   export type SkillCreateNestedManyWithoutListingsInput = {
@@ -37775,6 +36428,10 @@ export namespace Prisma {
     divide?: number
   }
 
+  export type NullableEnumCategoryEnumFieldUpdateOperationsInput = {
+    set?: $Enums.CategoryEnum | null
+  }
+
   export type ListingUpdateimagesInput = {
     set?: string[]
     push?: string | string[]
@@ -37796,16 +36453,6 @@ export namespace Prisma {
     upsert?: UserUpsertWithoutListingsInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutListingsInput, UserUpdateWithoutListingsInput>, UserUncheckedUpdateWithoutListingsInput>
-  }
-
-  export type CategoryUpdateOneWithoutListingsNestedInput = {
-    create?: XOR<CategoryCreateWithoutListingsInput, CategoryUncheckedCreateWithoutListingsInput>
-    connectOrCreate?: CategoryCreateOrConnectWithoutListingsInput
-    upsert?: CategoryUpsertWithoutListingsInput
-    disconnect?: CategoryWhereInput | boolean
-    delete?: CategoryWhereInput | boolean
-    connect?: CategoryWhereUniqueInput
-    update?: XOR<XOR<CategoryUpdateToOneWithWhereWithoutListingsInput, CategoryUpdateWithoutListingsInput>, CategoryUncheckedUpdateWithoutListingsInput>
   }
 
   export type SkillUpdateManyWithoutListingsNestedInput = {
@@ -37838,16 +36485,16 @@ export namespace Prisma {
     set: string[]
   }
 
+  export type ContractCreateNestedOneWithoutJobInput = {
+    create?: XOR<ContractCreateWithoutJobInput, ContractUncheckedCreateWithoutJobInput>
+    connectOrCreate?: ContractCreateOrConnectWithoutJobInput
+    connect?: ContractWhereUniqueInput
+  }
+
   export type UserCreateNestedOneWithoutJobsPostedInput = {
     create?: XOR<UserCreateWithoutJobsPostedInput, UserUncheckedCreateWithoutJobsPostedInput>
     connectOrCreate?: UserCreateOrConnectWithoutJobsPostedInput
     connect?: UserWhereUniqueInput
-  }
-
-  export type SkillCreateNestedManyWithoutJobsInput = {
-    create?: XOR<SkillCreateWithoutJobsInput, SkillUncheckedCreateWithoutJobsInput> | SkillCreateWithoutJobsInput[] | SkillUncheckedCreateWithoutJobsInput[]
-    connectOrCreate?: SkillCreateOrConnectWithoutJobsInput | SkillCreateOrConnectWithoutJobsInput[]
-    connect?: SkillWhereUniqueInput | SkillWhereUniqueInput[]
   }
 
   export type ProposalCreateNestedManyWithoutJobInput = {
@@ -37857,16 +36504,16 @@ export namespace Prisma {
     connect?: ProposalWhereUniqueInput | ProposalWhereUniqueInput[]
   }
 
-  export type ContractCreateNestedOneWithoutJobInput = {
-    create?: XOR<ContractCreateWithoutJobInput, ContractUncheckedCreateWithoutJobInput>
-    connectOrCreate?: ContractCreateOrConnectWithoutJobInput
-    connect?: ContractWhereUniqueInput
-  }
-
-  export type SkillUncheckedCreateNestedManyWithoutJobsInput = {
+  export type SkillCreateNestedManyWithoutJobsInput = {
     create?: XOR<SkillCreateWithoutJobsInput, SkillUncheckedCreateWithoutJobsInput> | SkillCreateWithoutJobsInput[] | SkillUncheckedCreateWithoutJobsInput[]
     connectOrCreate?: SkillCreateOrConnectWithoutJobsInput | SkillCreateOrConnectWithoutJobsInput[]
     connect?: SkillWhereUniqueInput | SkillWhereUniqueInput[]
+  }
+
+  export type ContractUncheckedCreateNestedOneWithoutJobInput = {
+    create?: XOR<ContractCreateWithoutJobInput, ContractUncheckedCreateWithoutJobInput>
+    connectOrCreate?: ContractCreateOrConnectWithoutJobInput
+    connect?: ContractWhereUniqueInput
   }
 
   export type ProposalUncheckedCreateNestedManyWithoutJobInput = {
@@ -37876,10 +36523,10 @@ export namespace Prisma {
     connect?: ProposalWhereUniqueInput | ProposalWhereUniqueInput[]
   }
 
-  export type ContractUncheckedCreateNestedOneWithoutJobInput = {
-    create?: XOR<ContractCreateWithoutJobInput, ContractUncheckedCreateWithoutJobInput>
-    connectOrCreate?: ContractCreateOrConnectWithoutJobInput
-    connect?: ContractWhereUniqueInput
+  export type SkillUncheckedCreateNestedManyWithoutJobsInput = {
+    create?: XOR<SkillCreateWithoutJobsInput, SkillUncheckedCreateWithoutJobsInput> | SkillCreateWithoutJobsInput[] | SkillUncheckedCreateWithoutJobsInput[]
+    connectOrCreate?: SkillCreateOrConnectWithoutJobsInput | SkillCreateOrConnectWithoutJobsInput[]
+    connect?: SkillWhereUniqueInput | SkillWhereUniqueInput[]
   }
 
   export type EnumJobTypeFieldUpdateOperationsInput = {
@@ -37895,25 +36542,22 @@ export namespace Prisma {
     push?: string | string[]
   }
 
+  export type ContractUpdateOneWithoutJobNestedInput = {
+    create?: XOR<ContractCreateWithoutJobInput, ContractUncheckedCreateWithoutJobInput>
+    connectOrCreate?: ContractCreateOrConnectWithoutJobInput
+    upsert?: ContractUpsertWithoutJobInput
+    disconnect?: ContractWhereInput | boolean
+    delete?: ContractWhereInput | boolean
+    connect?: ContractWhereUniqueInput
+    update?: XOR<XOR<ContractUpdateToOneWithWhereWithoutJobInput, ContractUpdateWithoutJobInput>, ContractUncheckedUpdateWithoutJobInput>
+  }
+
   export type UserUpdateOneRequiredWithoutJobsPostedNestedInput = {
     create?: XOR<UserCreateWithoutJobsPostedInput, UserUncheckedCreateWithoutJobsPostedInput>
     connectOrCreate?: UserCreateOrConnectWithoutJobsPostedInput
     upsert?: UserUpsertWithoutJobsPostedInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutJobsPostedInput, UserUpdateWithoutJobsPostedInput>, UserUncheckedUpdateWithoutJobsPostedInput>
-  }
-
-  export type SkillUpdateManyWithoutJobsNestedInput = {
-    create?: XOR<SkillCreateWithoutJobsInput, SkillUncheckedCreateWithoutJobsInput> | SkillCreateWithoutJobsInput[] | SkillUncheckedCreateWithoutJobsInput[]
-    connectOrCreate?: SkillCreateOrConnectWithoutJobsInput | SkillCreateOrConnectWithoutJobsInput[]
-    upsert?: SkillUpsertWithWhereUniqueWithoutJobsInput | SkillUpsertWithWhereUniqueWithoutJobsInput[]
-    set?: SkillWhereUniqueInput | SkillWhereUniqueInput[]
-    disconnect?: SkillWhereUniqueInput | SkillWhereUniqueInput[]
-    delete?: SkillWhereUniqueInput | SkillWhereUniqueInput[]
-    connect?: SkillWhereUniqueInput | SkillWhereUniqueInput[]
-    update?: SkillUpdateWithWhereUniqueWithoutJobsInput | SkillUpdateWithWhereUniqueWithoutJobsInput[]
-    updateMany?: SkillUpdateManyWithWhereWithoutJobsInput | SkillUpdateManyWithWhereWithoutJobsInput[]
-    deleteMany?: SkillScalarWhereInput | SkillScalarWhereInput[]
   }
 
   export type ProposalUpdateManyWithoutJobNestedInput = {
@@ -37930,17 +36574,7 @@ export namespace Prisma {
     deleteMany?: ProposalScalarWhereInput | ProposalScalarWhereInput[]
   }
 
-  export type ContractUpdateOneWithoutJobNestedInput = {
-    create?: XOR<ContractCreateWithoutJobInput, ContractUncheckedCreateWithoutJobInput>
-    connectOrCreate?: ContractCreateOrConnectWithoutJobInput
-    upsert?: ContractUpsertWithoutJobInput
-    disconnect?: ContractWhereInput | boolean
-    delete?: ContractWhereInput | boolean
-    connect?: ContractWhereUniqueInput
-    update?: XOR<XOR<ContractUpdateToOneWithWhereWithoutJobInput, ContractUpdateWithoutJobInput>, ContractUncheckedUpdateWithoutJobInput>
-  }
-
-  export type SkillUncheckedUpdateManyWithoutJobsNestedInput = {
+  export type SkillUpdateManyWithoutJobsNestedInput = {
     create?: XOR<SkillCreateWithoutJobsInput, SkillUncheckedCreateWithoutJobsInput> | SkillCreateWithoutJobsInput[] | SkillUncheckedCreateWithoutJobsInput[]
     connectOrCreate?: SkillCreateOrConnectWithoutJobsInput | SkillCreateOrConnectWithoutJobsInput[]
     upsert?: SkillUpsertWithWhereUniqueWithoutJobsInput | SkillUpsertWithWhereUniqueWithoutJobsInput[]
@@ -37951,6 +36585,16 @@ export namespace Prisma {
     update?: SkillUpdateWithWhereUniqueWithoutJobsInput | SkillUpdateWithWhereUniqueWithoutJobsInput[]
     updateMany?: SkillUpdateManyWithWhereWithoutJobsInput | SkillUpdateManyWithWhereWithoutJobsInput[]
     deleteMany?: SkillScalarWhereInput | SkillScalarWhereInput[]
+  }
+
+  export type ContractUncheckedUpdateOneWithoutJobNestedInput = {
+    create?: XOR<ContractCreateWithoutJobInput, ContractUncheckedCreateWithoutJobInput>
+    connectOrCreate?: ContractCreateOrConnectWithoutJobInput
+    upsert?: ContractUpsertWithoutJobInput
+    disconnect?: ContractWhereInput | boolean
+    delete?: ContractWhereInput | boolean
+    connect?: ContractWhereUniqueInput
+    update?: XOR<XOR<ContractUpdateToOneWithWhereWithoutJobInput, ContractUpdateWithoutJobInput>, ContractUncheckedUpdateWithoutJobInput>
   }
 
   export type ProposalUncheckedUpdateManyWithoutJobNestedInput = {
@@ -37967,14 +36611,17 @@ export namespace Prisma {
     deleteMany?: ProposalScalarWhereInput | ProposalScalarWhereInput[]
   }
 
-  export type ContractUncheckedUpdateOneWithoutJobNestedInput = {
-    create?: XOR<ContractCreateWithoutJobInput, ContractUncheckedCreateWithoutJobInput>
-    connectOrCreate?: ContractCreateOrConnectWithoutJobInput
-    upsert?: ContractUpsertWithoutJobInput
-    disconnect?: ContractWhereInput | boolean
-    delete?: ContractWhereInput | boolean
-    connect?: ContractWhereUniqueInput
-    update?: XOR<XOR<ContractUpdateToOneWithWhereWithoutJobInput, ContractUpdateWithoutJobInput>, ContractUncheckedUpdateWithoutJobInput>
+  export type SkillUncheckedUpdateManyWithoutJobsNestedInput = {
+    create?: XOR<SkillCreateWithoutJobsInput, SkillUncheckedCreateWithoutJobsInput> | SkillCreateWithoutJobsInput[] | SkillUncheckedCreateWithoutJobsInput[]
+    connectOrCreate?: SkillCreateOrConnectWithoutJobsInput | SkillCreateOrConnectWithoutJobsInput[]
+    upsert?: SkillUpsertWithWhereUniqueWithoutJobsInput | SkillUpsertWithWhereUniqueWithoutJobsInput[]
+    set?: SkillWhereUniqueInput | SkillWhereUniqueInput[]
+    disconnect?: SkillWhereUniqueInput | SkillWhereUniqueInput[]
+    delete?: SkillWhereUniqueInput | SkillWhereUniqueInput[]
+    connect?: SkillWhereUniqueInput | SkillWhereUniqueInput[]
+    update?: SkillUpdateWithWhereUniqueWithoutJobsInput | SkillUpdateWithWhereUniqueWithoutJobsInput[]
+    updateMany?: SkillUpdateManyWithWhereWithoutJobsInput | SkillUpdateManyWithWhereWithoutJobsInput[]
+    deleteMany?: SkillScalarWhereInput | SkillScalarWhereInput[]
   }
 
   export type ProposalCreateattachmentsInput = {
@@ -38018,16 +36665,16 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutProposalsInput, UserUpdateWithoutProposalsInput>, UserUncheckedUpdateWithoutProposalsInput>
   }
 
-  export type JobCreateNestedOneWithoutContractInput = {
-    create?: XOR<JobCreateWithoutContractInput, JobUncheckedCreateWithoutContractInput>
-    connectOrCreate?: JobCreateOrConnectWithoutContractInput
-    connect?: JobWhereUniqueInput
-  }
-
   export type UserCreateNestedOneWithoutContractsAsClientInput = {
     create?: XOR<UserCreateWithoutContractsAsClientInput, UserUncheckedCreateWithoutContractsAsClientInput>
     connectOrCreate?: UserCreateOrConnectWithoutContractsAsClientInput
     connect?: UserWhereUniqueInput
+  }
+
+  export type JobCreateNestedOneWithoutContractInput = {
+    create?: XOR<JobCreateWithoutContractInput, JobUncheckedCreateWithoutContractInput>
+    connectOrCreate?: JobCreateOrConnectWithoutContractInput
+    connect?: JobWhereUniqueInput
   }
 
   export type UserCreateNestedOneWithoutContractsAsProviderInput = {
@@ -38036,20 +36683,13 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
-  export type MilestoneCreateNestedManyWithoutContractInput = {
-    create?: XOR<MilestoneCreateWithoutContractInput, MilestoneUncheckedCreateWithoutContractInput> | MilestoneCreateWithoutContractInput[] | MilestoneUncheckedCreateWithoutContractInput[]
-    connectOrCreate?: MilestoneCreateOrConnectWithoutContractInput | MilestoneCreateOrConnectWithoutContractInput[]
-    createMany?: MilestoneCreateManyContractInputEnvelope
-    connect?: MilestoneWhereUniqueInput | MilestoneWhereUniqueInput[]
-  }
-
   export type DisputeCreateNestedOneWithoutContractInput = {
     create?: XOR<DisputeCreateWithoutContractInput, DisputeUncheckedCreateWithoutContractInput>
     connectOrCreate?: DisputeCreateOrConnectWithoutContractInput
     connect?: DisputeWhereUniqueInput
   }
 
-  export type MilestoneUncheckedCreateNestedManyWithoutContractInput = {
+  export type MilestoneCreateNestedManyWithoutContractInput = {
     create?: XOR<MilestoneCreateWithoutContractInput, MilestoneUncheckedCreateWithoutContractInput> | MilestoneCreateWithoutContractInput[] | MilestoneUncheckedCreateWithoutContractInput[]
     connectOrCreate?: MilestoneCreateOrConnectWithoutContractInput | MilestoneCreateOrConnectWithoutContractInput[]
     createMany?: MilestoneCreateManyContractInputEnvelope
@@ -38062,16 +36702,15 @@ export namespace Prisma {
     connect?: DisputeWhereUniqueInput
   }
 
-  export type EnumPaymentStatusFieldUpdateOperationsInput = {
-    set?: $Enums.PaymentStatus
+  export type MilestoneUncheckedCreateNestedManyWithoutContractInput = {
+    create?: XOR<MilestoneCreateWithoutContractInput, MilestoneUncheckedCreateWithoutContractInput> | MilestoneCreateWithoutContractInput[] | MilestoneUncheckedCreateWithoutContractInput[]
+    connectOrCreate?: MilestoneCreateOrConnectWithoutContractInput | MilestoneCreateOrConnectWithoutContractInput[]
+    createMany?: MilestoneCreateManyContractInputEnvelope
+    connect?: MilestoneWhereUniqueInput | MilestoneWhereUniqueInput[]
   }
 
-  export type JobUpdateOneRequiredWithoutContractNestedInput = {
-    create?: XOR<JobCreateWithoutContractInput, JobUncheckedCreateWithoutContractInput>
-    connectOrCreate?: JobCreateOrConnectWithoutContractInput
-    upsert?: JobUpsertWithoutContractInput
-    connect?: JobWhereUniqueInput
-    update?: XOR<XOR<JobUpdateToOneWithWhereWithoutContractInput, JobUpdateWithoutContractInput>, JobUncheckedUpdateWithoutContractInput>
+  export type EnumPaymentStatusFieldUpdateOperationsInput = {
+    set?: $Enums.PaymentStatus
   }
 
   export type UserUpdateOneRequiredWithoutContractsAsClientNestedInput = {
@@ -38082,26 +36721,20 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutContractsAsClientInput, UserUpdateWithoutContractsAsClientInput>, UserUncheckedUpdateWithoutContractsAsClientInput>
   }
 
+  export type JobUpdateOneRequiredWithoutContractNestedInput = {
+    create?: XOR<JobCreateWithoutContractInput, JobUncheckedCreateWithoutContractInput>
+    connectOrCreate?: JobCreateOrConnectWithoutContractInput
+    upsert?: JobUpsertWithoutContractInput
+    connect?: JobWhereUniqueInput
+    update?: XOR<XOR<JobUpdateToOneWithWhereWithoutContractInput, JobUpdateWithoutContractInput>, JobUncheckedUpdateWithoutContractInput>
+  }
+
   export type UserUpdateOneRequiredWithoutContractsAsProviderNestedInput = {
     create?: XOR<UserCreateWithoutContractsAsProviderInput, UserUncheckedCreateWithoutContractsAsProviderInput>
     connectOrCreate?: UserCreateOrConnectWithoutContractsAsProviderInput
     upsert?: UserUpsertWithoutContractsAsProviderInput
     connect?: UserWhereUniqueInput
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutContractsAsProviderInput, UserUpdateWithoutContractsAsProviderInput>, UserUncheckedUpdateWithoutContractsAsProviderInput>
-  }
-
-  export type MilestoneUpdateManyWithoutContractNestedInput = {
-    create?: XOR<MilestoneCreateWithoutContractInput, MilestoneUncheckedCreateWithoutContractInput> | MilestoneCreateWithoutContractInput[] | MilestoneUncheckedCreateWithoutContractInput[]
-    connectOrCreate?: MilestoneCreateOrConnectWithoutContractInput | MilestoneCreateOrConnectWithoutContractInput[]
-    upsert?: MilestoneUpsertWithWhereUniqueWithoutContractInput | MilestoneUpsertWithWhereUniqueWithoutContractInput[]
-    createMany?: MilestoneCreateManyContractInputEnvelope
-    set?: MilestoneWhereUniqueInput | MilestoneWhereUniqueInput[]
-    disconnect?: MilestoneWhereUniqueInput | MilestoneWhereUniqueInput[]
-    delete?: MilestoneWhereUniqueInput | MilestoneWhereUniqueInput[]
-    connect?: MilestoneWhereUniqueInput | MilestoneWhereUniqueInput[]
-    update?: MilestoneUpdateWithWhereUniqueWithoutContractInput | MilestoneUpdateWithWhereUniqueWithoutContractInput[]
-    updateMany?: MilestoneUpdateManyWithWhereWithoutContractInput | MilestoneUpdateManyWithWhereWithoutContractInput[]
-    deleteMany?: MilestoneScalarWhereInput | MilestoneScalarWhereInput[]
   }
 
   export type DisputeUpdateOneWithoutContractNestedInput = {
@@ -38114,7 +36747,7 @@ export namespace Prisma {
     update?: XOR<XOR<DisputeUpdateToOneWithWhereWithoutContractInput, DisputeUpdateWithoutContractInput>, DisputeUncheckedUpdateWithoutContractInput>
   }
 
-  export type MilestoneUncheckedUpdateManyWithoutContractNestedInput = {
+  export type MilestoneUpdateManyWithoutContractNestedInput = {
     create?: XOR<MilestoneCreateWithoutContractInput, MilestoneUncheckedCreateWithoutContractInput> | MilestoneCreateWithoutContractInput[] | MilestoneUncheckedCreateWithoutContractInput[]
     connectOrCreate?: MilestoneCreateOrConnectWithoutContractInput | MilestoneCreateOrConnectWithoutContractInput[]
     upsert?: MilestoneUpsertWithWhereUniqueWithoutContractInput | MilestoneUpsertWithWhereUniqueWithoutContractInput[]
@@ -38138,6 +36771,20 @@ export namespace Prisma {
     update?: XOR<XOR<DisputeUpdateToOneWithWhereWithoutContractInput, DisputeUpdateWithoutContractInput>, DisputeUncheckedUpdateWithoutContractInput>
   }
 
+  export type MilestoneUncheckedUpdateManyWithoutContractNestedInput = {
+    create?: XOR<MilestoneCreateWithoutContractInput, MilestoneUncheckedCreateWithoutContractInput> | MilestoneCreateWithoutContractInput[] | MilestoneUncheckedCreateWithoutContractInput[]
+    connectOrCreate?: MilestoneCreateOrConnectWithoutContractInput | MilestoneCreateOrConnectWithoutContractInput[]
+    upsert?: MilestoneUpsertWithWhereUniqueWithoutContractInput | MilestoneUpsertWithWhereUniqueWithoutContractInput[]
+    createMany?: MilestoneCreateManyContractInputEnvelope
+    set?: MilestoneWhereUniqueInput | MilestoneWhereUniqueInput[]
+    disconnect?: MilestoneWhereUniqueInput | MilestoneWhereUniqueInput[]
+    delete?: MilestoneWhereUniqueInput | MilestoneWhereUniqueInput[]
+    connect?: MilestoneWhereUniqueInput | MilestoneWhereUniqueInput[]
+    update?: MilestoneUpdateWithWhereUniqueWithoutContractInput | MilestoneUpdateWithWhereUniqueWithoutContractInput[]
+    updateMany?: MilestoneUpdateManyWithWhereWithoutContractInput | MilestoneUpdateManyWithWhereWithoutContractInput[]
+    deleteMany?: MilestoneScalarWhereInput | MilestoneScalarWhereInput[]
+  }
+
   export type ContractCreateNestedOneWithoutMilestonesInput = {
     create?: XOR<ContractCreateWithoutMilestonesInput, ContractUncheckedCreateWithoutMilestonesInput>
     connectOrCreate?: ContractCreateOrConnectWithoutMilestonesInput
@@ -38152,12 +36799,6 @@ export namespace Prisma {
     update?: XOR<XOR<ContractUpdateToOneWithWhereWithoutMilestonesInput, ContractUpdateWithoutMilestonesInput>, ContractUncheckedUpdateWithoutMilestonesInput>
   }
 
-  export type UserCreateNestedOneWithoutWalletInput = {
-    create?: XOR<UserCreateWithoutWalletInput, UserUncheckedCreateWithoutWalletInput>
-    connectOrCreate?: UserCreateOrConnectWithoutWalletInput
-    connect?: UserWhereUniqueInput
-  }
-
   export type TransactionCreateNestedManyWithoutWalletInput = {
     create?: XOR<TransactionCreateWithoutWalletInput, TransactionUncheckedCreateWithoutWalletInput> | TransactionCreateWithoutWalletInput[] | TransactionUncheckedCreateWithoutWalletInput[]
     connectOrCreate?: TransactionCreateOrConnectWithoutWalletInput | TransactionCreateOrConnectWithoutWalletInput[]
@@ -38165,19 +36806,17 @@ export namespace Prisma {
     connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
   }
 
+  export type UserCreateNestedOneWithoutWalletInput = {
+    create?: XOR<UserCreateWithoutWalletInput, UserUncheckedCreateWithoutWalletInput>
+    connectOrCreate?: UserCreateOrConnectWithoutWalletInput
+    connect?: UserWhereUniqueInput
+  }
+
   export type TransactionUncheckedCreateNestedManyWithoutWalletInput = {
     create?: XOR<TransactionCreateWithoutWalletInput, TransactionUncheckedCreateWithoutWalletInput> | TransactionCreateWithoutWalletInput[] | TransactionUncheckedCreateWithoutWalletInput[]
     connectOrCreate?: TransactionCreateOrConnectWithoutWalletInput | TransactionCreateOrConnectWithoutWalletInput[]
     createMany?: TransactionCreateManyWalletInputEnvelope
     connect?: TransactionWhereUniqueInput | TransactionWhereUniqueInput[]
-  }
-
-  export type UserUpdateOneRequiredWithoutWalletNestedInput = {
-    create?: XOR<UserCreateWithoutWalletInput, UserUncheckedCreateWithoutWalletInput>
-    connectOrCreate?: UserCreateOrConnectWithoutWalletInput
-    upsert?: UserUpsertWithoutWalletInput
-    connect?: UserWhereUniqueInput
-    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutWalletInput, UserUpdateWithoutWalletInput>, UserUncheckedUpdateWithoutWalletInput>
   }
 
   export type TransactionUpdateManyWithoutWalletNestedInput = {
@@ -38192,6 +36831,14 @@ export namespace Prisma {
     update?: TransactionUpdateWithWhereUniqueWithoutWalletInput | TransactionUpdateWithWhereUniqueWithoutWalletInput[]
     updateMany?: TransactionUpdateManyWithWhereWithoutWalletInput | TransactionUpdateManyWithWhereWithoutWalletInput[]
     deleteMany?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
+  }
+
+  export type UserUpdateOneRequiredWithoutWalletNestedInput = {
+    create?: XOR<UserCreateWithoutWalletInput, UserUncheckedCreateWithoutWalletInput>
+    connectOrCreate?: UserCreateOrConnectWithoutWalletInput
+    upsert?: UserUpsertWithoutWalletInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutWalletInput, UserUpdateWithoutWalletInput>, UserUncheckedUpdateWithoutWalletInput>
   }
 
   export type TransactionUncheckedUpdateManyWithoutWalletNestedInput = {
@@ -38236,12 +36883,6 @@ export namespace Prisma {
     update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCoinPurchasesInput, UserUpdateWithoutCoinPurchasesInput>, UserUncheckedUpdateWithoutCoinPurchasesInput>
   }
 
-  export type UserCreateNestedManyWithoutConversationsInput = {
-    create?: XOR<UserCreateWithoutConversationsInput, UserUncheckedCreateWithoutConversationsInput> | UserCreateWithoutConversationsInput[] | UserUncheckedCreateWithoutConversationsInput[]
-    connectOrCreate?: UserCreateOrConnectWithoutConversationsInput | UserCreateOrConnectWithoutConversationsInput[]
-    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
-  }
-
   export type MessageCreateNestedManyWithoutConversationInput = {
     create?: XOR<MessageCreateWithoutConversationInput, MessageUncheckedCreateWithoutConversationInput> | MessageCreateWithoutConversationInput[] | MessageUncheckedCreateWithoutConversationInput[]
     connectOrCreate?: MessageCreateOrConnectWithoutConversationInput | MessageCreateOrConnectWithoutConversationInput[]
@@ -38249,7 +36890,7 @@ export namespace Prisma {
     connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
   }
 
-  export type UserUncheckedCreateNestedManyWithoutConversationsInput = {
+  export type UserCreateNestedManyWithoutConversationsInput = {
     create?: XOR<UserCreateWithoutConversationsInput, UserUncheckedCreateWithoutConversationsInput> | UserCreateWithoutConversationsInput[] | UserUncheckedCreateWithoutConversationsInput[]
     connectOrCreate?: UserCreateOrConnectWithoutConversationsInput | UserCreateOrConnectWithoutConversationsInput[]
     connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
@@ -38262,17 +36903,10 @@ export namespace Prisma {
     connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
   }
 
-  export type UserUpdateManyWithoutConversationsNestedInput = {
+  export type UserUncheckedCreateNestedManyWithoutConversationsInput = {
     create?: XOR<UserCreateWithoutConversationsInput, UserUncheckedCreateWithoutConversationsInput> | UserCreateWithoutConversationsInput[] | UserUncheckedCreateWithoutConversationsInput[]
     connectOrCreate?: UserCreateOrConnectWithoutConversationsInput | UserCreateOrConnectWithoutConversationsInput[]
-    upsert?: UserUpsertWithWhereUniqueWithoutConversationsInput | UserUpsertWithWhereUniqueWithoutConversationsInput[]
-    set?: UserWhereUniqueInput | UserWhereUniqueInput[]
-    disconnect?: UserWhereUniqueInput | UserWhereUniqueInput[]
-    delete?: UserWhereUniqueInput | UserWhereUniqueInput[]
     connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
-    update?: UserUpdateWithWhereUniqueWithoutConversationsInput | UserUpdateWithWhereUniqueWithoutConversationsInput[]
-    updateMany?: UserUpdateManyWithWhereWithoutConversationsInput | UserUpdateManyWithWhereWithoutConversationsInput[]
-    deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
   }
 
   export type MessageUpdateManyWithoutConversationNestedInput = {
@@ -38289,7 +36923,7 @@ export namespace Prisma {
     deleteMany?: MessageScalarWhereInput | MessageScalarWhereInput[]
   }
 
-  export type UserUncheckedUpdateManyWithoutConversationsNestedInput = {
+  export type UserUpdateManyWithoutConversationsNestedInput = {
     create?: XOR<UserCreateWithoutConversationsInput, UserUncheckedCreateWithoutConversationsInput> | UserCreateWithoutConversationsInput[] | UserUncheckedCreateWithoutConversationsInput[]
     connectOrCreate?: UserCreateOrConnectWithoutConversationsInput | UserCreateOrConnectWithoutConversationsInput[]
     upsert?: UserUpsertWithWhereUniqueWithoutConversationsInput | UserUpsertWithWhereUniqueWithoutConversationsInput[]
@@ -38314,6 +36948,19 @@ export namespace Prisma {
     update?: MessageUpdateWithWhereUniqueWithoutConversationInput | MessageUpdateWithWhereUniqueWithoutConversationInput[]
     updateMany?: MessageUpdateManyWithWhereWithoutConversationInput | MessageUpdateManyWithWhereWithoutConversationInput[]
     deleteMany?: MessageScalarWhereInput | MessageScalarWhereInput[]
+  }
+
+  export type UserUncheckedUpdateManyWithoutConversationsNestedInput = {
+    create?: XOR<UserCreateWithoutConversationsInput, UserUncheckedCreateWithoutConversationsInput> | UserCreateWithoutConversationsInput[] | UserUncheckedCreateWithoutConversationsInput[]
+    connectOrCreate?: UserCreateOrConnectWithoutConversationsInput | UserCreateOrConnectWithoutConversationsInput[]
+    upsert?: UserUpsertWithWhereUniqueWithoutConversationsInput | UserUpsertWithWhereUniqueWithoutConversationsInput[]
+    set?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    disconnect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    delete?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    connect?: UserWhereUniqueInput | UserWhereUniqueInput[]
+    update?: UserUpdateWithWhereUniqueWithoutConversationsInput | UserUpdateWithWhereUniqueWithoutConversationsInput[]
+    updateMany?: UserUpdateManyWithWhereWithoutConversationsInput | UserUpdateManyWithWhereWithoutConversationsInput[]
+    deleteMany?: UserScalarWhereInput | UserScalarWhereInput[]
   }
 
   export type MessageCreateattachmentsInput = {
@@ -38793,6 +37440,13 @@ export namespace Prisma {
     not?: NestedEnumCurrencyFilter<$PrismaModel> | $Enums.Currency
   }
 
+  export type NestedEnumCategoryEnumNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.CategoryEnum | EnumCategoryEnumFieldRefInput<$PrismaModel> | null
+    in?: $Enums.CategoryEnum[] | ListEnumCategoryEnumFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.CategoryEnum[] | ListEnumCategoryEnumFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumCategoryEnumNullableFilter<$PrismaModel> | $Enums.CategoryEnum | null
+  }
+
   export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel>
     in?: number[] | ListFloatFieldRefInput<$PrismaModel>
@@ -38833,6 +37487,16 @@ export namespace Prisma {
     _sum?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedIntNullableFilter<$PrismaModel>
     _max?: NestedIntNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumCategoryEnumNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.CategoryEnum | EnumCategoryEnumFieldRefInput<$PrismaModel> | null
+    in?: $Enums.CategoryEnum[] | ListEnumCategoryEnumFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.CategoryEnum[] | ListEnumCategoryEnumFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumCategoryEnumNullableWithAggregatesFilter<$PrismaModel> | $Enums.CategoryEnum | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumCategoryEnumNullableFilter<$PrismaModel>
+    _max?: NestedEnumCategoryEnumNullableFilter<$PrismaModel>
   }
 
   export type NestedEnumJobTypeFilter<$PrismaModel = never> = {
@@ -38976,15 +37640,15 @@ export namespace Prisma {
     education?: NullableJsonNullValueInput | InputJsonValue
     completedJobs?: number
     successRate?: number | null
-    howHear?: string | null
-    howHearOther?: string | null
-    goals?: ProfileCreategoalsInput | string[]
-    individualFocus?: string | null
-    organizationPurpose?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    skills?: ProfileSkillCreateNestedManyWithoutProfileInput
+    goals?: ProfileCreategoalsInput | string[]
+    howHear?: string | null
+    howHearOther?: string | null
+    individualFocus?: string | null
+    organizationPurpose?: string | null
     portfolio?: PortfolioCreateNestedManyWithoutProfileInput
+    skills?: ProfileSkillCreateNestedManyWithoutProfileInput
   }
 
   export type ProfileUncheckedCreateWithoutUserInput = {
@@ -38997,15 +37661,15 @@ export namespace Prisma {
     education?: NullableJsonNullValueInput | InputJsonValue
     completedJobs?: number
     successRate?: number | null
-    howHear?: string | null
-    howHearOther?: string | null
-    goals?: ProfileCreategoalsInput | string[]
-    individualFocus?: string | null
-    organizationPurpose?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    skills?: ProfileSkillUncheckedCreateNestedManyWithoutProfileInput
+    goals?: ProfileCreategoalsInput | string[]
+    howHear?: string | null
+    howHearOther?: string | null
+    individualFocus?: string | null
+    organizationPurpose?: string | null
     portfolio?: PortfolioUncheckedCreateNestedManyWithoutProfileInput
+    skills?: ProfileSkillUncheckedCreateNestedManyWithoutProfileInput
   }
 
   export type ProfileCreateOrConnectWithoutUserInput = {
@@ -39042,6 +37706,7 @@ export namespace Prisma {
     price: number
     currency?: $Enums.Currency
     deliveryDays?: number | null
+    category?: $Enums.CategoryEnum | null
     images?: ListingCreateimagesInput | string[]
     tags?: ListingCreatetagsInput | string[]
     videos?: ListingCreatevideosInput | string[]
@@ -39050,7 +37715,6 @@ export namespace Prisma {
     reviewCount?: number
     createdAt?: Date | string
     updatedAt?: Date | string
-    category?: CategoryCreateNestedOneWithoutListingsInput
     skills?: SkillCreateNestedManyWithoutListingsInput
   }
 
@@ -39062,7 +37726,7 @@ export namespace Prisma {
     price: number
     currency?: $Enums.Currency
     deliveryDays?: number | null
-    categoryId?: string | null
+    category?: $Enums.CategoryEnum | null
     images?: ListingCreateimagesInput | string[]
     tags?: ListingCreatetagsInput | string[]
     videos?: ListingCreatevideosInput | string[]
@@ -39100,9 +37764,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     closedAt?: Date | string | null
-    requiredSkills?: SkillCreateNestedManyWithoutJobsInput
-    proposals?: ProposalCreateNestedManyWithoutJobInput
     contract?: ContractCreateNestedOneWithoutJobInput
+    proposals?: ProposalCreateNestedManyWithoutJobInput
+    requiredSkills?: SkillCreateNestedManyWithoutJobsInput
   }
 
   export type JobUncheckedCreateWithoutSeekerInput = {
@@ -39121,9 +37785,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     closedAt?: Date | string | null
-    requiredSkills?: SkillUncheckedCreateNestedManyWithoutJobsInput
-    proposals?: ProposalUncheckedCreateNestedManyWithoutJobInput
     contract?: ContractUncheckedCreateNestedOneWithoutJobInput
+    proposals?: ProposalUncheckedCreateNestedManyWithoutJobInput
+    requiredSkills?: SkillUncheckedCreateNestedManyWithoutJobsInput
   }
 
   export type JobCreateOrConnectWithoutSeekerInput = {
@@ -39323,8 +37987,8 @@ export namespace Prisma {
     updatedAt?: Date | string
     job: JobCreateNestedOneWithoutContractInput
     provider: UserCreateNestedOneWithoutContractsAsProviderInput
-    milestones?: MilestoneCreateNestedManyWithoutContractInput
     dispute?: DisputeCreateNestedOneWithoutContractInput
+    milestones?: MilestoneCreateNestedManyWithoutContractInput
   }
 
   export type ContractUncheckedCreateWithoutClientInput = {
@@ -39339,8 +38003,8 @@ export namespace Prisma {
     endDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    milestones?: MilestoneUncheckedCreateNestedManyWithoutContractInput
     dispute?: DisputeUncheckedCreateNestedOneWithoutContractInput
+    milestones?: MilestoneUncheckedCreateNestedManyWithoutContractInput
   }
 
   export type ContractCreateOrConnectWithoutClientInput = {
@@ -39363,10 +38027,10 @@ export namespace Prisma {
     endDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    job: JobCreateNestedOneWithoutContractInput
     client: UserCreateNestedOneWithoutContractsAsClientInput
-    milestones?: MilestoneCreateNestedManyWithoutContractInput
+    job: JobCreateNestedOneWithoutContractInput
     dispute?: DisputeCreateNestedOneWithoutContractInput
+    milestones?: MilestoneCreateNestedManyWithoutContractInput
   }
 
   export type ContractUncheckedCreateWithoutProviderInput = {
@@ -39381,8 +38045,8 @@ export namespace Prisma {
     endDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    milestones?: MilestoneUncheckedCreateNestedManyWithoutContractInput
     dispute?: DisputeUncheckedCreateNestedOneWithoutContractInput
+    milestones?: MilestoneUncheckedCreateNestedManyWithoutContractInput
   }
 
   export type ContractCreateOrConnectWithoutProviderInput = {
@@ -39605,15 +38269,15 @@ export namespace Prisma {
     education?: NullableJsonNullValueInput | InputJsonValue
     completedJobs?: IntFieldUpdateOperationsInput | number
     successRate?: NullableFloatFieldUpdateOperationsInput | number | null
-    howHear?: NullableStringFieldUpdateOperationsInput | string | null
-    howHearOther?: NullableStringFieldUpdateOperationsInput | string | null
-    goals?: ProfileUpdategoalsInput | string[]
-    individualFocus?: NullableStringFieldUpdateOperationsInput | string | null
-    organizationPurpose?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    skills?: ProfileSkillUpdateManyWithoutProfileNestedInput
+    goals?: ProfileUpdategoalsInput | string[]
+    howHear?: NullableStringFieldUpdateOperationsInput | string | null
+    howHearOther?: NullableStringFieldUpdateOperationsInput | string | null
+    individualFocus?: NullableStringFieldUpdateOperationsInput | string | null
+    organizationPurpose?: NullableStringFieldUpdateOperationsInput | string | null
     portfolio?: PortfolioUpdateManyWithoutProfileNestedInput
+    skills?: ProfileSkillUpdateManyWithoutProfileNestedInput
   }
 
   export type ProfileUncheckedUpdateWithoutUserInput = {
@@ -39626,15 +38290,15 @@ export namespace Prisma {
     education?: NullableJsonNullValueInput | InputJsonValue
     completedJobs?: IntFieldUpdateOperationsInput | number
     successRate?: NullableFloatFieldUpdateOperationsInput | number | null
-    howHear?: NullableStringFieldUpdateOperationsInput | string | null
-    howHearOther?: NullableStringFieldUpdateOperationsInput | string | null
-    goals?: ProfileUpdategoalsInput | string[]
-    individualFocus?: NullableStringFieldUpdateOperationsInput | string | null
-    organizationPurpose?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    skills?: ProfileSkillUncheckedUpdateManyWithoutProfileNestedInput
+    goals?: ProfileUpdategoalsInput | string[]
+    howHear?: NullableStringFieldUpdateOperationsInput | string | null
+    howHearOther?: NullableStringFieldUpdateOperationsInput | string | null
+    individualFocus?: NullableStringFieldUpdateOperationsInput | string | null
+    organizationPurpose?: NullableStringFieldUpdateOperationsInput | string | null
     portfolio?: PortfolioUncheckedUpdateManyWithoutProfileNestedInput
+    skills?: ProfileSkillUncheckedUpdateManyWithoutProfileNestedInput
   }
 
   export type WalletUpsertWithoutUserInput = {
@@ -39692,7 +38356,7 @@ export namespace Prisma {
     price?: FloatFilter<"Listing"> | number
     currency?: EnumCurrencyFilter<"Listing"> | $Enums.Currency
     deliveryDays?: IntNullableFilter<"Listing"> | number | null
-    categoryId?: StringNullableFilter<"Listing"> | string | null
+    category?: EnumCategoryEnumNullableFilter<"Listing"> | $Enums.CategoryEnum | null
     images?: StringNullableListFilter<"Listing">
     tags?: StringNullableListFilter<"Listing">
     videos?: StringNullableListFilter<"Listing">
@@ -40454,6 +39118,58 @@ export namespace Prisma {
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
   }
 
+  export type PortfolioCreateWithoutProfileInput = {
+    id?: string
+    title: string
+    description?: string | null
+    media?: PortfolioCreatemediaInput | string[]
+    link?: string | null
+    createdAt?: Date | string
+  }
+
+  export type PortfolioUncheckedCreateWithoutProfileInput = {
+    id?: string
+    title: string
+    description?: string | null
+    media?: PortfolioCreatemediaInput | string[]
+    link?: string | null
+    createdAt?: Date | string
+  }
+
+  export type PortfolioCreateOrConnectWithoutProfileInput = {
+    where: PortfolioWhereUniqueInput
+    create: XOR<PortfolioCreateWithoutProfileInput, PortfolioUncheckedCreateWithoutProfileInput>
+  }
+
+  export type PortfolioCreateManyProfileInputEnvelope = {
+    data: PortfolioCreateManyProfileInput | PortfolioCreateManyProfileInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ProfileSkillCreateWithoutProfileInput = {
+    id?: string
+    level?: number
+    createdAt?: Date | string
+    skill: SkillCreateNestedOneWithoutProfilesInput
+  }
+
+  export type ProfileSkillUncheckedCreateWithoutProfileInput = {
+    id?: string
+    skillId: string
+    level?: number
+    createdAt?: Date | string
+  }
+
+  export type ProfileSkillCreateOrConnectWithoutProfileInput = {
+    where: ProfileSkillWhereUniqueInput
+    create: XOR<ProfileSkillCreateWithoutProfileInput, ProfileSkillUncheckedCreateWithoutProfileInput>
+  }
+
+  export type ProfileSkillCreateManyProfileInputEnvelope = {
+    data: ProfileSkillCreateManyProfileInput | ProfileSkillCreateManyProfileInput[]
+    skipDuplicates?: boolean
+  }
+
   export type UserCreateWithoutProfileInput = {
     id?: string
     email?: string | null
@@ -40541,56 +39257,60 @@ export namespace Prisma {
     create: XOR<UserCreateWithoutProfileInput, UserUncheckedCreateWithoutProfileInput>
   }
 
-  export type ProfileSkillCreateWithoutProfileInput = {
-    id?: string
-    level?: number
-    createdAt?: Date | string
-    skill: SkillCreateNestedOneWithoutProfilesInput
-  }
-
-  export type ProfileSkillUncheckedCreateWithoutProfileInput = {
-    id?: string
-    skillId: string
-    level?: number
-    createdAt?: Date | string
-  }
-
-  export type ProfileSkillCreateOrConnectWithoutProfileInput = {
-    where: ProfileSkillWhereUniqueInput
-    create: XOR<ProfileSkillCreateWithoutProfileInput, ProfileSkillUncheckedCreateWithoutProfileInput>
-  }
-
-  export type ProfileSkillCreateManyProfileInputEnvelope = {
-    data: ProfileSkillCreateManyProfileInput | ProfileSkillCreateManyProfileInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type PortfolioCreateWithoutProfileInput = {
-    id?: string
-    title: string
-    description?: string | null
-    media?: PortfolioCreatemediaInput | string[]
-    link?: string | null
-    createdAt?: Date | string
-  }
-
-  export type PortfolioUncheckedCreateWithoutProfileInput = {
-    id?: string
-    title: string
-    description?: string | null
-    media?: PortfolioCreatemediaInput | string[]
-    link?: string | null
-    createdAt?: Date | string
-  }
-
-  export type PortfolioCreateOrConnectWithoutProfileInput = {
+  export type PortfolioUpsertWithWhereUniqueWithoutProfileInput = {
     where: PortfolioWhereUniqueInput
+    update: XOR<PortfolioUpdateWithoutProfileInput, PortfolioUncheckedUpdateWithoutProfileInput>
     create: XOR<PortfolioCreateWithoutProfileInput, PortfolioUncheckedCreateWithoutProfileInput>
   }
 
-  export type PortfolioCreateManyProfileInputEnvelope = {
-    data: PortfolioCreateManyProfileInput | PortfolioCreateManyProfileInput[]
-    skipDuplicates?: boolean
+  export type PortfolioUpdateWithWhereUniqueWithoutProfileInput = {
+    where: PortfolioWhereUniqueInput
+    data: XOR<PortfolioUpdateWithoutProfileInput, PortfolioUncheckedUpdateWithoutProfileInput>
+  }
+
+  export type PortfolioUpdateManyWithWhereWithoutProfileInput = {
+    where: PortfolioScalarWhereInput
+    data: XOR<PortfolioUpdateManyMutationInput, PortfolioUncheckedUpdateManyWithoutProfileInput>
+  }
+
+  export type PortfolioScalarWhereInput = {
+    AND?: PortfolioScalarWhereInput | PortfolioScalarWhereInput[]
+    OR?: PortfolioScalarWhereInput[]
+    NOT?: PortfolioScalarWhereInput | PortfolioScalarWhereInput[]
+    id?: StringFilter<"Portfolio"> | string
+    profileId?: StringFilter<"Portfolio"> | string
+    title?: StringFilter<"Portfolio"> | string
+    description?: StringNullableFilter<"Portfolio"> | string | null
+    media?: StringNullableListFilter<"Portfolio">
+    link?: StringNullableFilter<"Portfolio"> | string | null
+    createdAt?: DateTimeFilter<"Portfolio"> | Date | string
+  }
+
+  export type ProfileSkillUpsertWithWhereUniqueWithoutProfileInput = {
+    where: ProfileSkillWhereUniqueInput
+    update: XOR<ProfileSkillUpdateWithoutProfileInput, ProfileSkillUncheckedUpdateWithoutProfileInput>
+    create: XOR<ProfileSkillCreateWithoutProfileInput, ProfileSkillUncheckedCreateWithoutProfileInput>
+  }
+
+  export type ProfileSkillUpdateWithWhereUniqueWithoutProfileInput = {
+    where: ProfileSkillWhereUniqueInput
+    data: XOR<ProfileSkillUpdateWithoutProfileInput, ProfileSkillUncheckedUpdateWithoutProfileInput>
+  }
+
+  export type ProfileSkillUpdateManyWithWhereWithoutProfileInput = {
+    where: ProfileSkillScalarWhereInput
+    data: XOR<ProfileSkillUpdateManyMutationInput, ProfileSkillUncheckedUpdateManyWithoutProfileInput>
+  }
+
+  export type ProfileSkillScalarWhereInput = {
+    AND?: ProfileSkillScalarWhereInput | ProfileSkillScalarWhereInput[]
+    OR?: ProfileSkillScalarWhereInput[]
+    NOT?: ProfileSkillScalarWhereInput | ProfileSkillScalarWhereInput[]
+    id?: StringFilter<"ProfileSkill"> | string
+    profileId?: StringFilter<"ProfileSkill"> | string
+    skillId?: StringFilter<"ProfileSkill"> | string
+    level?: IntFilter<"ProfileSkill"> | number
+    createdAt?: DateTimeFilter<"ProfileSkill"> | Date | string
   }
 
   export type UserUpsertWithoutProfileInput = {
@@ -40686,62 +39406,6 @@ export namespace Prisma {
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
   }
 
-  export type ProfileSkillUpsertWithWhereUniqueWithoutProfileInput = {
-    where: ProfileSkillWhereUniqueInput
-    update: XOR<ProfileSkillUpdateWithoutProfileInput, ProfileSkillUncheckedUpdateWithoutProfileInput>
-    create: XOR<ProfileSkillCreateWithoutProfileInput, ProfileSkillUncheckedCreateWithoutProfileInput>
-  }
-
-  export type ProfileSkillUpdateWithWhereUniqueWithoutProfileInput = {
-    where: ProfileSkillWhereUniqueInput
-    data: XOR<ProfileSkillUpdateWithoutProfileInput, ProfileSkillUncheckedUpdateWithoutProfileInput>
-  }
-
-  export type ProfileSkillUpdateManyWithWhereWithoutProfileInput = {
-    where: ProfileSkillScalarWhereInput
-    data: XOR<ProfileSkillUpdateManyMutationInput, ProfileSkillUncheckedUpdateManyWithoutProfileInput>
-  }
-
-  export type ProfileSkillScalarWhereInput = {
-    AND?: ProfileSkillScalarWhereInput | ProfileSkillScalarWhereInput[]
-    OR?: ProfileSkillScalarWhereInput[]
-    NOT?: ProfileSkillScalarWhereInput | ProfileSkillScalarWhereInput[]
-    id?: StringFilter<"ProfileSkill"> | string
-    profileId?: StringFilter<"ProfileSkill"> | string
-    skillId?: StringFilter<"ProfileSkill"> | string
-    level?: IntFilter<"ProfileSkill"> | number
-    createdAt?: DateTimeFilter<"ProfileSkill"> | Date | string
-  }
-
-  export type PortfolioUpsertWithWhereUniqueWithoutProfileInput = {
-    where: PortfolioWhereUniqueInput
-    update: XOR<PortfolioUpdateWithoutProfileInput, PortfolioUncheckedUpdateWithoutProfileInput>
-    create: XOR<PortfolioCreateWithoutProfileInput, PortfolioUncheckedCreateWithoutProfileInput>
-  }
-
-  export type PortfolioUpdateWithWhereUniqueWithoutProfileInput = {
-    where: PortfolioWhereUniqueInput
-    data: XOR<PortfolioUpdateWithoutProfileInput, PortfolioUncheckedUpdateWithoutProfileInput>
-  }
-
-  export type PortfolioUpdateManyWithWhereWithoutProfileInput = {
-    where: PortfolioScalarWhereInput
-    data: XOR<PortfolioUpdateManyMutationInput, PortfolioUncheckedUpdateManyWithoutProfileInput>
-  }
-
-  export type PortfolioScalarWhereInput = {
-    AND?: PortfolioScalarWhereInput | PortfolioScalarWhereInput[]
-    OR?: PortfolioScalarWhereInput[]
-    NOT?: PortfolioScalarWhereInput | PortfolioScalarWhereInput[]
-    id?: StringFilter<"Portfolio"> | string
-    profileId?: StringFilter<"Portfolio"> | string
-    title?: StringFilter<"Portfolio"> | string
-    description?: StringNullableFilter<"Portfolio"> | string | null
-    media?: StringNullableListFilter<"Portfolio">
-    link?: StringNullableFilter<"Portfolio"> | string | null
-    createdAt?: DateTimeFilter<"Portfolio"> | Date | string
-  }
-
   export type ProfileSkillCreateWithoutSkillInput = {
     id?: string
     level?: number
@@ -40766,51 +39430,6 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type ListingCreateWithoutSkillsInput = {
-    id?: string
-    title: string
-    slug: string
-    description: string
-    price: number
-    currency?: $Enums.Currency
-    deliveryDays?: number | null
-    images?: ListingCreateimagesInput | string[]
-    tags?: ListingCreatetagsInput | string[]
-    videos?: ListingCreatevideosInput | string[]
-    isPublished?: boolean
-    rating?: number | null
-    reviewCount?: number
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    provider: UserCreateNestedOneWithoutListingsInput
-    category?: CategoryCreateNestedOneWithoutListingsInput
-  }
-
-  export type ListingUncheckedCreateWithoutSkillsInput = {
-    id?: string
-    providerId: string
-    title: string
-    slug: string
-    description: string
-    price: number
-    currency?: $Enums.Currency
-    deliveryDays?: number | null
-    categoryId?: string | null
-    images?: ListingCreateimagesInput | string[]
-    tags?: ListingCreatetagsInput | string[]
-    videos?: ListingCreatevideosInput | string[]
-    isPublished?: boolean
-    rating?: number | null
-    reviewCount?: number
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type ListingCreateOrConnectWithoutSkillsInput = {
-    where: ListingWhereUniqueInput
-    create: XOR<ListingCreateWithoutSkillsInput, ListingUncheckedCreateWithoutSkillsInput>
-  }
-
   export type JobCreateWithoutRequiredSkillsInput = {
     id?: string
     title: string
@@ -40827,9 +39446,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     closedAt?: Date | string | null
+    contract?: ContractCreateNestedOneWithoutJobInput
     seeker: UserCreateNestedOneWithoutJobsPostedInput
     proposals?: ProposalCreateNestedManyWithoutJobInput
-    contract?: ContractCreateNestedOneWithoutJobInput
   }
 
   export type JobUncheckedCreateWithoutRequiredSkillsInput = {
@@ -40849,13 +39468,58 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     closedAt?: Date | string | null
-    proposals?: ProposalUncheckedCreateNestedManyWithoutJobInput
     contract?: ContractUncheckedCreateNestedOneWithoutJobInput
+    proposals?: ProposalUncheckedCreateNestedManyWithoutJobInput
   }
 
   export type JobCreateOrConnectWithoutRequiredSkillsInput = {
     where: JobWhereUniqueInput
     create: XOR<JobCreateWithoutRequiredSkillsInput, JobUncheckedCreateWithoutRequiredSkillsInput>
+  }
+
+  export type ListingCreateWithoutSkillsInput = {
+    id?: string
+    title: string
+    slug: string
+    description: string
+    price: number
+    currency?: $Enums.Currency
+    deliveryDays?: number | null
+    category?: $Enums.CategoryEnum | null
+    images?: ListingCreateimagesInput | string[]
+    tags?: ListingCreatetagsInput | string[]
+    videos?: ListingCreatevideosInput | string[]
+    isPublished?: boolean
+    rating?: number | null
+    reviewCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    provider: UserCreateNestedOneWithoutListingsInput
+  }
+
+  export type ListingUncheckedCreateWithoutSkillsInput = {
+    id?: string
+    providerId: string
+    title: string
+    slug: string
+    description: string
+    price: number
+    currency?: $Enums.Currency
+    deliveryDays?: number | null
+    category?: $Enums.CategoryEnum | null
+    images?: ListingCreateimagesInput | string[]
+    tags?: ListingCreatetagsInput | string[]
+    videos?: ListingCreatevideosInput | string[]
+    isPublished?: boolean
+    rating?: number | null
+    reviewCount?: number
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type ListingCreateOrConnectWithoutSkillsInput = {
+    where: ListingWhereUniqueInput
+    create: XOR<ListingCreateWithoutSkillsInput, ListingUncheckedCreateWithoutSkillsInput>
   }
 
   export type ProfileSkillUpsertWithWhereUniqueWithoutSkillInput = {
@@ -40874,22 +39538,6 @@ export namespace Prisma {
     data: XOR<ProfileSkillUpdateManyMutationInput, ProfileSkillUncheckedUpdateManyWithoutSkillInput>
   }
 
-  export type ListingUpsertWithWhereUniqueWithoutSkillsInput = {
-    where: ListingWhereUniqueInput
-    update: XOR<ListingUpdateWithoutSkillsInput, ListingUncheckedUpdateWithoutSkillsInput>
-    create: XOR<ListingCreateWithoutSkillsInput, ListingUncheckedCreateWithoutSkillsInput>
-  }
-
-  export type ListingUpdateWithWhereUniqueWithoutSkillsInput = {
-    where: ListingWhereUniqueInput
-    data: XOR<ListingUpdateWithoutSkillsInput, ListingUncheckedUpdateWithoutSkillsInput>
-  }
-
-  export type ListingUpdateManyWithWhereWithoutSkillsInput = {
-    where: ListingScalarWhereInput
-    data: XOR<ListingUpdateManyMutationInput, ListingUncheckedUpdateManyWithoutSkillsInput>
-  }
-
   export type JobUpsertWithWhereUniqueWithoutRequiredSkillsInput = {
     where: JobWhereUniqueInput
     update: XOR<JobUpdateWithoutRequiredSkillsInput, JobUncheckedUpdateWithoutRequiredSkillsInput>
@@ -40906,6 +39554,22 @@ export namespace Prisma {
     data: XOR<JobUpdateManyMutationInput, JobUncheckedUpdateManyWithoutRequiredSkillsInput>
   }
 
+  export type ListingUpsertWithWhereUniqueWithoutSkillsInput = {
+    where: ListingWhereUniqueInput
+    update: XOR<ListingUpdateWithoutSkillsInput, ListingUncheckedUpdateWithoutSkillsInput>
+    create: XOR<ListingCreateWithoutSkillsInput, ListingUncheckedCreateWithoutSkillsInput>
+  }
+
+  export type ListingUpdateWithWhereUniqueWithoutSkillsInput = {
+    where: ListingWhereUniqueInput
+    data: XOR<ListingUpdateWithoutSkillsInput, ListingUncheckedUpdateWithoutSkillsInput>
+  }
+
+  export type ListingUpdateManyWithWhereWithoutSkillsInput = {
+    where: ListingScalarWhereInput
+    data: XOR<ListingUpdateManyMutationInput, ListingUncheckedUpdateManyWithoutSkillsInput>
+  }
+
   export type ProfileCreateWithoutSkillsInput = {
     id?: string
     headline?: string | null
@@ -40916,15 +39580,15 @@ export namespace Prisma {
     education?: NullableJsonNullValueInput | InputJsonValue
     completedJobs?: number
     successRate?: number | null
-    howHear?: string | null
-    howHearOther?: string | null
-    goals?: ProfileCreategoalsInput | string[]
-    individualFocus?: string | null
-    organizationPurpose?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    user: UserCreateNestedOneWithoutProfileInput
+    goals?: ProfileCreategoalsInput | string[]
+    howHear?: string | null
+    howHearOther?: string | null
+    individualFocus?: string | null
+    organizationPurpose?: string | null
     portfolio?: PortfolioCreateNestedManyWithoutProfileInput
+    user: UserCreateNestedOneWithoutProfileInput
   }
 
   export type ProfileUncheckedCreateWithoutSkillsInput = {
@@ -40938,13 +39602,13 @@ export namespace Prisma {
     education?: NullableJsonNullValueInput | InputJsonValue
     completedJobs?: number
     successRate?: number | null
-    howHear?: string | null
-    howHearOther?: string | null
-    goals?: ProfileCreategoalsInput | string[]
-    individualFocus?: string | null
-    organizationPurpose?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    goals?: ProfileCreategoalsInput | string[]
+    howHear?: string | null
+    howHearOther?: string | null
+    individualFocus?: string | null
+    organizationPurpose?: string | null
     portfolio?: PortfolioUncheckedCreateNestedManyWithoutProfileInput
   }
 
@@ -40958,8 +39622,8 @@ export namespace Prisma {
     name: string
     slug: string
     createdAt?: Date | string
-    listings?: ListingCreateNestedManyWithoutSkillsInput
     jobs?: JobCreateNestedManyWithoutRequiredSkillsInput
+    listings?: ListingCreateNestedManyWithoutSkillsInput
   }
 
   export type SkillUncheckedCreateWithoutProfilesInput = {
@@ -40967,8 +39631,8 @@ export namespace Prisma {
     name: string
     slug: string
     createdAt?: Date | string
-    listings?: ListingUncheckedCreateNestedManyWithoutSkillsInput
     jobs?: JobUncheckedCreateNestedManyWithoutRequiredSkillsInput
+    listings?: ListingUncheckedCreateNestedManyWithoutSkillsInput
   }
 
   export type SkillCreateOrConnectWithoutProfilesInput = {
@@ -40997,15 +39661,15 @@ export namespace Prisma {
     education?: NullableJsonNullValueInput | InputJsonValue
     completedJobs?: IntFieldUpdateOperationsInput | number
     successRate?: NullableFloatFieldUpdateOperationsInput | number | null
-    howHear?: NullableStringFieldUpdateOperationsInput | string | null
-    howHearOther?: NullableStringFieldUpdateOperationsInput | string | null
-    goals?: ProfileUpdategoalsInput | string[]
-    individualFocus?: NullableStringFieldUpdateOperationsInput | string | null
-    organizationPurpose?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    user?: UserUpdateOneRequiredWithoutProfileNestedInput
+    goals?: ProfileUpdategoalsInput | string[]
+    howHear?: NullableStringFieldUpdateOperationsInput | string | null
+    howHearOther?: NullableStringFieldUpdateOperationsInput | string | null
+    individualFocus?: NullableStringFieldUpdateOperationsInput | string | null
+    organizationPurpose?: NullableStringFieldUpdateOperationsInput | string | null
     portfolio?: PortfolioUpdateManyWithoutProfileNestedInput
+    user?: UserUpdateOneRequiredWithoutProfileNestedInput
   }
 
   export type ProfileUncheckedUpdateWithoutSkillsInput = {
@@ -41019,13 +39683,13 @@ export namespace Prisma {
     education?: NullableJsonNullValueInput | InputJsonValue
     completedJobs?: IntFieldUpdateOperationsInput | number
     successRate?: NullableFloatFieldUpdateOperationsInput | number | null
-    howHear?: NullableStringFieldUpdateOperationsInput | string | null
-    howHearOther?: NullableStringFieldUpdateOperationsInput | string | null
-    goals?: ProfileUpdategoalsInput | string[]
-    individualFocus?: NullableStringFieldUpdateOperationsInput | string | null
-    organizationPurpose?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    goals?: ProfileUpdategoalsInput | string[]
+    howHear?: NullableStringFieldUpdateOperationsInput | string | null
+    howHearOther?: NullableStringFieldUpdateOperationsInput | string | null
+    individualFocus?: NullableStringFieldUpdateOperationsInput | string | null
+    organizationPurpose?: NullableStringFieldUpdateOperationsInput | string | null
     portfolio?: PortfolioUncheckedUpdateManyWithoutProfileNestedInput
   }
 
@@ -41045,8 +39709,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    listings?: ListingUpdateManyWithoutSkillsNestedInput
     jobs?: JobUpdateManyWithoutRequiredSkillsNestedInput
+    listings?: ListingUpdateManyWithoutSkillsNestedInput
   }
 
   export type SkillUncheckedUpdateWithoutProfilesInput = {
@@ -41054,74 +39718,8 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    listings?: ListingUncheckedUpdateManyWithoutSkillsNestedInput
     jobs?: JobUncheckedUpdateManyWithoutRequiredSkillsNestedInput
-  }
-
-  export type ListingCreateWithoutCategoryInput = {
-    id?: string
-    title: string
-    slug: string
-    description: string
-    price: number
-    currency?: $Enums.Currency
-    deliveryDays?: number | null
-    images?: ListingCreateimagesInput | string[]
-    tags?: ListingCreatetagsInput | string[]
-    videos?: ListingCreatevideosInput | string[]
-    isPublished?: boolean
-    rating?: number | null
-    reviewCount?: number
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    provider: UserCreateNestedOneWithoutListingsInput
-    skills?: SkillCreateNestedManyWithoutListingsInput
-  }
-
-  export type ListingUncheckedCreateWithoutCategoryInput = {
-    id?: string
-    providerId: string
-    title: string
-    slug: string
-    description: string
-    price: number
-    currency?: $Enums.Currency
-    deliveryDays?: number | null
-    images?: ListingCreateimagesInput | string[]
-    tags?: ListingCreatetagsInput | string[]
-    videos?: ListingCreatevideosInput | string[]
-    isPublished?: boolean
-    rating?: number | null
-    reviewCount?: number
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    skills?: SkillUncheckedCreateNestedManyWithoutListingsInput
-  }
-
-  export type ListingCreateOrConnectWithoutCategoryInput = {
-    where: ListingWhereUniqueInput
-    create: XOR<ListingCreateWithoutCategoryInput, ListingUncheckedCreateWithoutCategoryInput>
-  }
-
-  export type ListingCreateManyCategoryInputEnvelope = {
-    data: ListingCreateManyCategoryInput | ListingCreateManyCategoryInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type ListingUpsertWithWhereUniqueWithoutCategoryInput = {
-    where: ListingWhereUniqueInput
-    update: XOR<ListingUpdateWithoutCategoryInput, ListingUncheckedUpdateWithoutCategoryInput>
-    create: XOR<ListingCreateWithoutCategoryInput, ListingUncheckedCreateWithoutCategoryInput>
-  }
-
-  export type ListingUpdateWithWhereUniqueWithoutCategoryInput = {
-    where: ListingWhereUniqueInput
-    data: XOR<ListingUpdateWithoutCategoryInput, ListingUncheckedUpdateWithoutCategoryInput>
-  }
-
-  export type ListingUpdateManyWithWhereWithoutCategoryInput = {
-    where: ListingScalarWhereInput
-    data: XOR<ListingUpdateManyMutationInput, ListingUncheckedUpdateManyWithoutCategoryInput>
+    listings?: ListingUncheckedUpdateManyWithoutSkillsNestedInput
   }
 
   export type UserCreateWithoutListingsInput = {
@@ -41209,25 +39807,6 @@ export namespace Prisma {
   export type UserCreateOrConnectWithoutListingsInput = {
     where: UserWhereUniqueInput
     create: XOR<UserCreateWithoutListingsInput, UserUncheckedCreateWithoutListingsInput>
-  }
-
-  export type CategoryCreateWithoutListingsInput = {
-    id?: string
-    name: string
-    slug: string
-    createdAt?: Date | string
-  }
-
-  export type CategoryUncheckedCreateWithoutListingsInput = {
-    id?: string
-    name: string
-    slug: string
-    createdAt?: Date | string
-  }
-
-  export type CategoryCreateOrConnectWithoutListingsInput = {
-    where: CategoryWhereUniqueInput
-    create: XOR<CategoryCreateWithoutListingsInput, CategoryUncheckedCreateWithoutListingsInput>
   }
 
   export type SkillCreateWithoutListingsInput = {
@@ -41346,31 +39925,6 @@ export namespace Prisma {
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
   }
 
-  export type CategoryUpsertWithoutListingsInput = {
-    update: XOR<CategoryUpdateWithoutListingsInput, CategoryUncheckedUpdateWithoutListingsInput>
-    create: XOR<CategoryCreateWithoutListingsInput, CategoryUncheckedCreateWithoutListingsInput>
-    where?: CategoryWhereInput
-  }
-
-  export type CategoryUpdateToOneWithWhereWithoutListingsInput = {
-    where?: CategoryWhereInput
-    data: XOR<CategoryUpdateWithoutListingsInput, CategoryUncheckedUpdateWithoutListingsInput>
-  }
-
-  export type CategoryUpdateWithoutListingsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    slug?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type CategoryUncheckedUpdateWithoutListingsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    slug?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
   export type SkillUpsertWithWhereUniqueWithoutListingsInput = {
     where: SkillWhereUniqueInput
     update: XOR<SkillUpdateWithoutListingsInput, SkillUncheckedUpdateWithoutListingsInput>
@@ -41395,6 +39949,43 @@ export namespace Prisma {
     name?: StringFilter<"Skill"> | string
     slug?: StringFilter<"Skill"> | string
     createdAt?: DateTimeFilter<"Skill"> | Date | string
+  }
+
+  export type ContractCreateWithoutJobInput = {
+    id?: string
+    totalAmount: number
+    currency?: $Enums.Currency
+    status?: $Enums.PaymentStatus
+    escrowId?: string | null
+    startDate?: Date | string | null
+    endDate?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    client: UserCreateNestedOneWithoutContractsAsClientInput
+    provider: UserCreateNestedOneWithoutContractsAsProviderInput
+    dispute?: DisputeCreateNestedOneWithoutContractInput
+    milestones?: MilestoneCreateNestedManyWithoutContractInput
+  }
+
+  export type ContractUncheckedCreateWithoutJobInput = {
+    id?: string
+    clientId: string
+    providerId: string
+    totalAmount: number
+    currency?: $Enums.Currency
+    status?: $Enums.PaymentStatus
+    escrowId?: string | null
+    startDate?: Date | string | null
+    endDate?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    dispute?: DisputeUncheckedCreateNestedOneWithoutContractInput
+    milestones?: MilestoneUncheckedCreateNestedManyWithoutContractInput
+  }
+
+  export type ContractCreateOrConnectWithoutJobInput = {
+    where: ContractWhereUniqueInput
+    create: XOR<ContractCreateWithoutJobInput, ContractUncheckedCreateWithoutJobInput>
   }
 
   export type UserCreateWithoutJobsPostedInput = {
@@ -41484,29 +40075,6 @@ export namespace Prisma {
     create: XOR<UserCreateWithoutJobsPostedInput, UserUncheckedCreateWithoutJobsPostedInput>
   }
 
-  export type SkillCreateWithoutJobsInput = {
-    id?: string
-    name: string
-    slug: string
-    createdAt?: Date | string
-    profiles?: ProfileSkillCreateNestedManyWithoutSkillInput
-    listings?: ListingCreateNestedManyWithoutSkillsInput
-  }
-
-  export type SkillUncheckedCreateWithoutJobsInput = {
-    id?: string
-    name: string
-    slug: string
-    createdAt?: Date | string
-    profiles?: ProfileSkillUncheckedCreateNestedManyWithoutSkillInput
-    listings?: ListingUncheckedCreateNestedManyWithoutSkillsInput
-  }
-
-  export type SkillCreateOrConnectWithoutJobsInput = {
-    where: SkillWhereUniqueInput
-    create: XOR<SkillCreateWithoutJobsInput, SkillUncheckedCreateWithoutJobsInput>
-  }
-
   export type ProposalCreateWithoutJobInput = {
     id?: string
     coverLetter?: string | null
@@ -41543,41 +40111,70 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type ContractCreateWithoutJobInput = {
+  export type SkillCreateWithoutJobsInput = {
     id?: string
-    totalAmount: number
-    currency?: $Enums.Currency
-    status?: $Enums.PaymentStatus
-    escrowId?: string | null
-    startDate?: Date | string | null
-    endDate?: Date | string | null
+    name: string
+    slug: string
     createdAt?: Date | string
-    updatedAt?: Date | string
-    client: UserCreateNestedOneWithoutContractsAsClientInput
-    provider: UserCreateNestedOneWithoutContractsAsProviderInput
-    milestones?: MilestoneCreateNestedManyWithoutContractInput
-    dispute?: DisputeCreateNestedOneWithoutContractInput
+    profiles?: ProfileSkillCreateNestedManyWithoutSkillInput
+    listings?: ListingCreateNestedManyWithoutSkillsInput
   }
 
-  export type ContractUncheckedCreateWithoutJobInput = {
+  export type SkillUncheckedCreateWithoutJobsInput = {
     id?: string
-    clientId: string
-    providerId: string
-    totalAmount: number
-    currency?: $Enums.Currency
-    status?: $Enums.PaymentStatus
-    escrowId?: string | null
-    startDate?: Date | string | null
-    endDate?: Date | string | null
+    name: string
+    slug: string
     createdAt?: Date | string
-    updatedAt?: Date | string
-    milestones?: MilestoneUncheckedCreateNestedManyWithoutContractInput
-    dispute?: DisputeUncheckedCreateNestedOneWithoutContractInput
+    profiles?: ProfileSkillUncheckedCreateNestedManyWithoutSkillInput
+    listings?: ListingUncheckedCreateNestedManyWithoutSkillsInput
   }
 
-  export type ContractCreateOrConnectWithoutJobInput = {
-    where: ContractWhereUniqueInput
+  export type SkillCreateOrConnectWithoutJobsInput = {
+    where: SkillWhereUniqueInput
+    create: XOR<SkillCreateWithoutJobsInput, SkillUncheckedCreateWithoutJobsInput>
+  }
+
+  export type ContractUpsertWithoutJobInput = {
+    update: XOR<ContractUpdateWithoutJobInput, ContractUncheckedUpdateWithoutJobInput>
     create: XOR<ContractCreateWithoutJobInput, ContractUncheckedCreateWithoutJobInput>
+    where?: ContractWhereInput
+  }
+
+  export type ContractUpdateToOneWithWhereWithoutJobInput = {
+    where?: ContractWhereInput
+    data: XOR<ContractUpdateWithoutJobInput, ContractUncheckedUpdateWithoutJobInput>
+  }
+
+  export type ContractUpdateWithoutJobInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    totalAmount?: FloatFieldUpdateOperationsInput | number
+    currency?: EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency
+    status?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+    escrowId?: NullableStringFieldUpdateOperationsInput | string | null
+    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    client?: UserUpdateOneRequiredWithoutContractsAsClientNestedInput
+    provider?: UserUpdateOneRequiredWithoutContractsAsProviderNestedInput
+    dispute?: DisputeUpdateOneWithoutContractNestedInput
+    milestones?: MilestoneUpdateManyWithoutContractNestedInput
+  }
+
+  export type ContractUncheckedUpdateWithoutJobInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    clientId?: StringFieldUpdateOperationsInput | string
+    providerId?: StringFieldUpdateOperationsInput | string
+    totalAmount?: FloatFieldUpdateOperationsInput | number
+    currency?: EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency
+    status?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
+    escrowId?: NullableStringFieldUpdateOperationsInput | string | null
+    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    dispute?: DisputeUncheckedUpdateOneWithoutContractNestedInput
+    milestones?: MilestoneUncheckedUpdateManyWithoutContractNestedInput
   }
 
   export type UserUpsertWithoutJobsPostedInput = {
@@ -41673,22 +40270,6 @@ export namespace Prisma {
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
   }
 
-  export type SkillUpsertWithWhereUniqueWithoutJobsInput = {
-    where: SkillWhereUniqueInput
-    update: XOR<SkillUpdateWithoutJobsInput, SkillUncheckedUpdateWithoutJobsInput>
-    create: XOR<SkillCreateWithoutJobsInput, SkillUncheckedCreateWithoutJobsInput>
-  }
-
-  export type SkillUpdateWithWhereUniqueWithoutJobsInput = {
-    where: SkillWhereUniqueInput
-    data: XOR<SkillUpdateWithoutJobsInput, SkillUncheckedUpdateWithoutJobsInput>
-  }
-
-  export type SkillUpdateManyWithWhereWithoutJobsInput = {
-    where: SkillScalarWhereInput
-    data: XOR<SkillUpdateManyMutationInput, SkillUncheckedUpdateManyWithoutJobsInput>
-  }
-
   export type ProposalUpsertWithWhereUniqueWithoutJobInput = {
     where: ProposalWhereUniqueInput
     update: XOR<ProposalUpdateWithoutJobInput, ProposalUncheckedUpdateWithoutJobInput>
@@ -41705,47 +40286,20 @@ export namespace Prisma {
     data: XOR<ProposalUpdateManyMutationInput, ProposalUncheckedUpdateManyWithoutJobInput>
   }
 
-  export type ContractUpsertWithoutJobInput = {
-    update: XOR<ContractUpdateWithoutJobInput, ContractUncheckedUpdateWithoutJobInput>
-    create: XOR<ContractCreateWithoutJobInput, ContractUncheckedCreateWithoutJobInput>
-    where?: ContractWhereInput
+  export type SkillUpsertWithWhereUniqueWithoutJobsInput = {
+    where: SkillWhereUniqueInput
+    update: XOR<SkillUpdateWithoutJobsInput, SkillUncheckedUpdateWithoutJobsInput>
+    create: XOR<SkillCreateWithoutJobsInput, SkillUncheckedCreateWithoutJobsInput>
   }
 
-  export type ContractUpdateToOneWithWhereWithoutJobInput = {
-    where?: ContractWhereInput
-    data: XOR<ContractUpdateWithoutJobInput, ContractUncheckedUpdateWithoutJobInput>
+  export type SkillUpdateWithWhereUniqueWithoutJobsInput = {
+    where: SkillWhereUniqueInput
+    data: XOR<SkillUpdateWithoutJobsInput, SkillUncheckedUpdateWithoutJobsInput>
   }
 
-  export type ContractUpdateWithoutJobInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    totalAmount?: FloatFieldUpdateOperationsInput | number
-    currency?: EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency
-    status?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
-    escrowId?: NullableStringFieldUpdateOperationsInput | string | null
-    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    client?: UserUpdateOneRequiredWithoutContractsAsClientNestedInput
-    provider?: UserUpdateOneRequiredWithoutContractsAsProviderNestedInput
-    milestones?: MilestoneUpdateManyWithoutContractNestedInput
-    dispute?: DisputeUpdateOneWithoutContractNestedInput
-  }
-
-  export type ContractUncheckedUpdateWithoutJobInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    clientId?: StringFieldUpdateOperationsInput | string
-    providerId?: StringFieldUpdateOperationsInput | string
-    totalAmount?: FloatFieldUpdateOperationsInput | number
-    currency?: EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency
-    status?: EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
-    escrowId?: NullableStringFieldUpdateOperationsInput | string | null
-    startDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    milestones?: MilestoneUncheckedUpdateManyWithoutContractNestedInput
-    dispute?: DisputeUncheckedUpdateOneWithoutContractNestedInput
+  export type SkillUpdateManyWithWhereWithoutJobsInput = {
+    where: SkillScalarWhereInput
+    data: XOR<SkillUpdateManyMutationInput, SkillUncheckedUpdateManyWithoutJobsInput>
   }
 
   export type JobCreateWithoutProposalsInput = {
@@ -41764,9 +40318,9 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     closedAt?: Date | string | null
+    contract?: ContractCreateNestedOneWithoutJobInput
     seeker: UserCreateNestedOneWithoutJobsPostedInput
     requiredSkills?: SkillCreateNestedManyWithoutJobsInput
-    contract?: ContractCreateNestedOneWithoutJobInput
   }
 
   export type JobUncheckedCreateWithoutProposalsInput = {
@@ -41786,8 +40340,8 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     closedAt?: Date | string | null
-    requiredSkills?: SkillUncheckedCreateNestedManyWithoutJobsInput
     contract?: ContractUncheckedCreateNestedOneWithoutJobInput
+    requiredSkills?: SkillUncheckedCreateNestedManyWithoutJobsInput
   }
 
   export type JobCreateOrConnectWithoutProposalsInput = {
@@ -41909,9 +40463,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    contract?: ContractUpdateOneWithoutJobNestedInput
     seeker?: UserUpdateOneRequiredWithoutJobsPostedNestedInput
     requiredSkills?: SkillUpdateManyWithoutJobsNestedInput
-    contract?: ContractUpdateOneWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateWithoutProposalsInput = {
@@ -41931,8 +40485,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    requiredSkills?: SkillUncheckedUpdateManyWithoutJobsNestedInput
     contract?: ContractUncheckedUpdateOneWithoutJobNestedInput
+    requiredSkills?: SkillUncheckedUpdateManyWithoutJobsNestedInput
   }
 
   export type UserUpsertWithoutProposalsInput = {
@@ -42028,53 +40582,6 @@ export namespace Prisma {
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
   }
 
-  export type JobCreateWithoutContractInput = {
-    id?: string
-    title: string
-    slug: string
-    description: string
-    type?: $Enums.JobType
-    budgetMin?: number | null
-    budgetMax?: number | null
-    currency?: $Enums.Currency
-    deadline?: Date | string | null
-    status?: $Enums.JobStatus
-    attachments?: JobCreateattachmentsInput | string[]
-    location?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    closedAt?: Date | string | null
-    seeker: UserCreateNestedOneWithoutJobsPostedInput
-    requiredSkills?: SkillCreateNestedManyWithoutJobsInput
-    proposals?: ProposalCreateNestedManyWithoutJobInput
-  }
-
-  export type JobUncheckedCreateWithoutContractInput = {
-    id?: string
-    seekerId: string
-    title: string
-    slug: string
-    description: string
-    type?: $Enums.JobType
-    budgetMin?: number | null
-    budgetMax?: number | null
-    currency?: $Enums.Currency
-    deadline?: Date | string | null
-    status?: $Enums.JobStatus
-    attachments?: JobCreateattachmentsInput | string[]
-    location?: string | null
-    createdAt?: Date | string
-    updatedAt?: Date | string
-    closedAt?: Date | string | null
-    requiredSkills?: SkillUncheckedCreateNestedManyWithoutJobsInput
-    proposals?: ProposalUncheckedCreateNestedManyWithoutJobInput
-  }
-
-  export type JobCreateOrConnectWithoutContractInput = {
-    where: JobWhereUniqueInput
-    create: XOR<JobCreateWithoutContractInput, JobUncheckedCreateWithoutContractInput>
-  }
-
   export type UserCreateWithoutContractsAsClientInput = {
     id?: string
     email?: string | null
@@ -42160,6 +40667,53 @@ export namespace Prisma {
   export type UserCreateOrConnectWithoutContractsAsClientInput = {
     where: UserWhereUniqueInput
     create: XOR<UserCreateWithoutContractsAsClientInput, UserUncheckedCreateWithoutContractsAsClientInput>
+  }
+
+  export type JobCreateWithoutContractInput = {
+    id?: string
+    title: string
+    slug: string
+    description: string
+    type?: $Enums.JobType
+    budgetMin?: number | null
+    budgetMax?: number | null
+    currency?: $Enums.Currency
+    deadline?: Date | string | null
+    status?: $Enums.JobStatus
+    attachments?: JobCreateattachmentsInput | string[]
+    location?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    closedAt?: Date | string | null
+    seeker: UserCreateNestedOneWithoutJobsPostedInput
+    proposals?: ProposalCreateNestedManyWithoutJobInput
+    requiredSkills?: SkillCreateNestedManyWithoutJobsInput
+  }
+
+  export type JobUncheckedCreateWithoutContractInput = {
+    id?: string
+    seekerId: string
+    title: string
+    slug: string
+    description: string
+    type?: $Enums.JobType
+    budgetMin?: number | null
+    budgetMax?: number | null
+    currency?: $Enums.Currency
+    deadline?: Date | string | null
+    status?: $Enums.JobStatus
+    attachments?: JobCreateattachmentsInput | string[]
+    location?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    closedAt?: Date | string | null
+    proposals?: ProposalUncheckedCreateNestedManyWithoutJobInput
+    requiredSkills?: SkillUncheckedCreateNestedManyWithoutJobsInput
+  }
+
+  export type JobCreateOrConnectWithoutContractInput = {
+    where: JobWhereUniqueInput
+    create: XOR<JobCreateWithoutContractInput, JobUncheckedCreateWithoutContractInput>
   }
 
   export type UserCreateWithoutContractsAsProviderInput = {
@@ -42249,6 +40803,29 @@ export namespace Prisma {
     create: XOR<UserCreateWithoutContractsAsProviderInput, UserUncheckedCreateWithoutContractsAsProviderInput>
   }
 
+  export type DisputeCreateWithoutContractInput = {
+    id?: string
+    raisedBy: string
+    reason: string
+    status?: string
+    resolution?: string | null
+    createdAt?: Date | string
+  }
+
+  export type DisputeUncheckedCreateWithoutContractInput = {
+    id?: string
+    raisedBy: string
+    reason: string
+    status?: string
+    resolution?: string | null
+    createdAt?: Date | string
+  }
+
+  export type DisputeCreateOrConnectWithoutContractInput = {
+    where: DisputeWhereUniqueInput
+    create: XOR<DisputeCreateWithoutContractInput, DisputeUncheckedCreateWithoutContractInput>
+  }
+
   export type MilestoneCreateWithoutContractInput = {
     id?: string
     title: string
@@ -42277,82 +40854,6 @@ export namespace Prisma {
   export type MilestoneCreateManyContractInputEnvelope = {
     data: MilestoneCreateManyContractInput | MilestoneCreateManyContractInput[]
     skipDuplicates?: boolean
-  }
-
-  export type DisputeCreateWithoutContractInput = {
-    id?: string
-    raisedBy: string
-    reason: string
-    status?: string
-    resolution?: string | null
-    createdAt?: Date | string
-  }
-
-  export type DisputeUncheckedCreateWithoutContractInput = {
-    id?: string
-    raisedBy: string
-    reason: string
-    status?: string
-    resolution?: string | null
-    createdAt?: Date | string
-  }
-
-  export type DisputeCreateOrConnectWithoutContractInput = {
-    where: DisputeWhereUniqueInput
-    create: XOR<DisputeCreateWithoutContractInput, DisputeUncheckedCreateWithoutContractInput>
-  }
-
-  export type JobUpsertWithoutContractInput = {
-    update: XOR<JobUpdateWithoutContractInput, JobUncheckedUpdateWithoutContractInput>
-    create: XOR<JobCreateWithoutContractInput, JobUncheckedCreateWithoutContractInput>
-    where?: JobWhereInput
-  }
-
-  export type JobUpdateToOneWithWhereWithoutContractInput = {
-    where?: JobWhereInput
-    data: XOR<JobUpdateWithoutContractInput, JobUncheckedUpdateWithoutContractInput>
-  }
-
-  export type JobUpdateWithoutContractInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    slug?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
-    type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
-    budgetMin?: NullableFloatFieldUpdateOperationsInput | number | null
-    budgetMax?: NullableFloatFieldUpdateOperationsInput | number | null
-    currency?: EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency
-    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
-    attachments?: JobUpdateattachmentsInput | string[]
-    location?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    seeker?: UserUpdateOneRequiredWithoutJobsPostedNestedInput
-    requiredSkills?: SkillUpdateManyWithoutJobsNestedInput
-    proposals?: ProposalUpdateManyWithoutJobNestedInput
-  }
-
-  export type JobUncheckedUpdateWithoutContractInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    seekerId?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    slug?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
-    type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
-    budgetMin?: NullableFloatFieldUpdateOperationsInput | number | null
-    budgetMax?: NullableFloatFieldUpdateOperationsInput | number | null
-    currency?: EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency
-    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
-    attachments?: JobUpdateattachmentsInput | string[]
-    location?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    requiredSkills?: SkillUncheckedUpdateManyWithoutJobsNestedInput
-    proposals?: ProposalUncheckedUpdateManyWithoutJobNestedInput
   }
 
   export type UserUpsertWithoutContractsAsClientInput = {
@@ -42448,6 +40949,59 @@ export namespace Prisma {
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
   }
 
+  export type JobUpsertWithoutContractInput = {
+    update: XOR<JobUpdateWithoutContractInput, JobUncheckedUpdateWithoutContractInput>
+    create: XOR<JobCreateWithoutContractInput, JobUncheckedCreateWithoutContractInput>
+    where?: JobWhereInput
+  }
+
+  export type JobUpdateToOneWithWhereWithoutContractInput = {
+    where?: JobWhereInput
+    data: XOR<JobUpdateWithoutContractInput, JobUncheckedUpdateWithoutContractInput>
+  }
+
+  export type JobUpdateWithoutContractInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
+    budgetMin?: NullableFloatFieldUpdateOperationsInput | number | null
+    budgetMax?: NullableFloatFieldUpdateOperationsInput | number | null
+    currency?: EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
+    attachments?: JobUpdateattachmentsInput | string[]
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    seeker?: UserUpdateOneRequiredWithoutJobsPostedNestedInput
+    proposals?: ProposalUpdateManyWithoutJobNestedInput
+    requiredSkills?: SkillUpdateManyWithoutJobsNestedInput
+  }
+
+  export type JobUncheckedUpdateWithoutContractInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    seekerId?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    type?: EnumJobTypeFieldUpdateOperationsInput | $Enums.JobType
+    budgetMin?: NullableFloatFieldUpdateOperationsInput | number | null
+    budgetMax?: NullableFloatFieldUpdateOperationsInput | number | null
+    currency?: EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumJobStatusFieldUpdateOperationsInput | $Enums.JobStatus
+    attachments?: JobUpdateattachmentsInput | string[]
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    proposals?: ProposalUncheckedUpdateManyWithoutJobNestedInput
+    requiredSkills?: SkillUncheckedUpdateManyWithoutJobsNestedInput
+  }
+
   export type UserUpsertWithoutContractsAsProviderInput = {
     update: XOR<UserUpdateWithoutContractsAsProviderInput, UserUncheckedUpdateWithoutContractsAsProviderInput>
     create: XOR<UserCreateWithoutContractsAsProviderInput, UserUncheckedCreateWithoutContractsAsProviderInput>
@@ -42541,6 +41095,35 @@ export namespace Prisma {
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
   }
 
+  export type DisputeUpsertWithoutContractInput = {
+    update: XOR<DisputeUpdateWithoutContractInput, DisputeUncheckedUpdateWithoutContractInput>
+    create: XOR<DisputeCreateWithoutContractInput, DisputeUncheckedCreateWithoutContractInput>
+    where?: DisputeWhereInput
+  }
+
+  export type DisputeUpdateToOneWithWhereWithoutContractInput = {
+    where?: DisputeWhereInput
+    data: XOR<DisputeUpdateWithoutContractInput, DisputeUncheckedUpdateWithoutContractInput>
+  }
+
+  export type DisputeUpdateWithoutContractInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    raisedBy?: StringFieldUpdateOperationsInput | string
+    reason?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    resolution?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type DisputeUncheckedUpdateWithoutContractInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    raisedBy?: StringFieldUpdateOperationsInput | string
+    reason?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    resolution?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type MilestoneUpsertWithWhereUniqueWithoutContractInput = {
     where: MilestoneWhereUniqueInput
     update: XOR<MilestoneUpdateWithoutContractInput, MilestoneUncheckedUpdateWithoutContractInput>
@@ -42571,35 +41154,6 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Milestone"> | Date | string
   }
 
-  export type DisputeUpsertWithoutContractInput = {
-    update: XOR<DisputeUpdateWithoutContractInput, DisputeUncheckedUpdateWithoutContractInput>
-    create: XOR<DisputeCreateWithoutContractInput, DisputeUncheckedCreateWithoutContractInput>
-    where?: DisputeWhereInput
-  }
-
-  export type DisputeUpdateToOneWithWhereWithoutContractInput = {
-    where?: DisputeWhereInput
-    data: XOR<DisputeUpdateWithoutContractInput, DisputeUncheckedUpdateWithoutContractInput>
-  }
-
-  export type DisputeUpdateWithoutContractInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    raisedBy?: StringFieldUpdateOperationsInput | string
-    reason?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
-    resolution?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type DisputeUncheckedUpdateWithoutContractInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    raisedBy?: StringFieldUpdateOperationsInput | string
-    reason?: StringFieldUpdateOperationsInput | string
-    status?: StringFieldUpdateOperationsInput | string
-    resolution?: NullableStringFieldUpdateOperationsInput | string | null
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
   export type ContractCreateWithoutMilestonesInput = {
     id?: string
     totalAmount: number
@@ -42610,8 +41164,8 @@ export namespace Prisma {
     endDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    job: JobCreateNestedOneWithoutContractInput
     client: UserCreateNestedOneWithoutContractsAsClientInput
+    job: JobCreateNestedOneWithoutContractInput
     provider: UserCreateNestedOneWithoutContractsAsProviderInput
     dispute?: DisputeCreateNestedOneWithoutContractInput
   }
@@ -42658,8 +41212,8 @@ export namespace Prisma {
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    job?: JobUpdateOneRequiredWithoutContractNestedInput
     client?: UserUpdateOneRequiredWithoutContractsAsClientNestedInput
+    job?: JobUpdateOneRequiredWithoutContractNestedInput
     provider?: UserUpdateOneRequiredWithoutContractsAsProviderNestedInput
     dispute?: DisputeUpdateOneWithoutContractNestedInput
   }
@@ -42678,6 +41232,34 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     dispute?: DisputeUncheckedUpdateOneWithoutContractNestedInput
+  }
+
+  export type TransactionCreateWithoutWalletInput = {
+    id?: string
+    type: string
+    amount: number
+    currency?: $Enums.Currency
+    meta?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+  }
+
+  export type TransactionUncheckedCreateWithoutWalletInput = {
+    id?: string
+    type: string
+    amount: number
+    currency?: $Enums.Currency
+    meta?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+  }
+
+  export type TransactionCreateOrConnectWithoutWalletInput = {
+    where: TransactionWhereUniqueInput
+    create: XOR<TransactionCreateWithoutWalletInput, TransactionUncheckedCreateWithoutWalletInput>
+  }
+
+  export type TransactionCreateManyWalletInputEnvelope = {
+    data: TransactionCreateManyWalletInput | TransactionCreateManyWalletInput[]
+    skipDuplicates?: boolean
   }
 
   export type UserCreateWithoutWalletInput = {
@@ -42767,32 +41349,33 @@ export namespace Prisma {
     create: XOR<UserCreateWithoutWalletInput, UserUncheckedCreateWithoutWalletInput>
   }
 
-  export type TransactionCreateWithoutWalletInput = {
-    id?: string
-    type: string
-    amount: number
-    currency?: $Enums.Currency
-    meta?: NullableJsonNullValueInput | InputJsonValue
-    createdAt?: Date | string
-  }
-
-  export type TransactionUncheckedCreateWithoutWalletInput = {
-    id?: string
-    type: string
-    amount: number
-    currency?: $Enums.Currency
-    meta?: NullableJsonNullValueInput | InputJsonValue
-    createdAt?: Date | string
-  }
-
-  export type TransactionCreateOrConnectWithoutWalletInput = {
+  export type TransactionUpsertWithWhereUniqueWithoutWalletInput = {
     where: TransactionWhereUniqueInput
+    update: XOR<TransactionUpdateWithoutWalletInput, TransactionUncheckedUpdateWithoutWalletInput>
     create: XOR<TransactionCreateWithoutWalletInput, TransactionUncheckedCreateWithoutWalletInput>
   }
 
-  export type TransactionCreateManyWalletInputEnvelope = {
-    data: TransactionCreateManyWalletInput | TransactionCreateManyWalletInput[]
-    skipDuplicates?: boolean
+  export type TransactionUpdateWithWhereUniqueWithoutWalletInput = {
+    where: TransactionWhereUniqueInput
+    data: XOR<TransactionUpdateWithoutWalletInput, TransactionUncheckedUpdateWithoutWalletInput>
+  }
+
+  export type TransactionUpdateManyWithWhereWithoutWalletInput = {
+    where: TransactionScalarWhereInput
+    data: XOR<TransactionUpdateManyMutationInput, TransactionUncheckedUpdateManyWithoutWalletInput>
+  }
+
+  export type TransactionScalarWhereInput = {
+    AND?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
+    OR?: TransactionScalarWhereInput[]
+    NOT?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
+    id?: StringFilter<"Transaction"> | string
+    walletId?: StringFilter<"Transaction"> | string
+    type?: StringFilter<"Transaction"> | string
+    amount?: FloatFilter<"Transaction"> | number
+    currency?: EnumCurrencyFilter<"Transaction"> | $Enums.Currency
+    meta?: JsonNullableFilter<"Transaction">
+    createdAt?: DateTimeFilter<"Transaction"> | Date | string
   }
 
   export type UserUpsertWithoutWalletInput = {
@@ -42886,35 +41469,6 @@ export namespace Prisma {
     adminNotes?: AdminNoteUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
-  }
-
-  export type TransactionUpsertWithWhereUniqueWithoutWalletInput = {
-    where: TransactionWhereUniqueInput
-    update: XOR<TransactionUpdateWithoutWalletInput, TransactionUncheckedUpdateWithoutWalletInput>
-    create: XOR<TransactionCreateWithoutWalletInput, TransactionUncheckedCreateWithoutWalletInput>
-  }
-
-  export type TransactionUpdateWithWhereUniqueWithoutWalletInput = {
-    where: TransactionWhereUniqueInput
-    data: XOR<TransactionUpdateWithoutWalletInput, TransactionUncheckedUpdateWithoutWalletInput>
-  }
-
-  export type TransactionUpdateManyWithWhereWithoutWalletInput = {
-    where: TransactionScalarWhereInput
-    data: XOR<TransactionUpdateManyMutationInput, TransactionUncheckedUpdateManyWithoutWalletInput>
-  }
-
-  export type TransactionScalarWhereInput = {
-    AND?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
-    OR?: TransactionScalarWhereInput[]
-    NOT?: TransactionScalarWhereInput | TransactionScalarWhereInput[]
-    id?: StringFilter<"Transaction"> | string
-    walletId?: StringFilter<"Transaction"> | string
-    type?: StringFilter<"Transaction"> | string
-    amount?: FloatFilter<"Transaction"> | number
-    currency?: EnumCurrencyFilter<"Transaction"> | $Enums.Currency
-    meta?: JsonNullableFilter<"Transaction">
-    createdAt?: DateTimeFilter<"Transaction"> | Date | string
   }
 
   export type WalletCreateWithoutTransactionsInput = {
@@ -43145,6 +41699,36 @@ export namespace Prisma {
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
   }
 
+  export type MessageCreateWithoutConversationInput = {
+    id?: string
+    body: string
+    attachments?: MessageCreateattachmentsInput | string[]
+    isRead?: boolean
+    createdAt?: Date | string
+    fromUser: UserCreateNestedOneWithoutMessagesSentInput
+    toUser: UserCreateNestedOneWithoutMessagesRecvdInput
+  }
+
+  export type MessageUncheckedCreateWithoutConversationInput = {
+    id?: string
+    fromUserId: string
+    toUserId: string
+    body: string
+    attachments?: MessageCreateattachmentsInput | string[]
+    isRead?: boolean
+    createdAt?: Date | string
+  }
+
+  export type MessageCreateOrConnectWithoutConversationInput = {
+    where: MessageWhereUniqueInput
+    create: XOR<MessageCreateWithoutConversationInput, MessageUncheckedCreateWithoutConversationInput>
+  }
+
+  export type MessageCreateManyConversationInputEnvelope = {
+    data: MessageCreateManyConversationInput | MessageCreateManyConversationInput[]
+    skipDuplicates?: boolean
+  }
+
   export type UserCreateWithoutConversationsInput = {
     id?: string
     email?: string | null
@@ -43232,34 +41816,20 @@ export namespace Prisma {
     create: XOR<UserCreateWithoutConversationsInput, UserUncheckedCreateWithoutConversationsInput>
   }
 
-  export type MessageCreateWithoutConversationInput = {
-    id?: string
-    body: string
-    attachments?: MessageCreateattachmentsInput | string[]
-    isRead?: boolean
-    createdAt?: Date | string
-    fromUser: UserCreateNestedOneWithoutMessagesSentInput
-    toUser: UserCreateNestedOneWithoutMessagesRecvdInput
-  }
-
-  export type MessageUncheckedCreateWithoutConversationInput = {
-    id?: string
-    fromUserId: string
-    toUserId: string
-    body: string
-    attachments?: MessageCreateattachmentsInput | string[]
-    isRead?: boolean
-    createdAt?: Date | string
-  }
-
-  export type MessageCreateOrConnectWithoutConversationInput = {
+  export type MessageUpsertWithWhereUniqueWithoutConversationInput = {
     where: MessageWhereUniqueInput
+    update: XOR<MessageUpdateWithoutConversationInput, MessageUncheckedUpdateWithoutConversationInput>
     create: XOR<MessageCreateWithoutConversationInput, MessageUncheckedCreateWithoutConversationInput>
   }
 
-  export type MessageCreateManyConversationInputEnvelope = {
-    data: MessageCreateManyConversationInput | MessageCreateManyConversationInput[]
-    skipDuplicates?: boolean
+  export type MessageUpdateWithWhereUniqueWithoutConversationInput = {
+    where: MessageWhereUniqueInput
+    data: XOR<MessageUpdateWithoutConversationInput, MessageUncheckedUpdateWithoutConversationInput>
+  }
+
+  export type MessageUpdateManyWithWhereWithoutConversationInput = {
+    where: MessageScalarWhereInput
+    data: XOR<MessageUpdateManyMutationInput, MessageUncheckedUpdateManyWithoutConversationInput>
   }
 
   export type UserUpsertWithWhereUniqueWithoutConversationsInput = {
@@ -43304,22 +41874,6 @@ export namespace Prisma {
     walletId?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
-  }
-
-  export type MessageUpsertWithWhereUniqueWithoutConversationInput = {
-    where: MessageWhereUniqueInput
-    update: XOR<MessageUpdateWithoutConversationInput, MessageUncheckedUpdateWithoutConversationInput>
-    create: XOR<MessageCreateWithoutConversationInput, MessageUncheckedCreateWithoutConversationInput>
-  }
-
-  export type MessageUpdateWithWhereUniqueWithoutConversationInput = {
-    where: MessageWhereUniqueInput
-    data: XOR<MessageUpdateWithoutConversationInput, MessageUncheckedUpdateWithoutConversationInput>
-  }
-
-  export type MessageUpdateManyWithWhereWithoutConversationInput = {
-    where: MessageScalarWhereInput
-    data: XOR<MessageUpdateManyMutationInput, MessageUncheckedUpdateManyWithoutConversationInput>
   }
 
   export type ConversationCreateWithoutMessagesInput = {
@@ -44104,15 +42658,15 @@ export namespace Prisma {
     education?: NullableJsonNullValueInput | InputJsonValue
     completedJobs?: number
     successRate?: number | null
-    howHear?: string | null
-    howHearOther?: string | null
-    goals?: ProfileCreategoalsInput | string[]
-    individualFocus?: string | null
-    organizationPurpose?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    user: UserCreateNestedOneWithoutProfileInput
+    goals?: ProfileCreategoalsInput | string[]
+    howHear?: string | null
+    howHearOther?: string | null
+    individualFocus?: string | null
+    organizationPurpose?: string | null
     skills?: ProfileSkillCreateNestedManyWithoutProfileInput
+    user: UserCreateNestedOneWithoutProfileInput
   }
 
   export type ProfileUncheckedCreateWithoutPortfolioInput = {
@@ -44126,13 +42680,13 @@ export namespace Prisma {
     education?: NullableJsonNullValueInput | InputJsonValue
     completedJobs?: number
     successRate?: number | null
-    howHear?: string | null
-    howHearOther?: string | null
-    goals?: ProfileCreategoalsInput | string[]
-    individualFocus?: string | null
-    organizationPurpose?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    goals?: ProfileCreategoalsInput | string[]
+    howHear?: string | null
+    howHearOther?: string | null
+    individualFocus?: string | null
+    organizationPurpose?: string | null
     skills?: ProfileSkillUncheckedCreateNestedManyWithoutProfileInput
   }
 
@@ -44162,15 +42716,15 @@ export namespace Prisma {
     education?: NullableJsonNullValueInput | InputJsonValue
     completedJobs?: IntFieldUpdateOperationsInput | number
     successRate?: NullableFloatFieldUpdateOperationsInput | number | null
-    howHear?: NullableStringFieldUpdateOperationsInput | string | null
-    howHearOther?: NullableStringFieldUpdateOperationsInput | string | null
-    goals?: ProfileUpdategoalsInput | string[]
-    individualFocus?: NullableStringFieldUpdateOperationsInput | string | null
-    organizationPurpose?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    user?: UserUpdateOneRequiredWithoutProfileNestedInput
+    goals?: ProfileUpdategoalsInput | string[]
+    howHear?: NullableStringFieldUpdateOperationsInput | string | null
+    howHearOther?: NullableStringFieldUpdateOperationsInput | string | null
+    individualFocus?: NullableStringFieldUpdateOperationsInput | string | null
+    organizationPurpose?: NullableStringFieldUpdateOperationsInput | string | null
     skills?: ProfileSkillUpdateManyWithoutProfileNestedInput
+    user?: UserUpdateOneRequiredWithoutProfileNestedInput
   }
 
   export type ProfileUncheckedUpdateWithoutPortfolioInput = {
@@ -44184,13 +42738,13 @@ export namespace Prisma {
     education?: NullableJsonNullValueInput | InputJsonValue
     completedJobs?: IntFieldUpdateOperationsInput | number
     successRate?: NullableFloatFieldUpdateOperationsInput | number | null
-    howHear?: NullableStringFieldUpdateOperationsInput | string | null
-    howHearOther?: NullableStringFieldUpdateOperationsInput | string | null
-    goals?: ProfileUpdategoalsInput | string[]
-    individualFocus?: NullableStringFieldUpdateOperationsInput | string | null
-    organizationPurpose?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    goals?: ProfileUpdategoalsInput | string[]
+    howHear?: NullableStringFieldUpdateOperationsInput | string | null
+    howHearOther?: NullableStringFieldUpdateOperationsInput | string | null
+    individualFocus?: NullableStringFieldUpdateOperationsInput | string | null
+    organizationPurpose?: NullableStringFieldUpdateOperationsInput | string | null
     skills?: ProfileSkillUncheckedUpdateManyWithoutProfileNestedInput
   }
 
@@ -44744,8 +43298,8 @@ export namespace Prisma {
     endDate?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
-    job: JobCreateNestedOneWithoutContractInput
     client: UserCreateNestedOneWithoutContractsAsClientInput
+    job: JobCreateNestedOneWithoutContractInput
     provider: UserCreateNestedOneWithoutContractsAsProviderInput
     milestones?: MilestoneCreateNestedManyWithoutContractInput
   }
@@ -44792,8 +43346,8 @@ export namespace Prisma {
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    job?: JobUpdateOneRequiredWithoutContractNestedInput
     client?: UserUpdateOneRequiredWithoutContractsAsClientNestedInput
+    job?: JobUpdateOneRequiredWithoutContractNestedInput
     provider?: UserUpdateOneRequiredWithoutContractsAsProviderNestedInput
     milestones?: MilestoneUpdateManyWithoutContractNestedInput
   }
@@ -44822,7 +43376,7 @@ export namespace Prisma {
     price: number
     currency?: $Enums.Currency
     deliveryDays?: number | null
-    categoryId?: string | null
+    category?: $Enums.CategoryEnum | null
     images?: ListingCreateimagesInput | string[]
     tags?: ListingCreatetagsInput | string[]
     videos?: ListingCreatevideosInput | string[]
@@ -44990,6 +43544,7 @@ export namespace Prisma {
     price?: FloatFieldUpdateOperationsInput | number
     currency?: EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency
     deliveryDays?: NullableIntFieldUpdateOperationsInput | number | null
+    category?: NullableEnumCategoryEnumFieldUpdateOperationsInput | $Enums.CategoryEnum | null
     images?: ListingUpdateimagesInput | string[]
     tags?: ListingUpdatetagsInput | string[]
     videos?: ListingUpdatevideosInput | string[]
@@ -44998,7 +43553,6 @@ export namespace Prisma {
     reviewCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    category?: CategoryUpdateOneWithoutListingsNestedInput
     skills?: SkillUpdateManyWithoutListingsNestedInput
   }
 
@@ -45010,7 +43564,7 @@ export namespace Prisma {
     price?: FloatFieldUpdateOperationsInput | number
     currency?: EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency
     deliveryDays?: NullableIntFieldUpdateOperationsInput | number | null
-    categoryId?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: NullableEnumCategoryEnumFieldUpdateOperationsInput | $Enums.CategoryEnum | null
     images?: ListingUpdateimagesInput | string[]
     tags?: ListingUpdatetagsInput | string[]
     videos?: ListingUpdatevideosInput | string[]
@@ -45030,7 +43584,7 @@ export namespace Prisma {
     price?: FloatFieldUpdateOperationsInput | number
     currency?: EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency
     deliveryDays?: NullableIntFieldUpdateOperationsInput | number | null
-    categoryId?: NullableStringFieldUpdateOperationsInput | string | null
+    category?: NullableEnumCategoryEnumFieldUpdateOperationsInput | $Enums.CategoryEnum | null
     images?: ListingUpdateimagesInput | string[]
     tags?: ListingUpdatetagsInput | string[]
     videos?: ListingUpdatevideosInput | string[]
@@ -45057,9 +43611,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    requiredSkills?: SkillUpdateManyWithoutJobsNestedInput
-    proposals?: ProposalUpdateManyWithoutJobNestedInput
     contract?: ContractUpdateOneWithoutJobNestedInput
+    proposals?: ProposalUpdateManyWithoutJobNestedInput
+    requiredSkills?: SkillUpdateManyWithoutJobsNestedInput
   }
 
   export type JobUncheckedUpdateWithoutSeekerInput = {
@@ -45078,9 +43632,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    requiredSkills?: SkillUncheckedUpdateManyWithoutJobsNestedInput
-    proposals?: ProposalUncheckedUpdateManyWithoutJobNestedInput
     contract?: ContractUncheckedUpdateOneWithoutJobNestedInput
+    proposals?: ProposalUncheckedUpdateManyWithoutJobNestedInput
+    requiredSkills?: SkillUncheckedUpdateManyWithoutJobsNestedInput
   }
 
   export type JobUncheckedUpdateManyWithoutSeekerInput = {
@@ -45292,8 +43846,8 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     job?: JobUpdateOneRequiredWithoutContractNestedInput
     provider?: UserUpdateOneRequiredWithoutContractsAsProviderNestedInput
-    milestones?: MilestoneUpdateManyWithoutContractNestedInput
     dispute?: DisputeUpdateOneWithoutContractNestedInput
+    milestones?: MilestoneUpdateManyWithoutContractNestedInput
   }
 
   export type ContractUncheckedUpdateWithoutClientInput = {
@@ -45308,8 +43862,8 @@ export namespace Prisma {
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    milestones?: MilestoneUncheckedUpdateManyWithoutContractNestedInput
     dispute?: DisputeUncheckedUpdateOneWithoutContractNestedInput
+    milestones?: MilestoneUncheckedUpdateManyWithoutContractNestedInput
   }
 
   export type ContractUncheckedUpdateManyWithoutClientInput = {
@@ -45336,10 +43890,10 @@ export namespace Prisma {
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    job?: JobUpdateOneRequiredWithoutContractNestedInput
     client?: UserUpdateOneRequiredWithoutContractsAsClientNestedInput
-    milestones?: MilestoneUpdateManyWithoutContractNestedInput
+    job?: JobUpdateOneRequiredWithoutContractNestedInput
     dispute?: DisputeUpdateOneWithoutContractNestedInput
+    milestones?: MilestoneUpdateManyWithoutContractNestedInput
   }
 
   export type ContractUncheckedUpdateWithoutProviderInput = {
@@ -45354,8 +43908,8 @@ export namespace Prisma {
     endDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    milestones?: MilestoneUncheckedUpdateManyWithoutContractNestedInput
     dispute?: DisputeUncheckedUpdateOneWithoutContractNestedInput
+    milestones?: MilestoneUncheckedUpdateManyWithoutContractNestedInput
   }
 
   export type ContractUncheckedUpdateManyWithoutProviderInput = {
@@ -45528,13 +44082,6 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type ProfileSkillCreateManyProfileInput = {
-    id?: string
-    skillId: string
-    level?: number
-    createdAt?: Date | string
-  }
-
   export type PortfolioCreateManyProfileInput = {
     id?: string
     title: string
@@ -45544,25 +44091,11 @@ export namespace Prisma {
     createdAt?: Date | string
   }
 
-  export type ProfileSkillUpdateWithoutProfileInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    level?: IntFieldUpdateOperationsInput | number
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    skill?: SkillUpdateOneRequiredWithoutProfilesNestedInput
-  }
-
-  export type ProfileSkillUncheckedUpdateWithoutProfileInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    skillId?: StringFieldUpdateOperationsInput | string
-    level?: IntFieldUpdateOperationsInput | number
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type ProfileSkillUncheckedUpdateManyWithoutProfileInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    skillId?: StringFieldUpdateOperationsInput | string
-    level?: IntFieldUpdateOperationsInput | number
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  export type ProfileSkillCreateManyProfileInput = {
+    id?: string
+    skillId: string
+    level?: number
+    createdAt?: Date | string
   }
 
   export type PortfolioUpdateWithoutProfileInput = {
@@ -45589,6 +44122,27 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     media?: PortfolioUpdatemediaInput | string[]
     link?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProfileSkillUpdateWithoutProfileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    level?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    skill?: SkillUpdateOneRequiredWithoutProfilesNestedInput
+  }
+
+  export type ProfileSkillUncheckedUpdateWithoutProfileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    skillId?: StringFieldUpdateOperationsInput | string
+    level?: IntFieldUpdateOperationsInput | number
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ProfileSkillUncheckedUpdateManyWithoutProfileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    skillId?: StringFieldUpdateOperationsInput | string
+    level?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -45620,66 +44174,6 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type ListingUpdateWithoutSkillsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    slug?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
-    price?: FloatFieldUpdateOperationsInput | number
-    currency?: EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency
-    deliveryDays?: NullableIntFieldUpdateOperationsInput | number | null
-    images?: ListingUpdateimagesInput | string[]
-    tags?: ListingUpdatetagsInput | string[]
-    videos?: ListingUpdatevideosInput | string[]
-    isPublished?: BoolFieldUpdateOperationsInput | boolean
-    rating?: NullableFloatFieldUpdateOperationsInput | number | null
-    reviewCount?: IntFieldUpdateOperationsInput | number
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    provider?: UserUpdateOneRequiredWithoutListingsNestedInput
-    category?: CategoryUpdateOneWithoutListingsNestedInput
-  }
-
-  export type ListingUncheckedUpdateWithoutSkillsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    providerId?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    slug?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
-    price?: FloatFieldUpdateOperationsInput | number
-    currency?: EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency
-    deliveryDays?: NullableIntFieldUpdateOperationsInput | number | null
-    categoryId?: NullableStringFieldUpdateOperationsInput | string | null
-    images?: ListingUpdateimagesInput | string[]
-    tags?: ListingUpdatetagsInput | string[]
-    videos?: ListingUpdatevideosInput | string[]
-    isPublished?: BoolFieldUpdateOperationsInput | boolean
-    rating?: NullableFloatFieldUpdateOperationsInput | number | null
-    reviewCount?: IntFieldUpdateOperationsInput | number
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type ListingUncheckedUpdateManyWithoutSkillsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    providerId?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    slug?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
-    price?: FloatFieldUpdateOperationsInput | number
-    currency?: EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency
-    deliveryDays?: NullableIntFieldUpdateOperationsInput | number | null
-    categoryId?: NullableStringFieldUpdateOperationsInput | string | null
-    images?: ListingUpdateimagesInput | string[]
-    tags?: ListingUpdatetagsInput | string[]
-    videos?: ListingUpdatevideosInput | string[]
-    isPublished?: BoolFieldUpdateOperationsInput | boolean
-    rating?: NullableFloatFieldUpdateOperationsInput | number | null
-    reviewCount?: IntFieldUpdateOperationsInput | number
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
   export type JobUpdateWithoutRequiredSkillsInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
@@ -45696,9 +44190,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    contract?: ContractUpdateOneWithoutJobNestedInput
     seeker?: UserUpdateOneRequiredWithoutJobsPostedNestedInput
     proposals?: ProposalUpdateManyWithoutJobNestedInput
-    contract?: ContractUpdateOneWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateWithoutRequiredSkillsInput = {
@@ -45718,8 +44212,8 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    proposals?: ProposalUncheckedUpdateManyWithoutJobNestedInput
     contract?: ContractUncheckedUpdateOneWithoutJobNestedInput
+    proposals?: ProposalUncheckedUpdateManyWithoutJobNestedInput
   }
 
   export type JobUncheckedUpdateManyWithoutRequiredSkillsInput = {
@@ -45741,26 +44235,7 @@ export namespace Prisma {
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
-  export type ListingCreateManyCategoryInput = {
-    id?: string
-    providerId: string
-    title: string
-    slug: string
-    description: string
-    price: number
-    currency?: $Enums.Currency
-    deliveryDays?: number | null
-    images?: ListingCreateimagesInput | string[]
-    tags?: ListingCreatetagsInput | string[]
-    videos?: ListingCreatevideosInput | string[]
-    isPublished?: boolean
-    rating?: number | null
-    reviewCount?: number
-    createdAt?: Date | string
-    updatedAt?: Date | string
-  }
-
-  export type ListingUpdateWithoutCategoryInput = {
+  export type ListingUpdateWithoutSkillsInput = {
     id?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
     slug?: StringFieldUpdateOperationsInput | string
@@ -45768,6 +44243,7 @@ export namespace Prisma {
     price?: FloatFieldUpdateOperationsInput | number
     currency?: EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency
     deliveryDays?: NullableIntFieldUpdateOperationsInput | number | null
+    category?: NullableEnumCategoryEnumFieldUpdateOperationsInput | $Enums.CategoryEnum | null
     images?: ListingUpdateimagesInput | string[]
     tags?: ListingUpdatetagsInput | string[]
     videos?: ListingUpdatevideosInput | string[]
@@ -45777,10 +44253,9 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     provider?: UserUpdateOneRequiredWithoutListingsNestedInput
-    skills?: SkillUpdateManyWithoutListingsNestedInput
   }
 
-  export type ListingUncheckedUpdateWithoutCategoryInput = {
+  export type ListingUncheckedUpdateWithoutSkillsInput = {
     id?: StringFieldUpdateOperationsInput | string
     providerId?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
@@ -45789,6 +44264,7 @@ export namespace Prisma {
     price?: FloatFieldUpdateOperationsInput | number
     currency?: EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency
     deliveryDays?: NullableIntFieldUpdateOperationsInput | number | null
+    category?: NullableEnumCategoryEnumFieldUpdateOperationsInput | $Enums.CategoryEnum | null
     images?: ListingUpdateimagesInput | string[]
     tags?: ListingUpdatetagsInput | string[]
     videos?: ListingUpdatevideosInput | string[]
@@ -45797,10 +44273,9 @@ export namespace Prisma {
     reviewCount?: IntFieldUpdateOperationsInput | number
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    skills?: SkillUncheckedUpdateManyWithoutListingsNestedInput
   }
 
-  export type ListingUncheckedUpdateManyWithoutCategoryInput = {
+  export type ListingUncheckedUpdateManyWithoutSkillsInput = {
     id?: StringFieldUpdateOperationsInput | string
     providerId?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
@@ -45809,6 +44284,7 @@ export namespace Prisma {
     price?: FloatFieldUpdateOperationsInput | number
     currency?: EnumCurrencyFieldUpdateOperationsInput | $Enums.Currency
     deliveryDays?: NullableIntFieldUpdateOperationsInput | number | null
+    category?: NullableEnumCategoryEnumFieldUpdateOperationsInput | $Enums.CategoryEnum | null
     images?: ListingUpdateimagesInput | string[]
     tags?: ListingUpdatetagsInput | string[]
     videos?: ListingUpdatevideosInput | string[]
@@ -45857,31 +44333,6 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
-  export type SkillUpdateWithoutJobsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    slug?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    profiles?: ProfileSkillUpdateManyWithoutSkillNestedInput
-    listings?: ListingUpdateManyWithoutSkillsNestedInput
-  }
-
-  export type SkillUncheckedUpdateWithoutJobsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    slug?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    profiles?: ProfileSkillUncheckedUpdateManyWithoutSkillNestedInput
-    listings?: ListingUncheckedUpdateManyWithoutSkillsNestedInput
-  }
-
-  export type SkillUncheckedUpdateManyWithoutJobsInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    name?: StringFieldUpdateOperationsInput | string
-    slug?: StringFieldUpdateOperationsInput | string
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
   export type ProposalUpdateWithoutJobInput = {
     id?: StringFieldUpdateOperationsInput | string
     coverLetter?: NullableStringFieldUpdateOperationsInput | string | null
@@ -45919,6 +44370,31 @@ export namespace Prisma {
     attachments?: ProposalUpdateattachmentsInput | string[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SkillUpdateWithoutJobsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    profiles?: ProfileSkillUpdateManyWithoutSkillNestedInput
+    listings?: ListingUpdateManyWithoutSkillsNestedInput
+  }
+
+  export type SkillUncheckedUpdateWithoutJobsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    profiles?: ProfileSkillUncheckedUpdateManyWithoutSkillNestedInput
+    listings?: ListingUncheckedUpdateManyWithoutSkillsNestedInput
+  }
+
+  export type SkillUncheckedUpdateManyWithoutJobsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    slug?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type MilestoneCreateManyContractInput = {
@@ -46005,6 +44481,36 @@ export namespace Prisma {
     attachments?: MessageCreateattachmentsInput | string[]
     isRead?: boolean
     createdAt?: Date | string
+  }
+
+  export type MessageUpdateWithoutConversationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    body?: StringFieldUpdateOperationsInput | string
+    attachments?: MessageUpdateattachmentsInput | string[]
+    isRead?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    fromUser?: UserUpdateOneRequiredWithoutMessagesSentNestedInput
+    toUser?: UserUpdateOneRequiredWithoutMessagesRecvdNestedInput
+  }
+
+  export type MessageUncheckedUpdateWithoutConversationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fromUserId?: StringFieldUpdateOperationsInput | string
+    toUserId?: StringFieldUpdateOperationsInput | string
+    body?: StringFieldUpdateOperationsInput | string
+    attachments?: MessageUpdateattachmentsInput | string[]
+    isRead?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type MessageUncheckedUpdateManyWithoutConversationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fromUserId?: StringFieldUpdateOperationsInput | string
+    toUserId?: StringFieldUpdateOperationsInput | string
+    body?: StringFieldUpdateOperationsInput | string
+    attachments?: MessageUpdateattachmentsInput | string[]
+    isRead?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type UserUpdateWithoutConversationsInput = {
@@ -46112,36 +44618,6 @@ export namespace Prisma {
     walletId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type MessageUpdateWithoutConversationInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    body?: StringFieldUpdateOperationsInput | string
-    attachments?: MessageUpdateattachmentsInput | string[]
-    isRead?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-    fromUser?: UserUpdateOneRequiredWithoutMessagesSentNestedInput
-    toUser?: UserUpdateOneRequiredWithoutMessagesRecvdNestedInput
-  }
-
-  export type MessageUncheckedUpdateWithoutConversationInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    fromUserId?: StringFieldUpdateOperationsInput | string
-    toUserId?: StringFieldUpdateOperationsInput | string
-    body?: StringFieldUpdateOperationsInput | string
-    attachments?: MessageUpdateattachmentsInput | string[]
-    isRead?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type MessageUncheckedUpdateManyWithoutConversationInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    fromUserId?: StringFieldUpdateOperationsInput | string
-    toUserId?: StringFieldUpdateOperationsInput | string
-    body?: StringFieldUpdateOperationsInput | string
-    attachments?: MessageUpdateattachmentsInput | string[]
-    isRead?: BoolFieldUpdateOperationsInput | boolean
-    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 

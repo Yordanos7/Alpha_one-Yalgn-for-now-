@@ -2,7 +2,7 @@ import { includes, z } from "zod";
 import { router, publicProcedure, protectedProcedure, t } from "..";
 import { partial } from "zod/mini";
 import { TRPCError } from "@trpc/server";
-import type { AppRouter } from "./types";
+import type { AppRouter } from "../routers"; // Corrected import path
 
 export const conversationRouter: AppRouter["conversation"] = router({
   list: protectedProcedure.query(async ({ ctx }) => {

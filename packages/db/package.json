@@ -6,6 +6,10 @@
     "./generated/client": {
       "types": "./prisma/generated/client/index.d.ts",
       "default": "./prisma/generated/client/index.js"
+    },
+    "./prisma/generated/client": {
+      "types": "./prisma/generated/client/index.d.ts",
+      "default": "./prisma/generated/client/index.js"
     }
   },
   "scripts": {
@@ -16,7 +20,8 @@
     "db:start": "docker compose up -d",
     "db:watch": "docker compose up",
     "db:stop": "docker compose stop",
-    "db:down": "docker compose down"
+    "db:down": "docker compose down",
+    "db:seed": "prisma db seed"
   },
   "devDependencies": {
     "prisma": "^6.15.0",

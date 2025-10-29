@@ -22,7 +22,10 @@
     ],
     "paths": {
       "@/*": ["./src/*"],
-      "@Alpha/api/routers": ["../../packages/api/src/routers/index.ts"]
+      "@Alpha/api/routers": ["../../packages/api/src/routers/index.ts"],
+      "@Alpha/db/prisma/generated/client": [
+        "../../packages/db/prisma/generated/client/index.d.ts"
+      ]
     }
   },
   "include": [

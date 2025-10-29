@@ -65,7 +65,7 @@ import { ReviewListingDialog } from "@/components/review-listing-dialog";
 export default function ProfilePage() {
   const router = useRouter();
   const { data: session, isPending: isSessionPending } =
-    authClient.useSession();
+    authClient.useSession(); // here the method useSession is used to check if the user is logged in or not and i come form the authClient of auth-client.ts better auth instance
   const [portfolioTab, setPortfolioTab] = useState("Published");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -82,7 +82,7 @@ export default function ProfilePage() {
     data: userProfileData,
     isPending: isProfilePending,
     refetch: refetchUserProfile,
-  } = trpc.user.getUserProfile.useQuery();
+  } = trpc.user.getUserProfile.useQuery(); 
 
   // the above would be writen like this if i were use REST API
   // const { data: userProfileData, isLoading: isProfileLoading, refetch: refetchUserProfile } = useQuery('userProfile', async () => {
@@ -95,10 +95,10 @@ export default function ProfilePage() {
   } = trpc.listing.getByUserId.useQuery(
     { userId: userProfileData?.id || "" },
     { enabled: !!userProfileData?.id }
-  );
+  ); // the parameter passed to the query is userId gotten from userProfileData if it exists
 
-  const createListingMutation = trpc.listing.create.useMutation();
-  const updateListingMutation = trpc.listing.update.useMutation(); // Added for "Sell to market" functionality
+  const createListingMutation = trpc.listing.create.useMutation(); // Mutation for creating a new listing
+  const updateListingMutation = trpc.listing.update.useMutation(); // Mutation for updating a listing
 
   const [profileForm, setProfileForm] = useState({
     name: "",

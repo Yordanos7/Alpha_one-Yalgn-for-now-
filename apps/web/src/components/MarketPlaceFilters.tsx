@@ -13,7 +13,17 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Search, ChevronDown, ShoppingCart } from "lucide-react";
 import Link from "next/link";
-import { trpc } from "@/utils/trpc"; // Import trpc
+import { trpc } from "@/utils/trpc";
+
+interface Category {
+  id: string;
+  name: string;
+  slug: string;
+}
+
+interface CategoriesResponse {
+  categories: Category[];
+}
 
 interface Listing {
   id: string;
@@ -22,13 +32,7 @@ interface Listing {
   price: number;
   currency: "ETB" | "USD";
   deliveryDays?: number;
-  categoryId?: string; // Assuming this exists for category filtering
-  category?: {
-    // Add category relation for dynamic filtering
-    id: string;
-    name: string;
-    slug: string;
-  };
+  category?: string; // Changed to string as CategoryEnum might not be available
   images: string[];
   videos?: string[];
   tags: string[];
@@ -40,7 +44,7 @@ interface Listing {
     name: string;
     image?: string;
     accountType: "INDIVIDUAL" | "ORGANIZATION";
-    location?: string; // Add location to provider for dynamic filtering
+    location?: string;
   };
   createdAt: Date;
   updatedAt: Date;
@@ -69,9 +73,11 @@ export const MarketPlaceFilters: React.FC<FilterProps> = ({
     null
   );
 
-  // Fetch categories dynamically
-  const { data: categoriesResponse } = trpc.category.getAll.useQuery();
-  const dynamicCategories = categoriesResponse?.categories || [];
+  const { data: categoriesData, isPending: isCategoriesPending } =
+    trpc.category.getAll.useQuery<CategoriesResponse>();
+
+  const dynamicCategories =
+    (categoriesData as CategoriesResponse)?.categories || [];
 
   // Derive unique locations from listings
   const dynamicLocations = useMemo(() => {
@@ -117,7 +123,7 @@ export const MarketPlaceFilters: React.FC<FilterProps> = ({
     // Apply category filter
     if (selectedCategory) {
       currentListings = currentListings.filter(
-        (listing) => listing.category?.id === selectedCategory
+        (listing) => listing.category === selectedCategory
       );
     }
 
@@ -163,6 +169,9 @@ export const MarketPlaceFilters: React.FC<FilterProps> = ({
     onFilteredListingsChange(result); // Notify parent component of filtered listings
     return result;
   }, [applyFilters, onFilteredListingsChange]);
+
+  console.log("this is category I get from Backend", dynamicCategories);
+
   return (
     <div className="flex items-center space-x-4 mb-8 bg-[#2C2C2C] p-3 rounded-lg">
       <div className="relative flex-1">
@@ -185,6 +194,7 @@ export const MarketPlaceFilters: React.FC<FilterProps> = ({
           <Button
             variant="ghost"
             className="text-gray-400 hover:text-white flex items-center"
+            disabled={isCategoriesPending}
           >
             Category ({selectedCategory || "All"}){" "}
             <ChevronDown className="ml-1" size={16} />
@@ -193,22 +203,28 @@ export const MarketPlaceFilters: React.FC<FilterProps> = ({
         <DropdownMenuContent className="bg-[#3A3A3A] text-white border-none">
           <DropdownMenuLabel>Select Category</DropdownMenuLabel>
           <DropdownMenuSeparator className="bg-gray-600" />
-          <DropdownMenuItem
-            onClick={() => setSelectedCategory(null)}
-            className="hover:bg-[#4A4A4A] cursor-pointer"
-          >
-            All
-          </DropdownMenuItem>
-          {dynamicCategories.map(
-            (category: { id: string; name: string; slug: string }) => (
+          {isCategoriesPending ? (
+            <DropdownMenuItem disabled>Loading categories...</DropdownMenuItem>
+          ) : (
+            <>
               <DropdownMenuItem
-                key={category.id}
-                onClick={() => setSelectedCategory(category.id)}
+                onClick={() => setSelectedCategory(null)}
                 className="hover:bg-[#4A4A4A] cursor-pointer"
               >
-                {category.name}
+                All
               </DropdownMenuItem>
-            )
+              {dynamicCategories.map(
+                (category: { id: string; name: string; slug: string }) => (
+                  <DropdownMenuItem
+                    key={category.id}
+                    onClick={() => setSelectedCategory(category.id)}
+                    className="hover:bg-[#4A4A4A] cursor-pointer"
+                  >
+                    {category.name}
+                  </DropdownMenuItem>
+                )
+              )}
+            </>
           )}
         </DropdownMenuContent>
       </DropdownMenu>

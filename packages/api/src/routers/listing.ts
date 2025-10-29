@@ -3,6 +3,7 @@ import { protectedProcedure, publicProcedure, router } from "../index";
 import { TRPCError } from "@trpc/server";
 import { Prisma } from "@prisma/client";
 import { ListingCreateInput } from "./types";
+import { CategoryEnum } from "@Alpha/db/prisma/generated/client";
 
 const updateListingSchema = z.object({
   id: z.string(),
@@ -35,7 +36,7 @@ export const listingRouter = router({
           ...restInput,
           images,
           videos,
-          ...(categoryId && { categoryId }), // Only include categoryId if it's not an empty string
+          ...(categoryId && { category: categoryId as CategoryEnum }), // Connect category by its enum value
           providerId: userId,
           slug: input.title
             .toLowerCase()
@@ -58,7 +59,7 @@ export const listingRouter = router({
           price: true,
           currency: true,
           deliveryDays: true,
-          categoryId: true,
+          category: true,
           images: true,
           videos: true,
           tags: true,
@@ -127,7 +128,9 @@ export const listingRouter = router({
 
       const where: Prisma.ListingWhereInput = {
         isPublished: true,
-        ...(input?.categoryId && { categoryId: input.categoryId }),
+        ...(input?.categoryId && {
+          category: input.categoryId as CategoryEnum,
+        }),
         ...(input?.search && {
           OR: [
             { title: { contains: input.search, mode: "insensitive" } },
@@ -154,7 +157,7 @@ export const listingRouter = router({
           price: true,
           currency: true,
           deliveryDays: true,
-          categoryId: true,
+          category: true,
           images: true,
           videos: true,
           tags: true,

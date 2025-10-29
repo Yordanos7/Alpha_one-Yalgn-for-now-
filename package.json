@@ -20,7 +20,9 @@
     "db:start": "turbo -F @Alpha/db db:start",
     "db:watch": "turbo -F @Alpha/db db:watch",
     "db:stop": "turbo -F @Alpha/db db:stop",
-    "db:down": "turbo -F @Alpha/db db:down"
+    "db:down": "turbo -F @Alpha/db db:down",
+    "db:seed": "turbo -F @Alpha/db db:seed",
+    "postinstall": "npm run db:seed"
   },
   "dependencies": {
     "dotenv": "^17.2.2",
