@@ -173,6 +173,7 @@ model Profile {
   organizationPurpose String?
   portfolio           Portfolio[]
   skills              ProfileSkill[]
+  isPublicFreelancer  Boolean        @default(false) // Added for freelancer visibility
   user                User           @relation("UserProfile", fields: [userId], references: [id])
 
   @@map("profiles")

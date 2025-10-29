@@ -82,7 +82,7 @@ export default function ProfilePage() {
     data: userProfileData,
     isPending: isProfilePending,
     refetch: refetchUserProfile,
-  } = trpc.user.getUserProfile.useQuery(); 
+  } = trpc.user.getUserProfile.useQuery();
 
   // the above would be writen like this if i were use REST API
   // const { data: userProfileData, isLoading: isProfileLoading, refetch: refetchUserProfile } = useQuery('userProfile', async () => {
@@ -163,7 +163,7 @@ export default function ProfilePage() {
           body: formData,
         });
 
-        const { filePath, message } = await response.json();
+        const { path: filePath, message } = await response.json();
 
         if (!response.ok) {
           throw new Error(message || "Upload failed");

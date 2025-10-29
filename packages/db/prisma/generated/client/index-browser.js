@@ -189,7 +189,8 @@ exports.Prisma.ProfileScalarFieldEnum = {
   howHear: 'howHear',
   howHearOther: 'howHearOther',
   individualFocus: 'individualFocus',
-  organizationPurpose: 'organizationPurpose'
+  organizationPurpose: 'organizationPurpose',
+  isPublicFreelancer: 'isPublicFreelancer'
 };
 
 exports.Prisma.SkillScalarFieldEnum = {

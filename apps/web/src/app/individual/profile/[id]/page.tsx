@@ -28,6 +28,7 @@ import { redirect } from "next/navigation";
 import { trpc } from "@/utils/trpc";
 import type { AppRouter } from "@Alpha/api/routers";
 import type { inferRouterOutputs } from "@trpc/server";
+import { toast } from "sonner"; // Import toast for notifications
 
 type RouterOutput = inferRouterOutputs<AppRouter>;
 type UserProfile = RouterOutput["user"]["getPublicUserProfile"];
@@ -41,6 +42,7 @@ type ProfileWithSkillsAndPortfolio = NonNullable<UserProfile["profile"]> & {
     description: string;
     link?: string;
   }[];
+  isPublicFreelancer: boolean; // Add the new field to the type
 };
 
 export default function IndividualProfilePage() {
@@ -49,17 +51,37 @@ export default function IndividualProfilePage() {
   const userId = params.id as string;
   const { session, isLoading: isSessionLoading } = useSession();
   const [isFormOpen, setIsFormOpen] = useState(false); // State for controlling the listing form modal
+  const [isFreelancerPublic, setIsFreelancerPublic] = useState(false); // State for freelancer public status
 
   const {
     data: userProfile,
     isLoading: isProfileLoading,
     error: profileError,
+    refetch: refetchUserProfile, // Add refetch to update profile data
   } = trpc.user.getPublicUserProfile.useQuery(
     { userId },
     {
       enabled: !!userId, // Only run query if userId is available
     }
   );
+
+  useEffect(() => {
+    if (userProfile?.profile?.isPublicFreelancer !== undefined) {
+      setIsFreelancerPublic(userProfile.profile.isPublicFreelancer);
+    }
+  }, [userProfile]);
+
+  const togglePublicStatusMutation =
+    trpc.user.toggleFreelancerPublicStatus.useMutation({
+      onSuccess: (data) => {
+        setIsFreelancerPublic(data.isPublicFreelancer);
+        toast.success(data.message);
+        refetchUserProfile(); // Refetch profile to ensure UI is consistent
+      },
+      onError: (error) => {
+        toast.error("Failed to update freelancer status: " + error.message);
+      },
+    });
 
   useEffect(() => {
     // Optional: Redirect if not logged in, or if trying to view own profile as organization
@@ -173,7 +195,7 @@ export default function IndividualProfilePage() {
                   <div className="flex flex-wrap gap-2">
                     {(
                       userProfile.profile as ProfileWithSkillsAndPortfolio
-                    ).skills.map((s) => (
+                    ).skills.map((s: { skill: { name: string } }) => (
                       <span
                         key={s.skill.name}
                         className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm"
@@ -241,34 +263,65 @@ export default function IndividualProfilePage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {(
                       userProfile.profile as ProfileWithSkillsAndPortfolio
-                    ).portfolio.map((item) => (
-                      <Card
-                        key={item.id}
-                        className="bg-[#3A3A3A] p-4 rounded-lg hover:bg-[#4A4A4A] transition-colors"
-                      >
-                        <CardTitle className="text-lg font-semibold text-white mb-2">
-                          {item.title}
-                        </CardTitle>
-                        <CardContent className="p-0 text-gray-400 text-sm">
-                          <p className="mb-2">{item.description}</p>
-                          {item.link && (
-                            <a
-                              href={item.link}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-blue-400 hover:underline flex items-center"
-                            >
-                              <Link className="mr-1" size={16} /> View Project
-                            </a>
-                          )}
-                        </CardContent>
-                      </Card>
-                    ))}
+                    ).portfolio.map(
+                      (item: {
+                        id: string;
+                        title: string;
+                        description: string;
+                        link?: string;
+                      }) => (
+                        <Card
+                          key={item.id}
+                          className="bg-[#3A3A3A] p-4 rounded-lg hover:bg-[#4A4A4A] transition-colors"
+                        >
+                          <CardTitle className="text-lg font-semibold text-white mb-2">
+                            {item.title}
+                          </CardTitle>
+                          <CardContent className="p-0 text-gray-400 text-sm">
+                            <p className="mb-2">{item.description}</p>
+                            {item.link && (
+                              <a
+                                href={item.link}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-400 hover:underline flex items-center"
+                              >
+                                <Link className="mr-1" size={16} /> View Project
+                              </a>
+                            )}
+                          </CardContent>
+                        </Card>
+                      )
+                    )}
                   </div>
                 </div>
               )}
 
             <div className="flex justify-end space-x-4 mt-8">
+              {isOwnProfile && session?.user?.accountType === "INDIVIDUAL" && (
+                <Button
+                  className={`font-semibold rounded-lg px-4 py-2 flex items-center ${
+                    isFreelancerPublic
+                      ? "bg-red-500 hover:bg-red-600"
+                      : "bg-green-600 hover:bg-green-700"
+                  }`}
+                  onClick={() =>
+                    togglePublicStatusMutation.mutate({
+                      userId: userId,
+                      isPublic: !isFreelancerPublic,
+                    })
+                  }
+                  disabled={togglePublicStatusMutation.isLoading}
+                >
+                  {togglePublicStatusMutation.isLoading ? (
+                    <Loader className="mr-2 animate-spin" size={16} />
+                  ) : isFreelancerPublic ? (
+                    "Unpost from Freelancer Page"
+                  ) : (
+                    "Post to Freelancer Page"
+                  )}
+                </Button>
+              )}
               <Button
                 className="bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg px-4 py-2"
                 onClick={() => router.back()}

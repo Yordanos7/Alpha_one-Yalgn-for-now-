@@ -7429,6 +7429,7 @@ export namespace Prisma {
     howHearOther: string | null
     individualFocus: string | null
     organizationPurpose: string | null
+    isPublicFreelancer: boolean | null
   }
 
   export type ProfileMaxAggregateOutputType = {
@@ -7446,6 +7447,7 @@ export namespace Prisma {
     howHearOther: string | null
     individualFocus: string | null
     organizationPurpose: string | null
+    isPublicFreelancer: boolean | null
   }
 
   export type ProfileCountAggregateOutputType = {
@@ -7466,6 +7468,7 @@ export namespace Prisma {
     howHearOther: number
     individualFocus: number
     organizationPurpose: number
+    isPublicFreelancer: number
     _all: number
   }
 
@@ -7497,6 +7500,7 @@ export namespace Prisma {
     howHearOther?: true
     individualFocus?: true
     organizationPurpose?: true
+    isPublicFreelancer?: true
   }
 
   export type ProfileMaxAggregateInputType = {
@@ -7514,6 +7518,7 @@ export namespace Prisma {
     howHearOther?: true
     individualFocus?: true
     organizationPurpose?: true
+    isPublicFreelancer?: true
   }
 
   export type ProfileCountAggregateInputType = {
@@ -7534,6 +7539,7 @@ export namespace Prisma {
     howHearOther?: true
     individualFocus?: true
     organizationPurpose?: true
+    isPublicFreelancer?: true
     _all?: true
   }
 
@@ -7641,6 +7647,7 @@ export namespace Prisma {
     howHearOther: string | null
     individualFocus: string | null
     organizationPurpose: string | null
+    isPublicFreelancer: boolean
     _count: ProfileCountAggregateOutputType | null
     _avg: ProfileAvgAggregateOutputType | null
     _sum: ProfileSumAggregateOutputType | null
@@ -7680,6 +7687,7 @@ export namespace Prisma {
     howHearOther?: boolean
     individualFocus?: boolean
     organizationPurpose?: boolean
+    isPublicFreelancer?: boolean
     portfolio?: boolean | Profile$portfolioArgs<ExtArgs>
     skills?: boolean | Profile$skillsArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -7704,6 +7712,7 @@ export namespace Prisma {
     howHearOther?: boolean
     individualFocus?: boolean
     organizationPurpose?: boolean
+    isPublicFreelancer?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["profile"]>
 
@@ -7725,6 +7734,7 @@ export namespace Prisma {
     howHearOther?: boolean
     individualFocus?: boolean
     organizationPurpose?: boolean
+    isPublicFreelancer?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["profile"]>
 
@@ -7746,9 +7756,10 @@ export namespace Prisma {
     howHearOther?: boolean
     individualFocus?: boolean
     organizationPurpose?: boolean
+    isPublicFreelancer?: boolean
   }
 
-  export type ProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "headline" | "hourlyRate" | "currency" | "availability" | "experience" | "education" | "completedJobs" | "successRate" | "createdAt" | "updatedAt" | "goals" | "howHear" | "howHearOther" | "individualFocus" | "organizationPurpose", ExtArgs["result"]["profile"]>
+  export type ProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "headline" | "hourlyRate" | "currency" | "availability" | "experience" | "education" | "completedJobs" | "successRate" | "createdAt" | "updatedAt" | "goals" | "howHear" | "howHearOther" | "individualFocus" | "organizationPurpose" | "isPublicFreelancer", ExtArgs["result"]["profile"]>
   export type ProfileInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     portfolio?: boolean | Profile$portfolioArgs<ExtArgs>
     skills?: boolean | Profile$skillsArgs<ExtArgs>
@@ -7787,6 +7798,7 @@ export namespace Prisma {
       howHearOther: string | null
       individualFocus: string | null
       organizationPurpose: string | null
+      isPublicFreelancer: boolean
     }, ExtArgs["result"]["profile"]>
     composites: {}
   }
@@ -8230,6 +8242,7 @@ export namespace Prisma {
     readonly howHearOther: FieldRef<"Profile", 'String'>
     readonly individualFocus: FieldRef<"Profile", 'String'>
     readonly organizationPurpose: FieldRef<"Profile", 'String'>
+    readonly isPublicFreelancer: FieldRef<"Profile", 'Boolean'>
   }
     
 
@@ -29297,7 +29310,8 @@ export namespace Prisma {
     howHear: 'howHear',
     howHearOther: 'howHearOther',
     individualFocus: 'individualFocus',
-    organizationPurpose: 'organizationPurpose'
+    organizationPurpose: 'organizationPurpose',
+    isPublicFreelancer: 'isPublicFreelancer'
   };
 
   export type ProfileScalarFieldEnum = (typeof ProfileScalarFieldEnum)[keyof typeof ProfileScalarFieldEnum]
@@ -30205,6 +30219,7 @@ export namespace Prisma {
     howHearOther?: StringNullableFilter<"Profile"> | string | null
     individualFocus?: StringNullableFilter<"Profile"> | string | null
     organizationPurpose?: StringNullableFilter<"Profile"> | string | null
+    isPublicFreelancer?: BoolFilter<"Profile"> | boolean
     portfolio?: PortfolioListRelationFilter
     skills?: ProfileSkillListRelationFilter
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -30228,6 +30243,7 @@ export namespace Prisma {
     howHearOther?: SortOrderInput | SortOrder
     individualFocus?: SortOrderInput | SortOrder
     organizationPurpose?: SortOrderInput | SortOrder
+    isPublicFreelancer?: SortOrder
     portfolio?: PortfolioOrderByRelationAggregateInput
     skills?: ProfileSkillOrderByRelationAggregateInput
     user?: UserOrderByWithRelationInput
@@ -30254,6 +30270,7 @@ export namespace Prisma {
     howHearOther?: StringNullableFilter<"Profile"> | string | null
     individualFocus?: StringNullableFilter<"Profile"> | string | null
     organizationPurpose?: StringNullableFilter<"Profile"> | string | null
+    isPublicFreelancer?: BoolFilter<"Profile"> | boolean
     portfolio?: PortfolioListRelationFilter
     skills?: ProfileSkillListRelationFilter
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -30277,6 +30294,7 @@ export namespace Prisma {
     howHearOther?: SortOrderInput | SortOrder
     individualFocus?: SortOrderInput | SortOrder
     organizationPurpose?: SortOrderInput | SortOrder
+    isPublicFreelancer?: SortOrder
     _count?: ProfileCountOrderByAggregateInput
     _avg?: ProfileAvgOrderByAggregateInput
     _max?: ProfileMaxOrderByAggregateInput
@@ -30305,6 +30323,7 @@ export namespace Prisma {
     howHearOther?: StringNullableWithAggregatesFilter<"Profile"> | string | null
     individualFocus?: StringNullableWithAggregatesFilter<"Profile"> | string | null
     organizationPurpose?: StringNullableWithAggregatesFilter<"Profile"> | string | null
+    isPublicFreelancer?: BoolWithAggregatesFilter<"Profile"> | boolean
   }
 
   export type SkillWhereInput = {
@@ -32110,6 +32129,7 @@ export namespace Prisma {
     howHearOther?: string | null
     individualFocus?: string | null
     organizationPurpose?: string | null
+    isPublicFreelancer?: boolean
     portfolio?: PortfolioCreateNestedManyWithoutProfileInput
     skills?: ProfileSkillCreateNestedManyWithoutProfileInput
     user: UserCreateNestedOneWithoutProfileInput
@@ -32133,6 +32153,7 @@ export namespace Prisma {
     howHearOther?: string | null
     individualFocus?: string | null
     organizationPurpose?: string | null
+    isPublicFreelancer?: boolean
     portfolio?: PortfolioUncheckedCreateNestedManyWithoutProfileInput
     skills?: ProfileSkillUncheckedCreateNestedManyWithoutProfileInput
   }
@@ -32154,6 +32175,7 @@ export namespace Prisma {
     howHearOther?: NullableStringFieldUpdateOperationsInput | string | null
     individualFocus?: NullableStringFieldUpdateOperationsInput | string | null
     organizationPurpose?: NullableStringFieldUpdateOperationsInput | string | null
+    isPublicFreelancer?: BoolFieldUpdateOperationsInput | boolean
     portfolio?: PortfolioUpdateManyWithoutProfileNestedInput
     skills?: ProfileSkillUpdateManyWithoutProfileNestedInput
     user?: UserUpdateOneRequiredWithoutProfileNestedInput
@@ -32177,6 +32199,7 @@ export namespace Prisma {
     howHearOther?: NullableStringFieldUpdateOperationsInput | string | null
     individualFocus?: NullableStringFieldUpdateOperationsInput | string | null
     organizationPurpose?: NullableStringFieldUpdateOperationsInput | string | null
+    isPublicFreelancer?: BoolFieldUpdateOperationsInput | boolean
     portfolio?: PortfolioUncheckedUpdateManyWithoutProfileNestedInput
     skills?: ProfileSkillUncheckedUpdateManyWithoutProfileNestedInput
   }
@@ -32199,6 +32222,7 @@ export namespace Prisma {
     howHearOther?: string | null
     individualFocus?: string | null
     organizationPurpose?: string | null
+    isPublicFreelancer?: boolean
   }
 
   export type ProfileUpdateManyMutationInput = {
@@ -32218,6 +32242,7 @@ export namespace Prisma {
     howHearOther?: NullableStringFieldUpdateOperationsInput | string | null
     individualFocus?: NullableStringFieldUpdateOperationsInput | string | null
     organizationPurpose?: NullableStringFieldUpdateOperationsInput | string | null
+    isPublicFreelancer?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type ProfileUncheckedUpdateManyInput = {
@@ -32238,6 +32263,7 @@ export namespace Prisma {
     howHearOther?: NullableStringFieldUpdateOperationsInput | string | null
     individualFocus?: NullableStringFieldUpdateOperationsInput | string | null
     organizationPurpose?: NullableStringFieldUpdateOperationsInput | string | null
+    isPublicFreelancer?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type SkillCreateInput = {
@@ -34275,6 +34301,7 @@ export namespace Prisma {
     howHearOther?: SortOrder
     individualFocus?: SortOrder
     organizationPurpose?: SortOrder
+    isPublicFreelancer?: SortOrder
   }
 
   export type ProfileAvgOrderByAggregateInput = {
@@ -34298,6 +34325,7 @@ export namespace Prisma {
     howHearOther?: SortOrder
     individualFocus?: SortOrder
     organizationPurpose?: SortOrder
+    isPublicFreelancer?: SortOrder
   }
 
   export type ProfileMinOrderByAggregateInput = {
@@ -34315,6 +34343,7 @@ export namespace Prisma {
     howHearOther?: SortOrder
     individualFocus?: SortOrder
     organizationPurpose?: SortOrder
+    isPublicFreelancer?: SortOrder
   }
 
   export type ProfileSumOrderByAggregateInput = {
@@ -37647,6 +37676,7 @@ export namespace Prisma {
     howHearOther?: string | null
     individualFocus?: string | null
     organizationPurpose?: string | null
+    isPublicFreelancer?: boolean
     portfolio?: PortfolioCreateNestedManyWithoutProfileInput
     skills?: ProfileSkillCreateNestedManyWithoutProfileInput
   }
@@ -37668,6 +37698,7 @@ export namespace Prisma {
     howHearOther?: string | null
     individualFocus?: string | null
     organizationPurpose?: string | null
+    isPublicFreelancer?: boolean
     portfolio?: PortfolioUncheckedCreateNestedManyWithoutProfileInput
     skills?: ProfileSkillUncheckedCreateNestedManyWithoutProfileInput
   }
@@ -38276,6 +38307,7 @@ export namespace Prisma {
     howHearOther?: NullableStringFieldUpdateOperationsInput | string | null
     individualFocus?: NullableStringFieldUpdateOperationsInput | string | null
     organizationPurpose?: NullableStringFieldUpdateOperationsInput | string | null
+    isPublicFreelancer?: BoolFieldUpdateOperationsInput | boolean
     portfolio?: PortfolioUpdateManyWithoutProfileNestedInput
     skills?: ProfileSkillUpdateManyWithoutProfileNestedInput
   }
@@ -38297,6 +38329,7 @@ export namespace Prisma {
     howHearOther?: NullableStringFieldUpdateOperationsInput | string | null
     individualFocus?: NullableStringFieldUpdateOperationsInput | string | null
     organizationPurpose?: NullableStringFieldUpdateOperationsInput | string | null
+    isPublicFreelancer?: BoolFieldUpdateOperationsInput | boolean
     portfolio?: PortfolioUncheckedUpdateManyWithoutProfileNestedInput
     skills?: ProfileSkillUncheckedUpdateManyWithoutProfileNestedInput
   }
@@ -39587,6 +39620,7 @@ export namespace Prisma {
     howHearOther?: string | null
     individualFocus?: string | null
     organizationPurpose?: string | null
+    isPublicFreelancer?: boolean
     portfolio?: PortfolioCreateNestedManyWithoutProfileInput
     user: UserCreateNestedOneWithoutProfileInput
   }
@@ -39609,6 +39643,7 @@ export namespace Prisma {
     howHearOther?: string | null
     individualFocus?: string | null
     organizationPurpose?: string | null
+    isPublicFreelancer?: boolean
     portfolio?: PortfolioUncheckedCreateNestedManyWithoutProfileInput
   }
 
@@ -39668,6 +39703,7 @@ export namespace Prisma {
     howHearOther?: NullableStringFieldUpdateOperationsInput | string | null
     individualFocus?: NullableStringFieldUpdateOperationsInput | string | null
     organizationPurpose?: NullableStringFieldUpdateOperationsInput | string | null
+    isPublicFreelancer?: BoolFieldUpdateOperationsInput | boolean
     portfolio?: PortfolioUpdateManyWithoutProfileNestedInput
     user?: UserUpdateOneRequiredWithoutProfileNestedInput
   }
@@ -39690,6 +39726,7 @@ export namespace Prisma {
     howHearOther?: NullableStringFieldUpdateOperationsInput | string | null
     individualFocus?: NullableStringFieldUpdateOperationsInput | string | null
     organizationPurpose?: NullableStringFieldUpdateOperationsInput | string | null
+    isPublicFreelancer?: BoolFieldUpdateOperationsInput | boolean
     portfolio?: PortfolioUncheckedUpdateManyWithoutProfileNestedInput
   }
 
@@ -42665,6 +42702,7 @@ export namespace Prisma {
     howHearOther?: string | null
     individualFocus?: string | null
     organizationPurpose?: string | null
+    isPublicFreelancer?: boolean
     skills?: ProfileSkillCreateNestedManyWithoutProfileInput
     user: UserCreateNestedOneWithoutProfileInput
   }
@@ -42687,6 +42725,7 @@ export namespace Prisma {
     howHearOther?: string | null
     individualFocus?: string | null
     organizationPurpose?: string | null
+    isPublicFreelancer?: boolean
     skills?: ProfileSkillUncheckedCreateNestedManyWithoutProfileInput
   }
 
@@ -42723,6 +42762,7 @@ export namespace Prisma {
     howHearOther?: NullableStringFieldUpdateOperationsInput | string | null
     individualFocus?: NullableStringFieldUpdateOperationsInput | string | null
     organizationPurpose?: NullableStringFieldUpdateOperationsInput | string | null
+    isPublicFreelancer?: BoolFieldUpdateOperationsInput | boolean
     skills?: ProfileSkillUpdateManyWithoutProfileNestedInput
     user?: UserUpdateOneRequiredWithoutProfileNestedInput
   }
@@ -42745,6 +42785,7 @@ export namespace Prisma {
     howHearOther?: NullableStringFieldUpdateOperationsInput | string | null
     individualFocus?: NullableStringFieldUpdateOperationsInput | string | null
     organizationPurpose?: NullableStringFieldUpdateOperationsInput | string | null
+    isPublicFreelancer?: BoolFieldUpdateOperationsInput | boolean
     skills?: ProfileSkillUncheckedUpdateManyWithoutProfileNestedInput
   }
 

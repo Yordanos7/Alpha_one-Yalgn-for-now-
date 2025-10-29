@@ -326,6 +326,7 @@ export const userRouter = router({
                   },
                 },
               },
+              isPublicFreelancer: true, // Include the new field
             },
           },
         },
@@ -476,6 +477,61 @@ export const userRouter = router({
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
           message: "Failed to complete onboarding",
+        });
+      }
+    }),
+
+  toggleFreelancerPublicStatus: protectedProcedure
+    .input(
+      z.object({
+        userId: z.string(),
+        isPublic: z.boolean(),
+      })
+    )
+    .mutation(async ({ ctx: { user, prisma, req, res }, input }) => {
+      if (!user?.id || user.id !== input.userId) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Not authorized to update this profile.",
+        });
+      }
+
+      // Ensure the user is an individual
+      const currentUser = await prisma.user.findUnique({
+        where: { id: user.id },
+        select: { accountType: true },
+      });
+
+      if (currentUser?.accountType !== AccountType.INDIVIDUAL) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message:
+            "Only individual accounts can be listed as public freelancers.",
+        });
+      }
+
+      try {
+        await prisma.profile.update({
+          where: { userId: input.userId },
+          data: {
+            isPublicFreelancer: input.isPublic,
+          },
+        });
+
+        // Re-fetch the session to ensure the cookie is updated with the latest user data
+        await auth.api.getSession({
+          headers: fromNodeHeaders(req.headers),
+        });
+
+        return {
+          message: `Freelancer public status updated to ${input.isPublic}`,
+          isPublicFreelancer: input.isPublic,
+        };
+      } catch (error) {
+        console.error("Error toggling freelancer public status:", error);
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to update freelancer public status",
         });
       }
     }),
