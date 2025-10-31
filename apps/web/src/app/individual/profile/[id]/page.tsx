@@ -48,7 +48,7 @@ type ProfileWithSkillsAndPortfolio = NonNullable<UserProfile["profile"]> & {
 export default function IndividualProfilePage() {
   const router = useRouter();
   const params = useParams();
-  const userId = params.id as string;
+  const userId = typeof params.id === "string" ? params.id : undefined; // Ensure userId is string or undefined
   const { session, isLoading: isSessionLoading } = useSession();
   const [isFormOpen, setIsFormOpen] = useState(false); // State for controlling the listing form modal
   const [isFreelancerPublic, setIsFreelancerPublic] = useState(false); // State for freelancer public status
@@ -59,9 +59,9 @@ export default function IndividualProfilePage() {
     error: profileError,
     refetch: refetchUserProfile, // Add refetch to update profile data
   } = trpc.user.getPublicUserProfile.useQuery(
-    { userId },
+    { userId: userId! }, // Use non-null assertion here, as enabled will ensure it's a string
     {
-      enabled: !!userId, // Only run query if userId is available
+      enabled: !!userId, // Only run query if userId is available (i.e., not undefined)
     }
   );
 
@@ -73,12 +73,14 @@ export default function IndividualProfilePage() {
 
   const togglePublicStatusMutation =
     trpc.user.toggleFreelancerPublicStatus.useMutation({
-      onSuccess: (data) => {
+      onSuccess: (data: { isPublicFreelancer: boolean; message: string }) => {
+        // Explicitly type data
         setIsFreelancerPublic(data.isPublicFreelancer);
         toast.success(data.message);
         refetchUserProfile(); // Refetch profile to ensure UI is consistent
       },
-      onError: (error) => {
+      onError: (error: any) => {
+        // Explicitly type error
         toast.error("Failed to update freelancer status: " + error.message);
       },
     });
