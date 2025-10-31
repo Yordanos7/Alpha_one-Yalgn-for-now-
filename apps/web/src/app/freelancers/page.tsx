@@ -1,11 +1,14 @@
 "use client";
 
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import Sidebar from "@/components/sidebar";
+import { trpc } from "@/utils/trpc";
+import { Badge } from "@/components/ui/badge";
+import { useState, useEffect } from "react"; // Keep this import here
+
 import {
   Search,
   ShoppingCart,
@@ -16,6 +19,27 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
+// Define the type for a user returned by trpc.user.list
+type UserListItem = {
+  id: string;
+  name: string | null;
+  image: string | null;
+  bio: string | null;
+  location: string | null;
+  isOpenToWork: boolean;
+  profile: {
+    headline: string | null;
+    hourlyRate: number | null;
+    currency: string | null; // Assuming Currency enum is string
+    completedJobs: number;
+    successRate: number | null;
+    skills: { skill: { name: string } }[];
+  } | null;
+  verification: {
+    status: "NONE" | "PENDING" | "APPROVED" | "REJECTED" | null;
+  } | null;
+};
+
 interface Freelancer {
   id: string;
   name: string;
@@ -25,79 +49,23 @@ interface Freelancer {
   description: string;
   imageUrl: string;
   skills: string[];
+  isOpenToWork: boolean;
+  location?: string;
+  hourlyRate?: number;
+  currency?: string;
+  completedJobs?: number;
+  isVerified?: boolean;
 }
 
-const freelancers: Freelancer[] = [
-  {
-    id: "1",
-    name: "Samuel K. Jai J.",
-    title: "Senior Develgiher",
-    rating: 5.0,
-    reviews: 299,
-    description:
-      "This al imiat eo lognmulice ter rter tnon cofte tism vwoi edhas.",
-    imageUrl: "https://github.com/shadcn.png",
-    skills: ["React", "Node.js", "TailwindCSS"],
-  },
-  {
-    id: "2",
-    name: "Compact Drme",
-    title: "Web Develgther",
-    rating: 5.0,
-    reviews: 299,
-    description:
-      "This al imiat eo lognmulice ter rter tnon cofte tism vwoi edhas.",
-    imageUrl: "https://github.com/shadcn.png",
-    skills: ["Vue.js", "Express", "MongoDB"],
-  },
-  {
-    id: "3",
-    name: "Senior UI/X Designer",
-    title: "Web Develgther",
-    rating: 5.0,
-    reviews: 299,
-    description:
-      "This al imiat eo lognmulice ter rter tnon cofte tism vwoi edhas.",
-    imageUrl: "https://github.com/shadcn.png",
-    skills: ["Figma", "Sketch", "UI/UX"],
-  },
-  {
-    id: "4",
-    name: "Starg Unn",
-    title: "Graphic Designer",
-    rating: 4.5,
-    reviews: 150,
-    description:
-      "This al imiat eo lognmulice ter rter tnon cofte tism vwoi edhas.",
-    imageUrl: "https://via.placeholder.com/150",
-    skills: ["Photoshop", "Illustrator"],
-  },
-  {
-    id: "5",
-    name: "Fuls.:ck Deyijones",
-    title: "Mobile Developer",
-    rating: 4.8,
-    reviews: 210,
-    description:
-      "This al imiat eo lognmulice ter rter tnon cofte tism vwoi edhas.",
-    imageUrl: "https://via.placeholder.com/150",
-    skills: ["React Native", "Flutter"],
-  },
-  {
-    id: "6",
-    name: "Smart Projector",
-    title: "Data Scientist",
-    rating: 4.2,
-    reviews: 180,
-    description:
-      "This al imiat eo lognmulice ter rter tnon cofte tism vwoi edhas.",
-    imageUrl: "https://via.placeholder.com/150",
-    skills: ["Python", "R", "Machine Learning"],
-  },
-];
-
 const FreelancerCard = ({ freelancer }: { freelancer: Freelancer }) => (
-  <Card className="bg-[#2C2C2C] p-4 rounded-lg flex flex-col items-center">
+  <Card className="bg-[#2C2C2C] p-4 rounded-lg flex flex-col items-center relative">
+    {" "}
+    {/* Added relative for badge positioning */}
+    {freelancer.isOpenToWork && (
+      <Badge className="absolute top-2 right-2 bg-green-500 text-white">
+        Open to Work
+      </Badge>
+    )}
     <Avatar className="h-24 w-24 mb-4">
       <AvatarImage src={freelancer.imageUrl} alt={freelancer.name} />
       <AvatarFallback>{freelancer.name.charAt(0)}</AvatarFallback>
@@ -118,7 +86,7 @@ const FreelancerCard = ({ freelancer }: { freelancer: Freelancer }) => (
         />
       ))}
       <span className="text-sm text-gray-400 ml-2">
-        ({freelancer.rating}) ({freelancer.reviews} relewe)
+        ({freelancer.rating}) ({freelancer.reviews} reviews)
       </span>
     </div>
     <p className="text-sm text-gray-300 text-center mb-4">
@@ -135,9 +103,13 @@ const FreelancerCard = ({ freelancer }: { freelancer: Freelancer }) => (
       ))}
     </div>
     <div className="flex space-x-4">
-      <Button className="bg-green-600 hover:bg-green-700 text-white font-semibold rounded-md px-4 py-2">
-        View Profile
-      </Button>
+      <Link href={`/individual/profile/${freelancer.id}`}>
+        {" "}
+        {/* Link to individual profile */}
+        <Button className="bg-green-600 hover:bg-green-700 text-white font-semibold rounded-md px-4 py-2">
+          View Profile
+        </Button>
+      </Link>
       <Button
         variant="ghost"
         className="text-gray-400 hover:text-white font-semibold rounded-md px-4 py-2"
@@ -149,6 +121,47 @@ const FreelancerCard = ({ freelancer }: { freelancer: Freelancer }) => (
 );
 
 export default function FreelancersPage() {
+  const {
+    data: freelancersData,
+    isPending: isFreelancersPending,
+    refetch: refetchFreelancers, // Get the refetch function
+  } = trpc.user.list.useQuery();
+
+  useEffect(() => {
+    refetchFreelancers(); // Refetch data when the component mounts or becomes active
+  }, [refetchFreelancers]);
+
+  if (isFreelancersPending) {
+    return (
+      <div className="flex min-h-screen bg-[#202020] text-white items-center justify-center">
+        Loading freelancers...
+      </div>
+    );
+  }
+
+  // and this is for map the fetched freelancers to the FreelancerCard interface
+
+  const freelancers: Freelancer[] =
+    freelancersData?.map((user: UserListItem) => ({
+      id: user.id,
+      name: user.name || "N/A",
+      title: user.profile?.headline || "Freelancer", // Use headline for title
+      rating: user.profile?.successRate || 0, // Use successRate for rating, default to 0
+      reviews: user.profile?.completedJobs || 0, // Use completedJobs for reviews, default to 0
+      description: user.bio || "No bio provided.",
+      imageUrl: user.image || "/placeholder-avatar.jpg",
+      skills:
+        user.profile?.skills?.map(
+          (s: { skill: { name: string } }) => s.skill.name
+        ) || [],
+      isOpenToWork: user.isOpenToWork || false,
+      location: user.location || "N/A",
+      hourlyRate: user.profile?.hourlyRate || 0,
+      currency: user.profile?.currency || "ETB",
+      completedJobs: user.profile?.completedJobs || 0,
+      isVerified: user.verification?.status === "APPROVED",
+    })) || [];
+
   return (
     <div className="flex min-h-screen bg-[#202020] text-white">
       <Sidebar currentPage="freelancers" />
@@ -254,7 +267,8 @@ export default function FreelancersPage() {
           <Card className="w-72 bg-[#2C2C2C] p-4 rounded-lg">
             <h3 className="text-lg font-semibold mb-4">Featured Freelancers</h3>
             <div className="space-y-4">
-              {/* Freelancer Card 1 */}
+              {/* You might want to fetch featured freelancers separately or filter from the main list */}
+              {/* For now, keeping the placeholder structure */}
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
                   <Avatar className="h-10 w-10 mr-3">
@@ -271,7 +285,6 @@ export default function FreelancersPage() {
                 </div>
                 <Star className="text-gray-400" size={16} />
               </div>
-              {/* Freelancer Card 2 */}
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
                   <Avatar className="h-10 w-10 mr-3">
@@ -288,7 +301,6 @@ export default function FreelancersPage() {
                 </div>
                 <Star className="text-gray-400" size={16} />
               </div>
-              {/* Freelancer Card 3 */}
               <div className="flex items-center justify-between">
                 <div className="flex items-center">
                   <Avatar className="h-10 w-10 mr-3">

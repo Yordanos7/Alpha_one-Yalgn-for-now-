@@ -358,11 +358,34 @@ export const userRouter = router({
         id: {
           not: userId, // Exclude the current user
         },
+        isOpenToWork: true, // Filter to only show users who are open to work
       },
       select: {
         id: true,
         name: true,
         image: true,
+        bio: true,
+        location: true,
+        isOpenToWork: true, // Include the new field
+        profile: {
+          select: {
+            headline: true,
+            hourlyRate: true,
+            currency: true,
+            completedJobs: true,
+            successRate: true,
+            skills: {
+              select: {
+                skill: {},
+              },
+            },
+          },
+        },
+        verification: {
+          select: {
+            status: true,
+          },
+        },
       },
     });
   }),

@@ -114,6 +114,11 @@ export default function ProfilePage() {
   const [skillsForm, setSkillsForm] = useState<string[]>([]);
   const [newSkillInput, setNewSkillInput] = useState("");
 
+  const [isFreelancerOpenToWork, setIsFreelancerOpenToWork] = useState(
+    userProfileData?.isOpenToWork || false
+  );
+  const updateIsOpenToWorkMutation = trpc.user.updateIsOpenToWork.useMutation();
+
   useEffect(() => {
     if (!isSessionPending && !session) {
       router.push("/login");
@@ -134,8 +139,28 @@ export default function ProfilePage() {
         experience: "{}",
       });
       setSkillsForm([]);
+      setIsFreelancerOpenToWork(userProfileData.isOpenToWork || false);
     }
   }, [userProfileData]);
+
+  const handleToggleOpenToWork = async (checked: boolean) => {
+    try {
+      await updateIsOpenToWorkMutation.mutateAsync(
+        { isOpenToWork: checked },
+        {
+          onSuccess: () => {
+            toast.success(
+              `Status updated to 'Open to Work': ${checked ? "Yes" : "No"}`
+            );
+            refetchUserProfile(); // Refetch to update session and UI
+          },
+        }
+      );
+    } catch (error) {
+      console.error("Error updating 'open to work' status:", error);
+      toast.error("Failed to update 'open to work' status.");
+    }
+  };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -298,6 +323,7 @@ export default function ProfilePage() {
   const userProfile = {
     name: user.name || "Yohannes",
     faidaIdVerified: verification?.status === "APPROVED",
+    isOpenToWork: user.isOpenToWork || false, // Added isOpenToWork
     profileCompletion: 75, // This will need to be calculated dynamically
     rating: 4.8, // Placeholder
     completedJobs: profile?.completedJobs || 0,
@@ -549,6 +575,17 @@ export default function ProfilePage() {
           <Button variant="ghost" className="min-w-[150px] text-primary">
             Preview as Public View
           </Button>
+
+          {/* New "Open to Work" Switch */}
+          <div className="flex items-center space-x-2 min-w-[150px] justify-center">
+            <Switch
+              id="open-to-work"
+              checked={isFreelancerOpenToWork}
+              onCheckedChange={handleToggleOpenToWork}
+              disabled={updateIsOpenToWorkMutation.isPending}
+            />
+            <Label htmlFor="open-to-work">Open to Work</Label>
+          </div>
         </div>
       </div>
 
