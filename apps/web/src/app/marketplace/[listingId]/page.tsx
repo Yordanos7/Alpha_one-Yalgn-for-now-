@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import Link from "next/link"; // Import Link for navigation
 import { trpc } from "@/utils/trpc";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -26,10 +27,7 @@ interface Listing {
   currency: "ETB" | "USD";
   deliveryDays?: number;
   categoryId?: string;
-  category?: {
-    id: string;
-    name: string;
-  };
+  category?: string; // Corrected: category is a string (CategoryEnum value)
   images: string[];
   tags: string[];
   isPublished: boolean;
@@ -46,11 +44,23 @@ interface Listing {
   updatedAt: Date;
 }
 
-export default function ListingDetailPage({
-  params,
-}: {
+interface RelatedListing {
+  id: string;
+  title: string;
+  price: number;
+  currency: "ETB" | "USD";
+  images: string[];
+  rating?: number;
+  reviewCount?: number;
+}
+
+interface ListingDetailPageProps {
   params: { listingId: string };
-}) {
+  // If you use search parameters, uncomment the line below:
+  // searchParams?: { [key: string]: string | string[] | undefined };
+}
+
+export default function ListingDetailPage({ params }: ListingDetailPageProps) {
   const router = useRouter();
   const { listingId } = params;
 
@@ -61,6 +71,20 @@ export default function ListingDetailPage({
   } = trpc.listing.getById.useQuery({ id: listingId });
 
   const listing = listingData as Listing;
+
+  const {
+    data: relatedListingsData,
+    isPending: isRelatedListingsPending,
+    error: relatedListingsError,
+  } = trpc.listing.getRelated.useQuery(
+    {
+      listingId: listingId,
+      categoryId: (listingData?.category as string) || "", // Explicitly cast to string
+    },
+    {
+      enabled: !!listingData && !!listingData.category, // Only fetch if listingData and category are available
+    }
+  );
 
   const [currentMediaIndex, setCurrentMediaIndex] = useState(0); // this is for image/video carousel
   const [quantity, setQuantity] = useState(1); // Quantity state for purchase
@@ -123,7 +147,7 @@ export default function ListingDetailPage({
           {/* Main Media Display with Navigation */}
           <Card className="p-4 bg-card rounded-lg shadow-sm relative">
             {listing.images && listing.images.length > 0 ? (
-              <div className="relative w-full h-[300px] sm:h-[400px] md:h-[500px] bg-gray-800 rounded-md overflow-hidden">
+              <div className="relative w-full h-[300px] sm:h-[400px] md:h-[500px] bg-muted rounded-md overflow-hidden">
                 {isVideo(listing.images[currentMediaIndex]) ? (
                   <video
                     src={listing.images[currentMediaIndex]}
@@ -156,7 +180,7 @@ export default function ListingDetailPage({
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white"
+                      className="absolute left-2 top-1/2 -translate-y-1/2 bg-background/50 hover:bg-background/70 text-foreground dark:bg-black/50 dark:hover:bg-black/70 dark:text-white"
                       onClick={() =>
                         setCurrentMediaIndex((prev) =>
                           prev === 0 ? listing.images.length - 1 : prev - 1
@@ -168,7 +192,7 @@ export default function ListingDetailPage({
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white"
+                      className="absolute right-2 top-1/2 -translate-y-1/2 bg-background/50 hover:bg-background/70 text-foreground dark:bg-black/50 dark:hover:bg-black/70 dark:text-white"
                       onClick={() =>
                         setCurrentMediaIndex((prev) =>
                           prev === listing.images.length - 1 ? 0 : prev + 1
@@ -181,7 +205,7 @@ export default function ListingDetailPage({
                 )}
               </div>
             ) : (
-              <div className="w-full h-[400px] bg-gray-800 rounded-md flex items-center justify-center text-muted-foreground">
+              <div className="w-full h-[400px] bg-muted rounded-md flex items-center justify-center text-muted-foreground">
                 No media available
               </div>
             )}
@@ -426,42 +450,59 @@ export default function ListingDetailPage({
       </div>
 
       {/* Related Items Section */}
-      <div className="mt-12">
-        <h2 className="text-2xl font-bold mb-6">Related items</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-          {/* Placeholder for related items - using dummy data for demonstration */}
-          {[1, 2, 3, 4, 5].map((item) => (
-            <Card
-              key={item}
-              className="p-4 flex flex-col items-center text-center"
-            >
-              <div className="relative w-full h-32 bg-muted rounded-md mb-2 overflow-hidden">
-                <Image
-                  src={`/placeholder-avatar.jpg`} // Using a generic placeholder image
-                  alt={`Related Item ${item}`}
-                  layout="fill"
-                  objectFit="cover"
-                  onError={(e) =>
-                    console.error(
-                      "Related item image error:",
-                      e.currentTarget.src
-                    )
-                  }
-                />
-              </div>
-              <p className="text-sm font-semibold text-foreground">
-                Related Item {item}
-              </p>
-              <p className="text-xs text-muted-foreground">
-                ETB {item * 100}.00
-              </p>
-              <Button variant="ghost" size="sm" className="mt-2">
-                View
-              </Button>
-            </Card>
-          ))}
+      {isRelatedListingsPending ? (
+        <div className="mt-12">
+          <h2 className="text-2xl font-bold mb-6">Related items</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            {[...Array(5)].map((_, i) => (
+              <Skeleton key={i} className="h-48 w-full" />
+            ))}
+          </div>
         </div>
-      </div>
+      ) : relatedListingsError ? (
+        <div className="mt-12 text-red-500">
+          Error loading related listings: {relatedListingsError.message}
+        </div>
+      ) : relatedListingsData && relatedListingsData.length > 0 ? (
+        <div className="mt-12">
+          <h2 className="text-2xl font-bold mb-6">Related items</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            {relatedListingsData.map((item: RelatedListing) => (
+              <Link key={item.id} href={`/marketplace/${item.id}`}>
+                <Card className="p-4 flex flex-col items-center text-center cursor-pointer hover:shadow-lg transition-shadow">
+                  <div className="relative w-full h-32 bg-muted rounded-md mb-2 overflow-hidden">
+                    <Image
+                      src={item.images[0] || `/placeholder-image.jpg`}
+                      alt={item.title}
+                      layout="fill"
+                      objectFit="cover"
+                      onError={(e) =>
+                        console.error(
+                          "Related item image error:",
+                          e.currentTarget.src
+                        )
+                      }
+                    />
+                  </div>
+                  <p className="text-sm font-semibold text-foreground">
+                    {item.title}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {item.currency} {item.price.toFixed(2)}
+                  </p>
+                  <Button variant="ghost" size="sm" className="mt-2">
+                    View
+                  </Button>
+                </Card>
+              </Link>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <div className="mt-12 text-muted-foreground">
+          No related items found.
+        </div>
+      )}
     </main>
   );
 }

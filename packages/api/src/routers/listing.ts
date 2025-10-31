@@ -189,6 +189,32 @@ export const listingRouter = router({
       };
     }),
 
+  getRelated: publicProcedure
+    .input(z.object({ listingId: z.string(), categoryId: z.string() }))
+    .query(async ({ ctx: { prisma }, input }) => {
+      const relatedListings = await prisma.listing.findMany({
+        where: {
+          category: input.categoryId as CategoryEnum,
+          id: {
+            not: input.listingId, // Exclude the current listing
+          },
+          isPublished: true, // Only show published listings
+        },
+        take: 5, // Limit to 5 related listings
+        orderBy: { createdAt: "desc" }, // Order by creation date
+        select: {
+          id: true,
+          title: true,
+          price: true,
+          currency: true,
+          images: true,
+          rating: true,
+          reviewCount: true,
+        },
+      });
+      return relatedListings;
+    }),
+
   update: protectedProcedure
     .input(updateListingSchema)
     .mutation(async ({ ctx: { prisma, user }, input }) => {
