@@ -142,7 +142,8 @@ exports.Prisma.UserScalarFieldEnum = {
   coins: 'coins',
   walletId: 'walletId',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  isOpenToWork: 'isOpenToWork'
 };
 
 exports.Prisma.SessionScalarFieldEnum = {

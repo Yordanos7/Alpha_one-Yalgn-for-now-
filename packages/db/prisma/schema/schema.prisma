@@ -95,6 +95,7 @@ model User {
   walletId        String?           @unique // One-to-one relation with Wallet
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
+  isOpenToWork    Boolean           @default(false)
 
   // Relations
   listings        Listing[]         @relation("ProviderListings")

@@ -3377,6 +3377,7 @@ export namespace Prisma {
     walletId: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    isOpenToWork: boolean | null
   }
 
   export type UserMaxAggregateOutputType = {
@@ -3401,6 +3402,7 @@ export namespace Prisma {
     walletId: string | null
     createdAt: Date | null
     updatedAt: Date | null
+    isOpenToWork: boolean | null
   }
 
   export type UserCountAggregateOutputType = {
@@ -3426,6 +3428,7 @@ export namespace Prisma {
     walletId: number
     createdAt: number
     updatedAt: number
+    isOpenToWork: number
     _all: number
   }
 
@@ -3460,6 +3463,7 @@ export namespace Prisma {
     walletId?: true
     createdAt?: true
     updatedAt?: true
+    isOpenToWork?: true
   }
 
   export type UserMaxAggregateInputType = {
@@ -3484,6 +3488,7 @@ export namespace Prisma {
     walletId?: true
     createdAt?: true
     updatedAt?: true
+    isOpenToWork?: true
   }
 
   export type UserCountAggregateInputType = {
@@ -3509,6 +3514,7 @@ export namespace Prisma {
     walletId?: true
     createdAt?: true
     updatedAt?: true
+    isOpenToWork?: true
     _all?: true
   }
 
@@ -3621,6 +3627,7 @@ export namespace Prisma {
     walletId: string | null
     createdAt: Date
     updatedAt: Date
+    isOpenToWork: boolean
     _count: UserCountAggregateOutputType | null
     _avg: UserAvgAggregateOutputType | null
     _sum: UserSumAggregateOutputType | null
@@ -3665,6 +3672,7 @@ export namespace Prisma {
     walletId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    isOpenToWork?: boolean
     verification?: boolean | User$verificationArgs<ExtArgs>
     profile?: boolean | User$profileArgs<ExtArgs>
     wallet?: boolean | User$walletArgs<ExtArgs>
@@ -3709,6 +3717,7 @@ export namespace Prisma {
     walletId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    isOpenToWork?: boolean
     verification?: boolean | User$verificationArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -3735,6 +3744,7 @@ export namespace Prisma {
     walletId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    isOpenToWork?: boolean
     verification?: boolean | User$verificationArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -3761,9 +3771,10 @@ export namespace Prisma {
     walletId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    isOpenToWork?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "emailVerified" | "phone" | "passwordHash" | "role" | "accountType" | "onboarded" | "name" | "username" | "bio" | "image" | "location" | "languages" | "isActive" | "isVerified" | "verificationId" | "profileId" | "coins" | "walletId" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "emailVerified" | "phone" | "passwordHash" | "role" | "accountType" | "onboarded" | "name" | "username" | "bio" | "image" | "location" | "languages" | "isActive" | "isVerified" | "verificationId" | "profileId" | "coins" | "walletId" | "createdAt" | "updatedAt" | "isOpenToWork", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     verification?: boolean | User$verificationArgs<ExtArgs>
     profile?: boolean | User$profileArgs<ExtArgs>
@@ -3837,6 +3848,7 @@ export namespace Prisma {
       walletId: string | null
       createdAt: Date
       updatedAt: Date
+      isOpenToWork: boolean
     }, ExtArgs["result"]["user"]>
     composites: {}
   }
@@ -4300,6 +4312,7 @@ export namespace Prisma {
     readonly walletId: FieldRef<"User", 'String'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
     readonly updatedAt: FieldRef<"User", 'DateTime'>
+    readonly isOpenToWork: FieldRef<"User", 'Boolean'>
   }
     
 
@@ -29254,7 +29267,8 @@ export namespace Prisma {
     coins: 'coins',
     walletId: 'walletId',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    updatedAt: 'updatedAt',
+    isOpenToWork: 'isOpenToWork'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -29866,6 +29880,7 @@ export namespace Prisma {
     walletId?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
+    isOpenToWork?: BoolFilter<"User"> | boolean
     verification?: XOR<VerificationNullableScalarRelationFilter, VerificationWhereInput> | null
     profile?: XOR<ProfileNullableScalarRelationFilter, ProfileWhereInput> | null
     wallet?: XOR<WalletNullableScalarRelationFilter, WalletWhereInput> | null
@@ -29909,6 +29924,7 @@ export namespace Prisma {
     walletId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    isOpenToWork?: SortOrder
     verification?: VerificationOrderByWithRelationInput
     profile?: ProfileOrderByWithRelationInput
     wallet?: WalletOrderByWithRelationInput
@@ -29955,6 +29971,7 @@ export namespace Prisma {
     coins?: IntFilter<"User"> | number
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
+    isOpenToWork?: BoolFilter<"User"> | boolean
     verification?: XOR<VerificationNullableScalarRelationFilter, VerificationWhereInput> | null
     profile?: XOR<ProfileNullableScalarRelationFilter, ProfileWhereInput> | null
     wallet?: XOR<WalletNullableScalarRelationFilter, WalletWhereInput> | null
@@ -29998,6 +30015,7 @@ export namespace Prisma {
     walletId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    isOpenToWork?: SortOrder
     _count?: UserCountOrderByAggregateInput
     _avg?: UserAvgOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
@@ -30031,6 +30049,7 @@ export namespace Prisma {
     walletId?: StringNullableWithAggregatesFilter<"User"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
+    isOpenToWork?: BoolWithAggregatesFilter<"User"> | boolean
   }
 
   export type SessionWhereInput = {
@@ -31705,6 +31724,7 @@ export namespace Prisma {
     walletId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    isOpenToWork?: boolean
     verification?: VerificationCreateNestedOneWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     wallet?: WalletCreateNestedOneWithoutUserInput
@@ -31748,6 +31768,7 @@ export namespace Prisma {
     walletId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    isOpenToWork?: boolean
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     wallet?: WalletUncheckedCreateNestedOneWithoutUserInput
     listings?: ListingUncheckedCreateNestedManyWithoutProviderInput
@@ -31789,6 +31810,7 @@ export namespace Prisma {
     walletId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isOpenToWork?: BoolFieldUpdateOperationsInput | boolean
     verification?: VerificationUpdateOneWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     wallet?: WalletUpdateOneWithoutUserNestedInput
@@ -31832,6 +31854,7 @@ export namespace Prisma {
     walletId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isOpenToWork?: BoolFieldUpdateOperationsInput | boolean
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     wallet?: WalletUncheckedUpdateOneWithoutUserNestedInput
     listings?: ListingUncheckedUpdateManyWithoutProviderNestedInput
@@ -31874,6 +31897,7 @@ export namespace Prisma {
     walletId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    isOpenToWork?: boolean
   }
 
   export type UserUpdateManyMutationInput = {
@@ -31898,6 +31922,7 @@ export namespace Prisma {
     walletId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isOpenToWork?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type UserUncheckedUpdateManyInput = {
@@ -31923,6 +31948,7 @@ export namespace Prisma {
     walletId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isOpenToWork?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type SessionCreateInput = {
@@ -33959,6 +33985,7 @@ export namespace Prisma {
     walletId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    isOpenToWork?: SortOrder
   }
 
   export type UserAvgOrderByAggregateInput = {
@@ -33987,6 +34014,7 @@ export namespace Prisma {
     walletId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    isOpenToWork?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
@@ -34011,6 +34039,7 @@ export namespace Prisma {
     walletId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    isOpenToWork?: SortOrder
   }
 
   export type UserSumOrderByAggregateInput = {
@@ -38813,6 +38842,7 @@ export namespace Prisma {
     walletId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    isOpenToWork?: boolean
     verification?: VerificationCreateNestedOneWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     wallet?: WalletCreateNestedOneWithoutUserInput
@@ -38855,6 +38885,7 @@ export namespace Prisma {
     walletId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    isOpenToWork?: boolean
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     wallet?: WalletUncheckedCreateNestedOneWithoutUserInput
     listings?: ListingUncheckedCreateNestedManyWithoutProviderInput
@@ -38911,6 +38942,7 @@ export namespace Prisma {
     walletId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isOpenToWork?: BoolFieldUpdateOperationsInput | boolean
     verification?: VerificationUpdateOneWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     wallet?: WalletUpdateOneWithoutUserNestedInput
@@ -38953,6 +38985,7 @@ export namespace Prisma {
     walletId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isOpenToWork?: BoolFieldUpdateOperationsInput | boolean
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     wallet?: WalletUncheckedUpdateOneWithoutUserNestedInput
     listings?: ListingUncheckedUpdateManyWithoutProviderNestedInput
@@ -38993,6 +39026,7 @@ export namespace Prisma {
     walletId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    isOpenToWork?: boolean
     verification?: VerificationCreateNestedOneWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     wallet?: WalletCreateNestedOneWithoutUserInput
@@ -39035,6 +39069,7 @@ export namespace Prisma {
     walletId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    isOpenToWork?: boolean
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     wallet?: WalletUncheckedCreateNestedOneWithoutUserInput
     listings?: ListingUncheckedCreateNestedManyWithoutProviderInput
@@ -39091,6 +39126,7 @@ export namespace Prisma {
     walletId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isOpenToWork?: BoolFieldUpdateOperationsInput | boolean
     verification?: VerificationUpdateOneWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     wallet?: WalletUpdateOneWithoutUserNestedInput
@@ -39133,6 +39169,7 @@ export namespace Prisma {
     walletId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isOpenToWork?: BoolFieldUpdateOperationsInput | boolean
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     wallet?: WalletUncheckedUpdateOneWithoutUserNestedInput
     listings?: ListingUncheckedUpdateManyWithoutProviderNestedInput
@@ -39225,6 +39262,7 @@ export namespace Prisma {
     walletId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    isOpenToWork?: boolean
     verification?: VerificationCreateNestedOneWithoutUserInput
     wallet?: WalletCreateNestedOneWithoutUserInput
     listings?: ListingCreateNestedManyWithoutProviderInput
@@ -39267,6 +39305,7 @@ export namespace Prisma {
     walletId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    isOpenToWork?: boolean
     wallet?: WalletUncheckedCreateNestedOneWithoutUserInput
     listings?: ListingUncheckedCreateNestedManyWithoutProviderInput
     jobsPosted?: JobUncheckedCreateNestedManyWithoutSeekerInput
@@ -39379,6 +39418,7 @@ export namespace Prisma {
     walletId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isOpenToWork?: BoolFieldUpdateOperationsInput | boolean
     verification?: VerificationUpdateOneWithoutUserNestedInput
     wallet?: WalletUpdateOneWithoutUserNestedInput
     listings?: ListingUpdateManyWithoutProviderNestedInput
@@ -39421,6 +39461,7 @@ export namespace Prisma {
     walletId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isOpenToWork?: BoolFieldUpdateOperationsInput | boolean
     wallet?: WalletUncheckedUpdateOneWithoutUserNestedInput
     listings?: ListingUncheckedUpdateManyWithoutProviderNestedInput
     jobsPosted?: JobUncheckedUpdateManyWithoutSeekerNestedInput
@@ -39781,6 +39822,7 @@ export namespace Prisma {
     walletId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    isOpenToWork?: boolean
     verification?: VerificationCreateNestedOneWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     wallet?: WalletCreateNestedOneWithoutUserInput
@@ -39823,6 +39865,7 @@ export namespace Prisma {
     walletId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    isOpenToWork?: boolean
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     wallet?: WalletUncheckedCreateNestedOneWithoutUserInput
     jobsPosted?: JobUncheckedCreateNestedManyWithoutSeekerInput
@@ -39902,6 +39945,7 @@ export namespace Prisma {
     walletId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isOpenToWork?: BoolFieldUpdateOperationsInput | boolean
     verification?: VerificationUpdateOneWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     wallet?: WalletUpdateOneWithoutUserNestedInput
@@ -39944,6 +39988,7 @@ export namespace Prisma {
     walletId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isOpenToWork?: BoolFieldUpdateOperationsInput | boolean
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     wallet?: WalletUncheckedUpdateOneWithoutUserNestedInput
     jobsPosted?: JobUncheckedUpdateManyWithoutSeekerNestedInput
@@ -40047,6 +40092,7 @@ export namespace Prisma {
     walletId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    isOpenToWork?: boolean
     verification?: VerificationCreateNestedOneWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     wallet?: WalletCreateNestedOneWithoutUserInput
@@ -40089,6 +40135,7 @@ export namespace Prisma {
     walletId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    isOpenToWork?: boolean
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     wallet?: WalletUncheckedCreateNestedOneWithoutUserInput
     listings?: ListingUncheckedCreateNestedManyWithoutProviderInput
@@ -40247,6 +40294,7 @@ export namespace Prisma {
     walletId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isOpenToWork?: BoolFieldUpdateOperationsInput | boolean
     verification?: VerificationUpdateOneWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     wallet?: WalletUpdateOneWithoutUserNestedInput
@@ -40289,6 +40337,7 @@ export namespace Prisma {
     walletId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isOpenToWork?: BoolFieldUpdateOperationsInput | boolean
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     wallet?: WalletUncheckedUpdateOneWithoutUserNestedInput
     listings?: ListingUncheckedUpdateManyWithoutProviderNestedInput
@@ -40408,6 +40457,7 @@ export namespace Prisma {
     walletId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    isOpenToWork?: boolean
     verification?: VerificationCreateNestedOneWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     wallet?: WalletCreateNestedOneWithoutUserInput
@@ -40450,6 +40500,7 @@ export namespace Prisma {
     walletId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    isOpenToWork?: boolean
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     wallet?: WalletUncheckedCreateNestedOneWithoutUserInput
     listings?: ListingUncheckedCreateNestedManyWithoutProviderInput
@@ -40559,6 +40610,7 @@ export namespace Prisma {
     walletId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isOpenToWork?: BoolFieldUpdateOperationsInput | boolean
     verification?: VerificationUpdateOneWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     wallet?: WalletUpdateOneWithoutUserNestedInput
@@ -40601,6 +40653,7 @@ export namespace Prisma {
     walletId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isOpenToWork?: BoolFieldUpdateOperationsInput | boolean
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     wallet?: WalletUncheckedUpdateOneWithoutUserNestedInput
     listings?: ListingUncheckedUpdateManyWithoutProviderNestedInput
@@ -40641,6 +40694,7 @@ export namespace Prisma {
     walletId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    isOpenToWork?: boolean
     verification?: VerificationCreateNestedOneWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     wallet?: WalletCreateNestedOneWithoutUserInput
@@ -40683,6 +40737,7 @@ export namespace Prisma {
     walletId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    isOpenToWork?: boolean
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     wallet?: WalletUncheckedCreateNestedOneWithoutUserInput
     listings?: ListingUncheckedCreateNestedManyWithoutProviderInput
@@ -40775,6 +40830,7 @@ export namespace Prisma {
     walletId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    isOpenToWork?: boolean
     verification?: VerificationCreateNestedOneWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     wallet?: WalletCreateNestedOneWithoutUserInput
@@ -40817,6 +40873,7 @@ export namespace Prisma {
     walletId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    isOpenToWork?: boolean
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     wallet?: WalletUncheckedCreateNestedOneWithoutUserInput
     listings?: ListingUncheckedCreateNestedManyWithoutProviderInput
@@ -40926,6 +40983,7 @@ export namespace Prisma {
     walletId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isOpenToWork?: BoolFieldUpdateOperationsInput | boolean
     verification?: VerificationUpdateOneWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     wallet?: WalletUpdateOneWithoutUserNestedInput
@@ -40968,6 +41026,7 @@ export namespace Prisma {
     walletId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isOpenToWork?: BoolFieldUpdateOperationsInput | boolean
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     wallet?: WalletUncheckedUpdateOneWithoutUserNestedInput
     listings?: ListingUncheckedUpdateManyWithoutProviderNestedInput
@@ -41072,6 +41131,7 @@ export namespace Prisma {
     walletId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isOpenToWork?: BoolFieldUpdateOperationsInput | boolean
     verification?: VerificationUpdateOneWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     wallet?: WalletUpdateOneWithoutUserNestedInput
@@ -41114,6 +41174,7 @@ export namespace Prisma {
     walletId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isOpenToWork?: BoolFieldUpdateOperationsInput | boolean
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     wallet?: WalletUncheckedUpdateOneWithoutUserNestedInput
     listings?: ListingUncheckedUpdateManyWithoutProviderNestedInput
@@ -41321,6 +41382,7 @@ export namespace Prisma {
     walletId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    isOpenToWork?: boolean
     verification?: VerificationCreateNestedOneWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     listings?: ListingCreateNestedManyWithoutProviderInput
@@ -41363,6 +41425,7 @@ export namespace Prisma {
     walletId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    isOpenToWork?: boolean
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     listings?: ListingUncheckedCreateNestedManyWithoutProviderInput
     jobsPosted?: JobUncheckedCreateNestedManyWithoutSeekerInput
@@ -41448,6 +41511,7 @@ export namespace Prisma {
     walletId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isOpenToWork?: BoolFieldUpdateOperationsInput | boolean
     verification?: VerificationUpdateOneWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     listings?: ListingUpdateManyWithoutProviderNestedInput
@@ -41490,6 +41554,7 @@ export namespace Prisma {
     walletId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isOpenToWork?: BoolFieldUpdateOperationsInput | boolean
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     listings?: ListingUncheckedUpdateManyWithoutProviderNestedInput
     jobsPosted?: JobUncheckedUpdateManyWithoutSeekerNestedInput
@@ -41578,6 +41643,7 @@ export namespace Prisma {
     walletId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    isOpenToWork?: boolean
     verification?: VerificationCreateNestedOneWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     wallet?: WalletCreateNestedOneWithoutUserInput
@@ -41620,6 +41686,7 @@ export namespace Prisma {
     walletId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    isOpenToWork?: boolean
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     wallet?: WalletUncheckedCreateNestedOneWithoutUserInput
     listings?: ListingUncheckedCreateNestedManyWithoutProviderInput
@@ -41676,6 +41743,7 @@ export namespace Prisma {
     walletId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isOpenToWork?: BoolFieldUpdateOperationsInput | boolean
     verification?: VerificationUpdateOneWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     wallet?: WalletUpdateOneWithoutUserNestedInput
@@ -41718,6 +41786,7 @@ export namespace Prisma {
     walletId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isOpenToWork?: BoolFieldUpdateOperationsInput | boolean
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     wallet?: WalletUncheckedUpdateOneWithoutUserNestedInput
     listings?: ListingUncheckedUpdateManyWithoutProviderNestedInput
@@ -41788,6 +41857,7 @@ export namespace Prisma {
     walletId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    isOpenToWork?: boolean
     verification?: VerificationCreateNestedOneWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     wallet?: WalletCreateNestedOneWithoutUserInput
@@ -41830,6 +41900,7 @@ export namespace Prisma {
     walletId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    isOpenToWork?: boolean
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     wallet?: WalletUncheckedCreateNestedOneWithoutUserInput
     listings?: ListingUncheckedCreateNestedManyWithoutProviderInput
@@ -41911,6 +41982,7 @@ export namespace Prisma {
     walletId?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
     updatedAt?: DateTimeFilter<"User"> | Date | string
+    isOpenToWork?: BoolFilter<"User"> | boolean
   }
 
   export type ConversationCreateWithoutMessagesInput = {
@@ -41958,6 +42030,7 @@ export namespace Prisma {
     walletId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    isOpenToWork?: boolean
     verification?: VerificationCreateNestedOneWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     wallet?: WalletCreateNestedOneWithoutUserInput
@@ -42000,6 +42073,7 @@ export namespace Prisma {
     walletId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    isOpenToWork?: boolean
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     wallet?: WalletUncheckedCreateNestedOneWithoutUserInput
     listings?: ListingUncheckedCreateNestedManyWithoutProviderInput
@@ -42045,6 +42119,7 @@ export namespace Prisma {
     walletId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    isOpenToWork?: boolean
     verification?: VerificationCreateNestedOneWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     wallet?: WalletCreateNestedOneWithoutUserInput
@@ -42087,6 +42162,7 @@ export namespace Prisma {
     walletId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    isOpenToWork?: boolean
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     wallet?: WalletUncheckedCreateNestedOneWithoutUserInput
     listings?: ListingUncheckedCreateNestedManyWithoutProviderInput
@@ -42172,6 +42248,7 @@ export namespace Prisma {
     walletId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isOpenToWork?: BoolFieldUpdateOperationsInput | boolean
     verification?: VerificationUpdateOneWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     wallet?: WalletUpdateOneWithoutUserNestedInput
@@ -42214,6 +42291,7 @@ export namespace Prisma {
     walletId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isOpenToWork?: BoolFieldUpdateOperationsInput | boolean
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     wallet?: WalletUncheckedUpdateOneWithoutUserNestedInput
     listings?: ListingUncheckedUpdateManyWithoutProviderNestedInput
@@ -42265,6 +42343,7 @@ export namespace Prisma {
     walletId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isOpenToWork?: BoolFieldUpdateOperationsInput | boolean
     verification?: VerificationUpdateOneWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     wallet?: WalletUpdateOneWithoutUserNestedInput
@@ -42307,6 +42386,7 @@ export namespace Prisma {
     walletId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isOpenToWork?: BoolFieldUpdateOperationsInput | boolean
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     wallet?: WalletUncheckedUpdateOneWithoutUserNestedInput
     listings?: ListingUncheckedUpdateManyWithoutProviderNestedInput
@@ -42347,6 +42427,7 @@ export namespace Prisma {
     walletId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    isOpenToWork?: boolean
     verification?: VerificationCreateNestedOneWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     wallet?: WalletCreateNestedOneWithoutUserInput
@@ -42389,6 +42470,7 @@ export namespace Prisma {
     walletId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    isOpenToWork?: boolean
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     wallet?: WalletUncheckedCreateNestedOneWithoutUserInput
     listings?: ListingUncheckedCreateNestedManyWithoutProviderInput
@@ -42434,6 +42516,7 @@ export namespace Prisma {
     walletId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    isOpenToWork?: boolean
     verification?: VerificationCreateNestedOneWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     wallet?: WalletCreateNestedOneWithoutUserInput
@@ -42476,6 +42559,7 @@ export namespace Prisma {
     walletId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    isOpenToWork?: boolean
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     wallet?: WalletUncheckedCreateNestedOneWithoutUserInput
     listings?: ListingUncheckedCreateNestedManyWithoutProviderInput
@@ -42532,6 +42616,7 @@ export namespace Prisma {
     walletId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isOpenToWork?: BoolFieldUpdateOperationsInput | boolean
     verification?: VerificationUpdateOneWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     wallet?: WalletUpdateOneWithoutUserNestedInput
@@ -42574,6 +42659,7 @@ export namespace Prisma {
     walletId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isOpenToWork?: BoolFieldUpdateOperationsInput | boolean
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     wallet?: WalletUncheckedUpdateOneWithoutUserNestedInput
     listings?: ListingUncheckedUpdateManyWithoutProviderNestedInput
@@ -42625,6 +42711,7 @@ export namespace Prisma {
     walletId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isOpenToWork?: BoolFieldUpdateOperationsInput | boolean
     verification?: VerificationUpdateOneWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     wallet?: WalletUpdateOneWithoutUserNestedInput
@@ -42667,6 +42754,7 @@ export namespace Prisma {
     walletId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isOpenToWork?: BoolFieldUpdateOperationsInput | boolean
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     wallet?: WalletUncheckedUpdateOneWithoutUserNestedInput
     listings?: ListingUncheckedUpdateManyWithoutProviderNestedInput
@@ -42811,6 +42899,7 @@ export namespace Prisma {
     walletId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    isOpenToWork?: boolean
     verification?: VerificationCreateNestedOneWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     wallet?: WalletCreateNestedOneWithoutUserInput
@@ -42853,6 +42942,7 @@ export namespace Prisma {
     walletId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    isOpenToWork?: boolean
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     wallet?: WalletUncheckedCreateNestedOneWithoutUserInput
     listings?: ListingUncheckedCreateNestedManyWithoutProviderInput
@@ -42909,6 +42999,7 @@ export namespace Prisma {
     walletId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isOpenToWork?: BoolFieldUpdateOperationsInput | boolean
     verification?: VerificationUpdateOneWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     wallet?: WalletUpdateOneWithoutUserNestedInput
@@ -42951,6 +43042,7 @@ export namespace Prisma {
     walletId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isOpenToWork?: BoolFieldUpdateOperationsInput | boolean
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     wallet?: WalletUncheckedUpdateOneWithoutUserNestedInput
     listings?: ListingUncheckedUpdateManyWithoutProviderNestedInput
@@ -42991,6 +43083,7 @@ export namespace Prisma {
     walletId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    isOpenToWork?: boolean
     verification?: VerificationCreateNestedOneWithoutUserInput
     profile?: ProfileCreateNestedOneWithoutUserInput
     wallet?: WalletCreateNestedOneWithoutUserInput
@@ -43033,6 +43126,7 @@ export namespace Prisma {
     walletId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    isOpenToWork?: boolean
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     wallet?: WalletUncheckedCreateNestedOneWithoutUserInput
     listings?: ListingUncheckedCreateNestedManyWithoutProviderInput
@@ -43089,6 +43183,7 @@ export namespace Prisma {
     walletId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isOpenToWork?: BoolFieldUpdateOperationsInput | boolean
     verification?: VerificationUpdateOneWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     wallet?: WalletUpdateOneWithoutUserNestedInput
@@ -43131,6 +43226,7 @@ export namespace Prisma {
     walletId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isOpenToWork?: BoolFieldUpdateOperationsInput | boolean
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     wallet?: WalletUncheckedUpdateOneWithoutUserNestedInput
     listings?: ListingUncheckedUpdateManyWithoutProviderNestedInput
@@ -43171,6 +43267,7 @@ export namespace Prisma {
     walletId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    isOpenToWork?: boolean
     profile?: ProfileCreateNestedOneWithoutUserInput
     wallet?: WalletCreateNestedOneWithoutUserInput
     listings?: ListingCreateNestedManyWithoutProviderInput
@@ -43212,6 +43309,7 @@ export namespace Prisma {
     walletId?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    isOpenToWork?: boolean
     profile?: ProfileUncheckedCreateNestedOneWithoutUserInput
     wallet?: WalletUncheckedCreateNestedOneWithoutUserInput
     listings?: ListingUncheckedCreateNestedManyWithoutProviderInput
@@ -43269,6 +43367,7 @@ export namespace Prisma {
     walletId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isOpenToWork?: BoolFieldUpdateOperationsInput | boolean
     profile?: ProfileUpdateOneWithoutUserNestedInput
     wallet?: WalletUpdateOneWithoutUserNestedInput
     listings?: ListingUpdateManyWithoutProviderNestedInput
@@ -43310,6 +43409,7 @@ export namespace Prisma {
     walletId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isOpenToWork?: BoolFieldUpdateOperationsInput | boolean
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     wallet?: WalletUncheckedUpdateOneWithoutUserNestedInput
     listings?: ListingUncheckedUpdateManyWithoutProviderNestedInput
@@ -44576,6 +44676,7 @@ export namespace Prisma {
     walletId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isOpenToWork?: BoolFieldUpdateOperationsInput | boolean
     verification?: VerificationUpdateOneWithoutUserNestedInput
     profile?: ProfileUpdateOneWithoutUserNestedInput
     wallet?: WalletUpdateOneWithoutUserNestedInput
@@ -44618,6 +44719,7 @@ export namespace Prisma {
     walletId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isOpenToWork?: BoolFieldUpdateOperationsInput | boolean
     profile?: ProfileUncheckedUpdateOneWithoutUserNestedInput
     wallet?: WalletUncheckedUpdateOneWithoutUserNestedInput
     listings?: ListingUncheckedUpdateManyWithoutProviderNestedInput
@@ -44659,6 +44761,7 @@ export namespace Prisma {
     walletId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    isOpenToWork?: BoolFieldUpdateOperationsInput | boolean
   }
 
 
