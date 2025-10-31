@@ -1,6 +1,6 @@
-import { protectedProcedure, router } from "../index";
+import { protectedProcedure, router } from "../index"; /// thisb is import for trpc router
 import { TRPCError } from "@trpc/server";
-import { z } from "zod";
+import { z } from "zod"; // zod for input validation of the data from the client
 import { auth } from "@Alpha/auth"; // Better-Auth instance
 import { fromNodeHeaders } from "better-auth/node";
 import { AccountType } from "@Alpha/db"; // Import AccountType enum from @Alpha/db
@@ -27,6 +27,7 @@ export const userRouter = router({
           bio: true,
           location: true,
           accountType: true, // Add accountType here
+          isOpenToWork: true,
           profile: {
             select: {
               skills: {
@@ -46,6 +47,7 @@ export const userRouter = router({
               successRate: true,
               portfolio: true,
               education: true,
+
               experience: true,
             },
           },
@@ -532,6 +534,40 @@ export const userRouter = router({
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
           message: "Failed to update freelancer public status",
+        });
+      }
+    }),
+
+  updateIsOpenToWork: protectedProcedure
+    .input(z.object({ isOpenToWork: z.boolean() }))
+    .mutation(async ({ ctx: { user, prisma, req, res }, input }) => {
+      if (!user?.id) {
+        throw new TRPCError({
+          code: "UNAUTHORIZED",
+          message: "Not authenticated",
+        });
+      }
+      try {
+        const updatedUser = await prisma.user.update({
+          where: { id: user.id },
+          data: {
+            isOpenToWork: input.isOpenToWork,
+          },
+        });
+        // this is for refetch the session for update the cookie
+        await auth.api.getSession({
+          headers: fromNodeHeaders(req.headers),
+        });
+        return {
+          message:
+            "the user is open to work the status is updated successfully",
+          isOpenToWork: updatedUser.isOpenToWork,
+        };
+      } catch (error) {
+        console.error("Error Update isOpenToWork status got error:", error);
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Failed to update isOpenToWork status",
         });
       }
     }),
