@@ -165,10 +165,12 @@ export const MarketPlaceFilters: React.FC<FilterProps> = ({
 
   // Use useMemo to re-filter only when dependencies change
   const memoizedFilteredListings = useMemo(() => {
-    const result = applyFilters();
-    onFilteredListingsChange(result); // Notify parent component of filtered listings
-    return result;
-  }, [applyFilters, onFilteredListingsChange]);
+    return applyFilters();
+  }, [applyFilters]);
+
+  React.useEffect(() => {
+    onFilteredListingsChange(memoizedFilteredListings);
+  }, [memoizedFilteredListings, onFilteredListingsChange]);
 
   console.log("this is category I get from Backend", dynamicCategories);
 

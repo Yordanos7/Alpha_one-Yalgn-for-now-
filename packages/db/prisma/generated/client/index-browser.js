@@ -191,7 +191,13 @@ exports.Prisma.ProfileScalarFieldEnum = {
   howHearOther: 'howHearOther',
   individualFocus: 'individualFocus',
   organizationPurpose: 'organizationPurpose',
-  isPublicFreelancer: 'isPublicFreelancer'
+  isPublicFreelancer: 'isPublicFreelancer',
+  mainCategory: 'mainCategory',
+  rateTypePreference: 'rateTypePreference',
+  experienceLevel: 'experienceLevel',
+  averageRating: 'averageRating',
+  freelancerLevel: 'freelancerLevel',
+  deliveryTime: 'deliveryTime'
 };
 
 exports.Prisma.SkillScalarFieldEnum = {
@@ -451,6 +457,25 @@ exports.CategoryEnum = exports.$Enums.CategoryEnum = {
 exports.JobType = exports.$Enums.JobType = {
   FIXED: 'FIXED',
   HOURLY: 'HOURLY'
+};
+
+exports.ExperienceLevel = exports.$Enums.ExperienceLevel = {
+  ENTRY: 'ENTRY',
+  INTERMEDIATE: 'INTERMEDIATE',
+  EXPERT: 'EXPERT'
+};
+
+exports.FreelancerLevel = exports.$Enums.FreelancerLevel = {
+  JUNIOR: 'JUNIOR',
+  MID: 'MID',
+  SENIOR: 'SENIOR'
+};
+
+exports.DeliveryTime = exports.$Enums.DeliveryTime = {
+  ONE_TO_THREE_DAYS: 'ONE_TO_THREE_DAYS',
+  THREE_TO_SEVEN_DAYS: 'THREE_TO_SEVEN_DAYS',
+  ONE_TO_TWO_WEEKS: 'ONE_TO_TWO_WEEKS',
+  TWO_TO_FOUR_WEEKS: 'TWO_TO_FOUR_WEEKS'
 };
 
 exports.JobStatus = exports.$Enums.JobStatus = {

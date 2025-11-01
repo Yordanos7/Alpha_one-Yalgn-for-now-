@@ -215,6 +215,34 @@ export const AccountType: {
 export type AccountType = (typeof AccountType)[keyof typeof AccountType]
 
 
+export const ExperienceLevel: {
+  ENTRY: 'ENTRY',
+  INTERMEDIATE: 'INTERMEDIATE',
+  EXPERT: 'EXPERT'
+};
+
+export type ExperienceLevel = (typeof ExperienceLevel)[keyof typeof ExperienceLevel]
+
+
+export const FreelancerLevel: {
+  JUNIOR: 'JUNIOR',
+  MID: 'MID',
+  SENIOR: 'SENIOR'
+};
+
+export type FreelancerLevel = (typeof FreelancerLevel)[keyof typeof FreelancerLevel]
+
+
+export const DeliveryTime: {
+  ONE_TO_THREE_DAYS: 'ONE_TO_THREE_DAYS',
+  THREE_TO_SEVEN_DAYS: 'THREE_TO_SEVEN_DAYS',
+  ONE_TO_TWO_WEEKS: 'ONE_TO_TWO_WEEKS',
+  TWO_TO_FOUR_WEEKS: 'TWO_TO_FOUR_WEEKS'
+};
+
+export type DeliveryTime = (typeof DeliveryTime)[keyof typeof DeliveryTime]
+
+
 export const CategoryEnum: {
   TECHNOLOGY: 'TECHNOLOGY',
   CREATIVE: 'CREATIVE',
@@ -264,6 +292,18 @@ export const NotificationType: typeof $Enums.NotificationType
 export type AccountType = $Enums.AccountType
 
 export const AccountType: typeof $Enums.AccountType
+
+export type ExperienceLevel = $Enums.ExperienceLevel
+
+export const ExperienceLevel: typeof $Enums.ExperienceLevel
+
+export type FreelancerLevel = $Enums.FreelancerLevel
+
+export const FreelancerLevel: typeof $Enums.FreelancerLevel
+
+export type DeliveryTime = $Enums.DeliveryTime
+
+export const DeliveryTime: typeof $Enums.DeliveryTime
 
 export type CategoryEnum = $Enums.CategoryEnum
 
@@ -7419,12 +7459,14 @@ export namespace Prisma {
     hourlyRate: number | null
     completedJobs: number | null
     successRate: number | null
+    averageRating: number | null
   }
 
   export type ProfileSumAggregateOutputType = {
     hourlyRate: number | null
     completedJobs: number | null
     successRate: number | null
+    averageRating: number | null
   }
 
   export type ProfileMinAggregateOutputType = {
@@ -7443,6 +7485,12 @@ export namespace Prisma {
     individualFocus: string | null
     organizationPurpose: string | null
     isPublicFreelancer: boolean | null
+    mainCategory: $Enums.CategoryEnum | null
+    rateTypePreference: $Enums.JobType | null
+    experienceLevel: $Enums.ExperienceLevel | null
+    averageRating: number | null
+    freelancerLevel: $Enums.FreelancerLevel | null
+    deliveryTime: $Enums.DeliveryTime | null
   }
 
   export type ProfileMaxAggregateOutputType = {
@@ -7461,6 +7509,12 @@ export namespace Prisma {
     individualFocus: string | null
     organizationPurpose: string | null
     isPublicFreelancer: boolean | null
+    mainCategory: $Enums.CategoryEnum | null
+    rateTypePreference: $Enums.JobType | null
+    experienceLevel: $Enums.ExperienceLevel | null
+    averageRating: number | null
+    freelancerLevel: $Enums.FreelancerLevel | null
+    deliveryTime: $Enums.DeliveryTime | null
   }
 
   export type ProfileCountAggregateOutputType = {
@@ -7482,6 +7536,12 @@ export namespace Prisma {
     individualFocus: number
     organizationPurpose: number
     isPublicFreelancer: number
+    mainCategory: number
+    rateTypePreference: number
+    experienceLevel: number
+    averageRating: number
+    freelancerLevel: number
+    deliveryTime: number
     _all: number
   }
 
@@ -7490,12 +7550,14 @@ export namespace Prisma {
     hourlyRate?: true
     completedJobs?: true
     successRate?: true
+    averageRating?: true
   }
 
   export type ProfileSumAggregateInputType = {
     hourlyRate?: true
     completedJobs?: true
     successRate?: true
+    averageRating?: true
   }
 
   export type ProfileMinAggregateInputType = {
@@ -7514,6 +7576,12 @@ export namespace Prisma {
     individualFocus?: true
     organizationPurpose?: true
     isPublicFreelancer?: true
+    mainCategory?: true
+    rateTypePreference?: true
+    experienceLevel?: true
+    averageRating?: true
+    freelancerLevel?: true
+    deliveryTime?: true
   }
 
   export type ProfileMaxAggregateInputType = {
@@ -7532,6 +7600,12 @@ export namespace Prisma {
     individualFocus?: true
     organizationPurpose?: true
     isPublicFreelancer?: true
+    mainCategory?: true
+    rateTypePreference?: true
+    experienceLevel?: true
+    averageRating?: true
+    freelancerLevel?: true
+    deliveryTime?: true
   }
 
   export type ProfileCountAggregateInputType = {
@@ -7553,6 +7627,12 @@ export namespace Prisma {
     individualFocus?: true
     organizationPurpose?: true
     isPublicFreelancer?: true
+    mainCategory?: true
+    rateTypePreference?: true
+    experienceLevel?: true
+    averageRating?: true
+    freelancerLevel?: true
+    deliveryTime?: true
     _all?: true
   }
 
@@ -7661,6 +7741,12 @@ export namespace Prisma {
     individualFocus: string | null
     organizationPurpose: string | null
     isPublicFreelancer: boolean
+    mainCategory: $Enums.CategoryEnum | null
+    rateTypePreference: $Enums.JobType | null
+    experienceLevel: $Enums.ExperienceLevel | null
+    averageRating: number | null
+    freelancerLevel: $Enums.FreelancerLevel | null
+    deliveryTime: $Enums.DeliveryTime | null
     _count: ProfileCountAggregateOutputType | null
     _avg: ProfileAvgAggregateOutputType | null
     _sum: ProfileSumAggregateOutputType | null
@@ -7701,6 +7787,12 @@ export namespace Prisma {
     individualFocus?: boolean
     organizationPurpose?: boolean
     isPublicFreelancer?: boolean
+    mainCategory?: boolean
+    rateTypePreference?: boolean
+    experienceLevel?: boolean
+    averageRating?: boolean
+    freelancerLevel?: boolean
+    deliveryTime?: boolean
     portfolio?: boolean | Profile$portfolioArgs<ExtArgs>
     skills?: boolean | Profile$skillsArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
@@ -7726,6 +7818,12 @@ export namespace Prisma {
     individualFocus?: boolean
     organizationPurpose?: boolean
     isPublicFreelancer?: boolean
+    mainCategory?: boolean
+    rateTypePreference?: boolean
+    experienceLevel?: boolean
+    averageRating?: boolean
+    freelancerLevel?: boolean
+    deliveryTime?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["profile"]>
 
@@ -7748,6 +7846,12 @@ export namespace Prisma {
     individualFocus?: boolean
     organizationPurpose?: boolean
     isPublicFreelancer?: boolean
+    mainCategory?: boolean
+    rateTypePreference?: boolean
+    experienceLevel?: boolean
+    averageRating?: boolean
+    freelancerLevel?: boolean
+    deliveryTime?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["profile"]>
 
@@ -7770,9 +7874,15 @@ export namespace Prisma {
     individualFocus?: boolean
     organizationPurpose?: boolean
     isPublicFreelancer?: boolean
+    mainCategory?: boolean
+    rateTypePreference?: boolean
+    experienceLevel?: boolean
+    averageRating?: boolean
+    freelancerLevel?: boolean
+    deliveryTime?: boolean
   }
 
-  export type ProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "headline" | "hourlyRate" | "currency" | "availability" | "experience" | "education" | "completedJobs" | "successRate" | "createdAt" | "updatedAt" | "goals" | "howHear" | "howHearOther" | "individualFocus" | "organizationPurpose" | "isPublicFreelancer", ExtArgs["result"]["profile"]>
+  export type ProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "headline" | "hourlyRate" | "currency" | "availability" | "experience" | "education" | "completedJobs" | "successRate" | "createdAt" | "updatedAt" | "goals" | "howHear" | "howHearOther" | "individualFocus" | "organizationPurpose" | "isPublicFreelancer" | "mainCategory" | "rateTypePreference" | "experienceLevel" | "averageRating" | "freelancerLevel" | "deliveryTime", ExtArgs["result"]["profile"]>
   export type ProfileInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     portfolio?: boolean | Profile$portfolioArgs<ExtArgs>
     skills?: boolean | Profile$skillsArgs<ExtArgs>
@@ -7812,6 +7922,12 @@ export namespace Prisma {
       individualFocus: string | null
       organizationPurpose: string | null
       isPublicFreelancer: boolean
+      mainCategory: $Enums.CategoryEnum | null
+      rateTypePreference: $Enums.JobType | null
+      experienceLevel: $Enums.ExperienceLevel | null
+      averageRating: number | null
+      freelancerLevel: $Enums.FreelancerLevel | null
+      deliveryTime: $Enums.DeliveryTime | null
     }, ExtArgs["result"]["profile"]>
     composites: {}
   }
@@ -8256,6 +8372,12 @@ export namespace Prisma {
     readonly individualFocus: FieldRef<"Profile", 'String'>
     readonly organizationPurpose: FieldRef<"Profile", 'String'>
     readonly isPublicFreelancer: FieldRef<"Profile", 'Boolean'>
+    readonly mainCategory: FieldRef<"Profile", 'CategoryEnum'>
+    readonly rateTypePreference: FieldRef<"Profile", 'JobType'>
+    readonly experienceLevel: FieldRef<"Profile", 'ExperienceLevel'>
+    readonly averageRating: FieldRef<"Profile", 'Float'>
+    readonly freelancerLevel: FieldRef<"Profile", 'FreelancerLevel'>
+    readonly deliveryTime: FieldRef<"Profile", 'DeliveryTime'>
   }
     
 
@@ -29325,7 +29447,13 @@ export namespace Prisma {
     howHearOther: 'howHearOther',
     individualFocus: 'individualFocus',
     organizationPurpose: 'organizationPurpose',
-    isPublicFreelancer: 'isPublicFreelancer'
+    isPublicFreelancer: 'isPublicFreelancer',
+    mainCategory: 'mainCategory',
+    rateTypePreference: 'rateTypePreference',
+    experienceLevel: 'experienceLevel',
+    averageRating: 'averageRating',
+    freelancerLevel: 'freelancerLevel',
+    deliveryTime: 'deliveryTime'
   };
 
   export type ProfileScalarFieldEnum = (typeof ProfileScalarFieldEnum)[keyof typeof ProfileScalarFieldEnum]
@@ -29778,6 +29906,48 @@ export namespace Prisma {
    * Reference to a field of type 'JobType[]'
    */
   export type ListEnumJobTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'JobType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'ExperienceLevel'
+   */
+  export type EnumExperienceLevelFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ExperienceLevel'>
+    
+
+
+  /**
+   * Reference to a field of type 'ExperienceLevel[]'
+   */
+  export type ListEnumExperienceLevelFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ExperienceLevel[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'FreelancerLevel'
+   */
+  export type EnumFreelancerLevelFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FreelancerLevel'>
+    
+
+
+  /**
+   * Reference to a field of type 'FreelancerLevel[]'
+   */
+  export type ListEnumFreelancerLevelFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FreelancerLevel[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'DeliveryTime'
+   */
+  export type EnumDeliveryTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DeliveryTime'>
+    
+
+
+  /**
+   * Reference to a field of type 'DeliveryTime[]'
+   */
+  export type ListEnumDeliveryTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DeliveryTime[]'>
     
 
 
@@ -30239,6 +30409,12 @@ export namespace Prisma {
     individualFocus?: StringNullableFilter<"Profile"> | string | null
     organizationPurpose?: StringNullableFilter<"Profile"> | string | null
     isPublicFreelancer?: BoolFilter<"Profile"> | boolean
+    mainCategory?: EnumCategoryEnumNullableFilter<"Profile"> | $Enums.CategoryEnum | null
+    rateTypePreference?: EnumJobTypeNullableFilter<"Profile"> | $Enums.JobType | null
+    experienceLevel?: EnumExperienceLevelNullableFilter<"Profile"> | $Enums.ExperienceLevel | null
+    averageRating?: FloatNullableFilter<"Profile"> | number | null
+    freelancerLevel?: EnumFreelancerLevelNullableFilter<"Profile"> | $Enums.FreelancerLevel | null
+    deliveryTime?: EnumDeliveryTimeNullableFilter<"Profile"> | $Enums.DeliveryTime | null
     portfolio?: PortfolioListRelationFilter
     skills?: ProfileSkillListRelationFilter
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -30263,6 +30439,12 @@ export namespace Prisma {
     individualFocus?: SortOrderInput | SortOrder
     organizationPurpose?: SortOrderInput | SortOrder
     isPublicFreelancer?: SortOrder
+    mainCategory?: SortOrderInput | SortOrder
+    rateTypePreference?: SortOrderInput | SortOrder
+    experienceLevel?: SortOrderInput | SortOrder
+    averageRating?: SortOrderInput | SortOrder
+    freelancerLevel?: SortOrderInput | SortOrder
+    deliveryTime?: SortOrderInput | SortOrder
     portfolio?: PortfolioOrderByRelationAggregateInput
     skills?: ProfileSkillOrderByRelationAggregateInput
     user?: UserOrderByWithRelationInput
@@ -30290,6 +30472,12 @@ export namespace Prisma {
     individualFocus?: StringNullableFilter<"Profile"> | string | null
     organizationPurpose?: StringNullableFilter<"Profile"> | string | null
     isPublicFreelancer?: BoolFilter<"Profile"> | boolean
+    mainCategory?: EnumCategoryEnumNullableFilter<"Profile"> | $Enums.CategoryEnum | null
+    rateTypePreference?: EnumJobTypeNullableFilter<"Profile"> | $Enums.JobType | null
+    experienceLevel?: EnumExperienceLevelNullableFilter<"Profile"> | $Enums.ExperienceLevel | null
+    averageRating?: FloatNullableFilter<"Profile"> | number | null
+    freelancerLevel?: EnumFreelancerLevelNullableFilter<"Profile"> | $Enums.FreelancerLevel | null
+    deliveryTime?: EnumDeliveryTimeNullableFilter<"Profile"> | $Enums.DeliveryTime | null
     portfolio?: PortfolioListRelationFilter
     skills?: ProfileSkillListRelationFilter
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
@@ -30314,6 +30502,12 @@ export namespace Prisma {
     individualFocus?: SortOrderInput | SortOrder
     organizationPurpose?: SortOrderInput | SortOrder
     isPublicFreelancer?: SortOrder
+    mainCategory?: SortOrderInput | SortOrder
+    rateTypePreference?: SortOrderInput | SortOrder
+    experienceLevel?: SortOrderInput | SortOrder
+    averageRating?: SortOrderInput | SortOrder
+    freelancerLevel?: SortOrderInput | SortOrder
+    deliveryTime?: SortOrderInput | SortOrder
     _count?: ProfileCountOrderByAggregateInput
     _avg?: ProfileAvgOrderByAggregateInput
     _max?: ProfileMaxOrderByAggregateInput
@@ -30343,6 +30537,12 @@ export namespace Prisma {
     individualFocus?: StringNullableWithAggregatesFilter<"Profile"> | string | null
     organizationPurpose?: StringNullableWithAggregatesFilter<"Profile"> | string | null
     isPublicFreelancer?: BoolWithAggregatesFilter<"Profile"> | boolean
+    mainCategory?: EnumCategoryEnumNullableWithAggregatesFilter<"Profile"> | $Enums.CategoryEnum | null
+    rateTypePreference?: EnumJobTypeNullableWithAggregatesFilter<"Profile"> | $Enums.JobType | null
+    experienceLevel?: EnumExperienceLevelNullableWithAggregatesFilter<"Profile"> | $Enums.ExperienceLevel | null
+    averageRating?: FloatNullableWithAggregatesFilter<"Profile"> | number | null
+    freelancerLevel?: EnumFreelancerLevelNullableWithAggregatesFilter<"Profile"> | $Enums.FreelancerLevel | null
+    deliveryTime?: EnumDeliveryTimeNullableWithAggregatesFilter<"Profile"> | $Enums.DeliveryTime | null
   }
 
   export type SkillWhereInput = {
@@ -32156,6 +32356,12 @@ export namespace Prisma {
     individualFocus?: string | null
     organizationPurpose?: string | null
     isPublicFreelancer?: boolean
+    mainCategory?: $Enums.CategoryEnum | null
+    rateTypePreference?: $Enums.JobType | null
+    experienceLevel?: $Enums.ExperienceLevel | null
+    averageRating?: number | null
+    freelancerLevel?: $Enums.FreelancerLevel | null
+    deliveryTime?: $Enums.DeliveryTime | null
     portfolio?: PortfolioCreateNestedManyWithoutProfileInput
     skills?: ProfileSkillCreateNestedManyWithoutProfileInput
     user: UserCreateNestedOneWithoutProfileInput
@@ -32180,6 +32386,12 @@ export namespace Prisma {
     individualFocus?: string | null
     organizationPurpose?: string | null
     isPublicFreelancer?: boolean
+    mainCategory?: $Enums.CategoryEnum | null
+    rateTypePreference?: $Enums.JobType | null
+    experienceLevel?: $Enums.ExperienceLevel | null
+    averageRating?: number | null
+    freelancerLevel?: $Enums.FreelancerLevel | null
+    deliveryTime?: $Enums.DeliveryTime | null
     portfolio?: PortfolioUncheckedCreateNestedManyWithoutProfileInput
     skills?: ProfileSkillUncheckedCreateNestedManyWithoutProfileInput
   }
@@ -32202,6 +32414,12 @@ export namespace Prisma {
     individualFocus?: NullableStringFieldUpdateOperationsInput | string | null
     organizationPurpose?: NullableStringFieldUpdateOperationsInput | string | null
     isPublicFreelancer?: BoolFieldUpdateOperationsInput | boolean
+    mainCategory?: NullableEnumCategoryEnumFieldUpdateOperationsInput | $Enums.CategoryEnum | null
+    rateTypePreference?: NullableEnumJobTypeFieldUpdateOperationsInput | $Enums.JobType | null
+    experienceLevel?: NullableEnumExperienceLevelFieldUpdateOperationsInput | $Enums.ExperienceLevel | null
+    averageRating?: NullableFloatFieldUpdateOperationsInput | number | null
+    freelancerLevel?: NullableEnumFreelancerLevelFieldUpdateOperationsInput | $Enums.FreelancerLevel | null
+    deliveryTime?: NullableEnumDeliveryTimeFieldUpdateOperationsInput | $Enums.DeliveryTime | null
     portfolio?: PortfolioUpdateManyWithoutProfileNestedInput
     skills?: ProfileSkillUpdateManyWithoutProfileNestedInput
     user?: UserUpdateOneRequiredWithoutProfileNestedInput
@@ -32226,6 +32444,12 @@ export namespace Prisma {
     individualFocus?: NullableStringFieldUpdateOperationsInput | string | null
     organizationPurpose?: NullableStringFieldUpdateOperationsInput | string | null
     isPublicFreelancer?: BoolFieldUpdateOperationsInput | boolean
+    mainCategory?: NullableEnumCategoryEnumFieldUpdateOperationsInput | $Enums.CategoryEnum | null
+    rateTypePreference?: NullableEnumJobTypeFieldUpdateOperationsInput | $Enums.JobType | null
+    experienceLevel?: NullableEnumExperienceLevelFieldUpdateOperationsInput | $Enums.ExperienceLevel | null
+    averageRating?: NullableFloatFieldUpdateOperationsInput | number | null
+    freelancerLevel?: NullableEnumFreelancerLevelFieldUpdateOperationsInput | $Enums.FreelancerLevel | null
+    deliveryTime?: NullableEnumDeliveryTimeFieldUpdateOperationsInput | $Enums.DeliveryTime | null
     portfolio?: PortfolioUncheckedUpdateManyWithoutProfileNestedInput
     skills?: ProfileSkillUncheckedUpdateManyWithoutProfileNestedInput
   }
@@ -32249,6 +32473,12 @@ export namespace Prisma {
     individualFocus?: string | null
     organizationPurpose?: string | null
     isPublicFreelancer?: boolean
+    mainCategory?: $Enums.CategoryEnum | null
+    rateTypePreference?: $Enums.JobType | null
+    experienceLevel?: $Enums.ExperienceLevel | null
+    averageRating?: number | null
+    freelancerLevel?: $Enums.FreelancerLevel | null
+    deliveryTime?: $Enums.DeliveryTime | null
   }
 
   export type ProfileUpdateManyMutationInput = {
@@ -32269,6 +32499,12 @@ export namespace Prisma {
     individualFocus?: NullableStringFieldUpdateOperationsInput | string | null
     organizationPurpose?: NullableStringFieldUpdateOperationsInput | string | null
     isPublicFreelancer?: BoolFieldUpdateOperationsInput | boolean
+    mainCategory?: NullableEnumCategoryEnumFieldUpdateOperationsInput | $Enums.CategoryEnum | null
+    rateTypePreference?: NullableEnumJobTypeFieldUpdateOperationsInput | $Enums.JobType | null
+    experienceLevel?: NullableEnumExperienceLevelFieldUpdateOperationsInput | $Enums.ExperienceLevel | null
+    averageRating?: NullableFloatFieldUpdateOperationsInput | number | null
+    freelancerLevel?: NullableEnumFreelancerLevelFieldUpdateOperationsInput | $Enums.FreelancerLevel | null
+    deliveryTime?: NullableEnumDeliveryTimeFieldUpdateOperationsInput | $Enums.DeliveryTime | null
   }
 
   export type ProfileUncheckedUpdateManyInput = {
@@ -32290,6 +32526,12 @@ export namespace Prisma {
     individualFocus?: NullableStringFieldUpdateOperationsInput | string | null
     organizationPurpose?: NullableStringFieldUpdateOperationsInput | string | null
     isPublicFreelancer?: BoolFieldUpdateOperationsInput | boolean
+    mainCategory?: NullableEnumCategoryEnumFieldUpdateOperationsInput | $Enums.CategoryEnum | null
+    rateTypePreference?: NullableEnumJobTypeFieldUpdateOperationsInput | $Enums.JobType | null
+    experienceLevel?: NullableEnumExperienceLevelFieldUpdateOperationsInput | $Enums.ExperienceLevel | null
+    averageRating?: NullableFloatFieldUpdateOperationsInput | number | null
+    freelancerLevel?: NullableEnumFreelancerLevelFieldUpdateOperationsInput | $Enums.FreelancerLevel | null
+    deliveryTime?: NullableEnumDeliveryTimeFieldUpdateOperationsInput | $Enums.DeliveryTime | null
   }
 
   export type SkillCreateInput = {
@@ -34292,6 +34534,41 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
+  export type EnumCategoryEnumNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.CategoryEnum | EnumCategoryEnumFieldRefInput<$PrismaModel> | null
+    in?: $Enums.CategoryEnum[] | ListEnumCategoryEnumFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.CategoryEnum[] | ListEnumCategoryEnumFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumCategoryEnumNullableFilter<$PrismaModel> | $Enums.CategoryEnum | null
+  }
+
+  export type EnumJobTypeNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.JobType | EnumJobTypeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.JobType[] | ListEnumJobTypeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.JobType[] | ListEnumJobTypeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumJobTypeNullableFilter<$PrismaModel> | $Enums.JobType | null
+  }
+
+  export type EnumExperienceLevelNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.ExperienceLevel | EnumExperienceLevelFieldRefInput<$PrismaModel> | null
+    in?: $Enums.ExperienceLevel[] | ListEnumExperienceLevelFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.ExperienceLevel[] | ListEnumExperienceLevelFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumExperienceLevelNullableFilter<$PrismaModel> | $Enums.ExperienceLevel | null
+  }
+
+  export type EnumFreelancerLevelNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.FreelancerLevel | EnumFreelancerLevelFieldRefInput<$PrismaModel> | null
+    in?: $Enums.FreelancerLevel[] | ListEnumFreelancerLevelFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.FreelancerLevel[] | ListEnumFreelancerLevelFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumFreelancerLevelNullableFilter<$PrismaModel> | $Enums.FreelancerLevel | null
+  }
+
+  export type EnumDeliveryTimeNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.DeliveryTime | EnumDeliveryTimeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.DeliveryTime[] | ListEnumDeliveryTimeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.DeliveryTime[] | ListEnumDeliveryTimeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumDeliveryTimeNullableFilter<$PrismaModel> | $Enums.DeliveryTime | null
+  }
+
   export type PortfolioListRelationFilter = {
     every?: PortfolioWhereInput
     some?: PortfolioWhereInput
@@ -34331,12 +34608,19 @@ export namespace Prisma {
     individualFocus?: SortOrder
     organizationPurpose?: SortOrder
     isPublicFreelancer?: SortOrder
+    mainCategory?: SortOrder
+    rateTypePreference?: SortOrder
+    experienceLevel?: SortOrder
+    averageRating?: SortOrder
+    freelancerLevel?: SortOrder
+    deliveryTime?: SortOrder
   }
 
   export type ProfileAvgOrderByAggregateInput = {
     hourlyRate?: SortOrder
     completedJobs?: SortOrder
     successRate?: SortOrder
+    averageRating?: SortOrder
   }
 
   export type ProfileMaxOrderByAggregateInput = {
@@ -34355,6 +34639,12 @@ export namespace Prisma {
     individualFocus?: SortOrder
     organizationPurpose?: SortOrder
     isPublicFreelancer?: SortOrder
+    mainCategory?: SortOrder
+    rateTypePreference?: SortOrder
+    experienceLevel?: SortOrder
+    averageRating?: SortOrder
+    freelancerLevel?: SortOrder
+    deliveryTime?: SortOrder
   }
 
   export type ProfileMinOrderByAggregateInput = {
@@ -34373,12 +34663,19 @@ export namespace Prisma {
     individualFocus?: SortOrder
     organizationPurpose?: SortOrder
     isPublicFreelancer?: SortOrder
+    mainCategory?: SortOrder
+    rateTypePreference?: SortOrder
+    experienceLevel?: SortOrder
+    averageRating?: SortOrder
+    freelancerLevel?: SortOrder
+    deliveryTime?: SortOrder
   }
 
   export type ProfileSumOrderByAggregateInput = {
     hourlyRate?: SortOrder
     completedJobs?: SortOrder
     successRate?: SortOrder
+    averageRating?: SortOrder
   }
 
   export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -34431,6 +34728,56 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedJsonNullableFilter<$PrismaModel>
     _max?: NestedJsonNullableFilter<$PrismaModel>
+  }
+
+  export type EnumCategoryEnumNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.CategoryEnum | EnumCategoryEnumFieldRefInput<$PrismaModel> | null
+    in?: $Enums.CategoryEnum[] | ListEnumCategoryEnumFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.CategoryEnum[] | ListEnumCategoryEnumFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumCategoryEnumNullableWithAggregatesFilter<$PrismaModel> | $Enums.CategoryEnum | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumCategoryEnumNullableFilter<$PrismaModel>
+    _max?: NestedEnumCategoryEnumNullableFilter<$PrismaModel>
+  }
+
+  export type EnumJobTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.JobType | EnumJobTypeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.JobType[] | ListEnumJobTypeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.JobType[] | ListEnumJobTypeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumJobTypeNullableWithAggregatesFilter<$PrismaModel> | $Enums.JobType | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumJobTypeNullableFilter<$PrismaModel>
+    _max?: NestedEnumJobTypeNullableFilter<$PrismaModel>
+  }
+
+  export type EnumExperienceLevelNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ExperienceLevel | EnumExperienceLevelFieldRefInput<$PrismaModel> | null
+    in?: $Enums.ExperienceLevel[] | ListEnumExperienceLevelFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.ExperienceLevel[] | ListEnumExperienceLevelFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumExperienceLevelNullableWithAggregatesFilter<$PrismaModel> | $Enums.ExperienceLevel | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumExperienceLevelNullableFilter<$PrismaModel>
+    _max?: NestedEnumExperienceLevelNullableFilter<$PrismaModel>
+  }
+
+  export type EnumFreelancerLevelNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.FreelancerLevel | EnumFreelancerLevelFieldRefInput<$PrismaModel> | null
+    in?: $Enums.FreelancerLevel[] | ListEnumFreelancerLevelFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.FreelancerLevel[] | ListEnumFreelancerLevelFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumFreelancerLevelNullableWithAggregatesFilter<$PrismaModel> | $Enums.FreelancerLevel | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumFreelancerLevelNullableFilter<$PrismaModel>
+    _max?: NestedEnumFreelancerLevelNullableFilter<$PrismaModel>
+  }
+
+  export type EnumDeliveryTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.DeliveryTime | EnumDeliveryTimeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.DeliveryTime[] | ListEnumDeliveryTimeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.DeliveryTime[] | ListEnumDeliveryTimeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumDeliveryTimeNullableWithAggregatesFilter<$PrismaModel> | $Enums.DeliveryTime | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumDeliveryTimeNullableFilter<$PrismaModel>
+    _max?: NestedEnumDeliveryTimeNullableFilter<$PrismaModel>
   }
 
   export type SkillCountOrderByAggregateInput = {
@@ -34528,13 +34875,6 @@ export namespace Prisma {
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
-  }
-
-  export type EnumCategoryEnumNullableFilter<$PrismaModel = never> = {
-    equals?: $Enums.CategoryEnum | EnumCategoryEnumFieldRefInput<$PrismaModel> | null
-    in?: $Enums.CategoryEnum[] | ListEnumCategoryEnumFieldRefInput<$PrismaModel> | null
-    notIn?: $Enums.CategoryEnum[] | ListEnumCategoryEnumFieldRefInput<$PrismaModel> | null
-    not?: NestedEnumCategoryEnumNullableFilter<$PrismaModel> | $Enums.CategoryEnum | null
   }
 
   export type SkillListRelationFilter = {
@@ -34655,16 +34995,6 @@ export namespace Prisma {
     _sum?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedIntNullableFilter<$PrismaModel>
     _max?: NestedIntNullableFilter<$PrismaModel>
-  }
-
-  export type EnumCategoryEnumNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.CategoryEnum | EnumCategoryEnumFieldRefInput<$PrismaModel> | null
-    in?: $Enums.CategoryEnum[] | ListEnumCategoryEnumFieldRefInput<$PrismaModel> | null
-    notIn?: $Enums.CategoryEnum[] | ListEnumCategoryEnumFieldRefInput<$PrismaModel> | null
-    not?: NestedEnumCategoryEnumNullableWithAggregatesFilter<$PrismaModel> | $Enums.CategoryEnum | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedEnumCategoryEnumNullableFilter<$PrismaModel>
-    _max?: NestedEnumCategoryEnumNullableFilter<$PrismaModel>
   }
 
   export type EnumJobTypeFilter<$PrismaModel = never> = {
@@ -36226,6 +36556,26 @@ export namespace Prisma {
     push?: string | string[]
   }
 
+  export type NullableEnumCategoryEnumFieldUpdateOperationsInput = {
+    set?: $Enums.CategoryEnum | null
+  }
+
+  export type NullableEnumJobTypeFieldUpdateOperationsInput = {
+    set?: $Enums.JobType | null
+  }
+
+  export type NullableEnumExperienceLevelFieldUpdateOperationsInput = {
+    set?: $Enums.ExperienceLevel | null
+  }
+
+  export type NullableEnumFreelancerLevelFieldUpdateOperationsInput = {
+    set?: $Enums.FreelancerLevel | null
+  }
+
+  export type NullableEnumDeliveryTimeFieldUpdateOperationsInput = {
+    set?: $Enums.DeliveryTime | null
+  }
+
   export type PortfolioUpdateManyWithoutProfileNestedInput = {
     create?: XOR<PortfolioCreateWithoutProfileInput, PortfolioUncheckedCreateWithoutProfileInput> | PortfolioCreateWithoutProfileInput[] | PortfolioUncheckedCreateWithoutProfileInput[]
     connectOrCreate?: PortfolioCreateOrConnectWithoutProfileInput | PortfolioCreateOrConnectWithoutProfileInput[]
@@ -36484,10 +36834,6 @@ export namespace Prisma {
     decrement?: number
     multiply?: number
     divide?: number
-  }
-
-  export type NullableEnumCategoryEnumFieldUpdateOperationsInput = {
-    set?: $Enums.CategoryEnum | null
   }
 
   export type ListingUpdateimagesInput = {
@@ -37442,6 +37788,41 @@ export namespace Prisma {
     not?: NestedEnumCurrencyNullableFilter<$PrismaModel> | $Enums.Currency | null
   }
 
+  export type NestedEnumCategoryEnumNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.CategoryEnum | EnumCategoryEnumFieldRefInput<$PrismaModel> | null
+    in?: $Enums.CategoryEnum[] | ListEnumCategoryEnumFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.CategoryEnum[] | ListEnumCategoryEnumFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumCategoryEnumNullableFilter<$PrismaModel> | $Enums.CategoryEnum | null
+  }
+
+  export type NestedEnumJobTypeNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.JobType | EnumJobTypeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.JobType[] | ListEnumJobTypeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.JobType[] | ListEnumJobTypeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumJobTypeNullableFilter<$PrismaModel> | $Enums.JobType | null
+  }
+
+  export type NestedEnumExperienceLevelNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.ExperienceLevel | EnumExperienceLevelFieldRefInput<$PrismaModel> | null
+    in?: $Enums.ExperienceLevel[] | ListEnumExperienceLevelFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.ExperienceLevel[] | ListEnumExperienceLevelFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumExperienceLevelNullableFilter<$PrismaModel> | $Enums.ExperienceLevel | null
+  }
+
+  export type NestedEnumFreelancerLevelNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.FreelancerLevel | EnumFreelancerLevelFieldRefInput<$PrismaModel> | null
+    in?: $Enums.FreelancerLevel[] | ListEnumFreelancerLevelFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.FreelancerLevel[] | ListEnumFreelancerLevelFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumFreelancerLevelNullableFilter<$PrismaModel> | $Enums.FreelancerLevel | null
+  }
+
+  export type NestedEnumDeliveryTimeNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.DeliveryTime | EnumDeliveryTimeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.DeliveryTime[] | ListEnumDeliveryTimeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.DeliveryTime[] | ListEnumDeliveryTimeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumDeliveryTimeNullableFilter<$PrismaModel> | $Enums.DeliveryTime | null
+  }
+
   export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel> | null
     in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
@@ -37491,18 +37872,61 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
+  export type NestedEnumCategoryEnumNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.CategoryEnum | EnumCategoryEnumFieldRefInput<$PrismaModel> | null
+    in?: $Enums.CategoryEnum[] | ListEnumCategoryEnumFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.CategoryEnum[] | ListEnumCategoryEnumFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumCategoryEnumNullableWithAggregatesFilter<$PrismaModel> | $Enums.CategoryEnum | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumCategoryEnumNullableFilter<$PrismaModel>
+    _max?: NestedEnumCategoryEnumNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumJobTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.JobType | EnumJobTypeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.JobType[] | ListEnumJobTypeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.JobType[] | ListEnumJobTypeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumJobTypeNullableWithAggregatesFilter<$PrismaModel> | $Enums.JobType | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumJobTypeNullableFilter<$PrismaModel>
+    _max?: NestedEnumJobTypeNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumExperienceLevelNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.ExperienceLevel | EnumExperienceLevelFieldRefInput<$PrismaModel> | null
+    in?: $Enums.ExperienceLevel[] | ListEnumExperienceLevelFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.ExperienceLevel[] | ListEnumExperienceLevelFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumExperienceLevelNullableWithAggregatesFilter<$PrismaModel> | $Enums.ExperienceLevel | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumExperienceLevelNullableFilter<$PrismaModel>
+    _max?: NestedEnumExperienceLevelNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumFreelancerLevelNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.FreelancerLevel | EnumFreelancerLevelFieldRefInput<$PrismaModel> | null
+    in?: $Enums.FreelancerLevel[] | ListEnumFreelancerLevelFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.FreelancerLevel[] | ListEnumFreelancerLevelFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumFreelancerLevelNullableWithAggregatesFilter<$PrismaModel> | $Enums.FreelancerLevel | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumFreelancerLevelNullableFilter<$PrismaModel>
+    _max?: NestedEnumFreelancerLevelNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumDeliveryTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.DeliveryTime | EnumDeliveryTimeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.DeliveryTime[] | ListEnumDeliveryTimeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.DeliveryTime[] | ListEnumDeliveryTimeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumDeliveryTimeNullableWithAggregatesFilter<$PrismaModel> | $Enums.DeliveryTime | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumDeliveryTimeNullableFilter<$PrismaModel>
+    _max?: NestedEnumDeliveryTimeNullableFilter<$PrismaModel>
+  }
+
   export type NestedEnumCurrencyFilter<$PrismaModel = never> = {
     equals?: $Enums.Currency | EnumCurrencyFieldRefInput<$PrismaModel>
     in?: $Enums.Currency[] | ListEnumCurrencyFieldRefInput<$PrismaModel>
     notIn?: $Enums.Currency[] | ListEnumCurrencyFieldRefInput<$PrismaModel>
     not?: NestedEnumCurrencyFilter<$PrismaModel> | $Enums.Currency
-  }
-
-  export type NestedEnumCategoryEnumNullableFilter<$PrismaModel = never> = {
-    equals?: $Enums.CategoryEnum | EnumCategoryEnumFieldRefInput<$PrismaModel> | null
-    in?: $Enums.CategoryEnum[] | ListEnumCategoryEnumFieldRefInput<$PrismaModel> | null
-    notIn?: $Enums.CategoryEnum[] | ListEnumCategoryEnumFieldRefInput<$PrismaModel> | null
-    not?: NestedEnumCategoryEnumNullableFilter<$PrismaModel> | $Enums.CategoryEnum | null
   }
 
   export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
@@ -37545,16 +37969,6 @@ export namespace Prisma {
     _sum?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedIntNullableFilter<$PrismaModel>
     _max?: NestedIntNullableFilter<$PrismaModel>
-  }
-
-  export type NestedEnumCategoryEnumNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.CategoryEnum | EnumCategoryEnumFieldRefInput<$PrismaModel> | null
-    in?: $Enums.CategoryEnum[] | ListEnumCategoryEnumFieldRefInput<$PrismaModel> | null
-    notIn?: $Enums.CategoryEnum[] | ListEnumCategoryEnumFieldRefInput<$PrismaModel> | null
-    not?: NestedEnumCategoryEnumNullableWithAggregatesFilter<$PrismaModel> | $Enums.CategoryEnum | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedEnumCategoryEnumNullableFilter<$PrismaModel>
-    _max?: NestedEnumCategoryEnumNullableFilter<$PrismaModel>
   }
 
   export type NestedEnumJobTypeFilter<$PrismaModel = never> = {
@@ -37706,6 +38120,12 @@ export namespace Prisma {
     individualFocus?: string | null
     organizationPurpose?: string | null
     isPublicFreelancer?: boolean
+    mainCategory?: $Enums.CategoryEnum | null
+    rateTypePreference?: $Enums.JobType | null
+    experienceLevel?: $Enums.ExperienceLevel | null
+    averageRating?: number | null
+    freelancerLevel?: $Enums.FreelancerLevel | null
+    deliveryTime?: $Enums.DeliveryTime | null
     portfolio?: PortfolioCreateNestedManyWithoutProfileInput
     skills?: ProfileSkillCreateNestedManyWithoutProfileInput
   }
@@ -37728,6 +38148,12 @@ export namespace Prisma {
     individualFocus?: string | null
     organizationPurpose?: string | null
     isPublicFreelancer?: boolean
+    mainCategory?: $Enums.CategoryEnum | null
+    rateTypePreference?: $Enums.JobType | null
+    experienceLevel?: $Enums.ExperienceLevel | null
+    averageRating?: number | null
+    freelancerLevel?: $Enums.FreelancerLevel | null
+    deliveryTime?: $Enums.DeliveryTime | null
     portfolio?: PortfolioUncheckedCreateNestedManyWithoutProfileInput
     skills?: ProfileSkillUncheckedCreateNestedManyWithoutProfileInput
   }
@@ -38337,6 +38763,12 @@ export namespace Prisma {
     individualFocus?: NullableStringFieldUpdateOperationsInput | string | null
     organizationPurpose?: NullableStringFieldUpdateOperationsInput | string | null
     isPublicFreelancer?: BoolFieldUpdateOperationsInput | boolean
+    mainCategory?: NullableEnumCategoryEnumFieldUpdateOperationsInput | $Enums.CategoryEnum | null
+    rateTypePreference?: NullableEnumJobTypeFieldUpdateOperationsInput | $Enums.JobType | null
+    experienceLevel?: NullableEnumExperienceLevelFieldUpdateOperationsInput | $Enums.ExperienceLevel | null
+    averageRating?: NullableFloatFieldUpdateOperationsInput | number | null
+    freelancerLevel?: NullableEnumFreelancerLevelFieldUpdateOperationsInput | $Enums.FreelancerLevel | null
+    deliveryTime?: NullableEnumDeliveryTimeFieldUpdateOperationsInput | $Enums.DeliveryTime | null
     portfolio?: PortfolioUpdateManyWithoutProfileNestedInput
     skills?: ProfileSkillUpdateManyWithoutProfileNestedInput
   }
@@ -38359,6 +38791,12 @@ export namespace Prisma {
     individualFocus?: NullableStringFieldUpdateOperationsInput | string | null
     organizationPurpose?: NullableStringFieldUpdateOperationsInput | string | null
     isPublicFreelancer?: BoolFieldUpdateOperationsInput | boolean
+    mainCategory?: NullableEnumCategoryEnumFieldUpdateOperationsInput | $Enums.CategoryEnum | null
+    rateTypePreference?: NullableEnumJobTypeFieldUpdateOperationsInput | $Enums.JobType | null
+    experienceLevel?: NullableEnumExperienceLevelFieldUpdateOperationsInput | $Enums.ExperienceLevel | null
+    averageRating?: NullableFloatFieldUpdateOperationsInput | number | null
+    freelancerLevel?: NullableEnumFreelancerLevelFieldUpdateOperationsInput | $Enums.FreelancerLevel | null
+    deliveryTime?: NullableEnumDeliveryTimeFieldUpdateOperationsInput | $Enums.DeliveryTime | null
     portfolio?: PortfolioUncheckedUpdateManyWithoutProfileNestedInput
     skills?: ProfileSkillUncheckedUpdateManyWithoutProfileNestedInput
   }
@@ -39662,6 +40100,12 @@ export namespace Prisma {
     individualFocus?: string | null
     organizationPurpose?: string | null
     isPublicFreelancer?: boolean
+    mainCategory?: $Enums.CategoryEnum | null
+    rateTypePreference?: $Enums.JobType | null
+    experienceLevel?: $Enums.ExperienceLevel | null
+    averageRating?: number | null
+    freelancerLevel?: $Enums.FreelancerLevel | null
+    deliveryTime?: $Enums.DeliveryTime | null
     portfolio?: PortfolioCreateNestedManyWithoutProfileInput
     user: UserCreateNestedOneWithoutProfileInput
   }
@@ -39685,6 +40129,12 @@ export namespace Prisma {
     individualFocus?: string | null
     organizationPurpose?: string | null
     isPublicFreelancer?: boolean
+    mainCategory?: $Enums.CategoryEnum | null
+    rateTypePreference?: $Enums.JobType | null
+    experienceLevel?: $Enums.ExperienceLevel | null
+    averageRating?: number | null
+    freelancerLevel?: $Enums.FreelancerLevel | null
+    deliveryTime?: $Enums.DeliveryTime | null
     portfolio?: PortfolioUncheckedCreateNestedManyWithoutProfileInput
   }
 
@@ -39745,6 +40195,12 @@ export namespace Prisma {
     individualFocus?: NullableStringFieldUpdateOperationsInput | string | null
     organizationPurpose?: NullableStringFieldUpdateOperationsInput | string | null
     isPublicFreelancer?: BoolFieldUpdateOperationsInput | boolean
+    mainCategory?: NullableEnumCategoryEnumFieldUpdateOperationsInput | $Enums.CategoryEnum | null
+    rateTypePreference?: NullableEnumJobTypeFieldUpdateOperationsInput | $Enums.JobType | null
+    experienceLevel?: NullableEnumExperienceLevelFieldUpdateOperationsInput | $Enums.ExperienceLevel | null
+    averageRating?: NullableFloatFieldUpdateOperationsInput | number | null
+    freelancerLevel?: NullableEnumFreelancerLevelFieldUpdateOperationsInput | $Enums.FreelancerLevel | null
+    deliveryTime?: NullableEnumDeliveryTimeFieldUpdateOperationsInput | $Enums.DeliveryTime | null
     portfolio?: PortfolioUpdateManyWithoutProfileNestedInput
     user?: UserUpdateOneRequiredWithoutProfileNestedInput
   }
@@ -39768,6 +40224,12 @@ export namespace Prisma {
     individualFocus?: NullableStringFieldUpdateOperationsInput | string | null
     organizationPurpose?: NullableStringFieldUpdateOperationsInput | string | null
     isPublicFreelancer?: BoolFieldUpdateOperationsInput | boolean
+    mainCategory?: NullableEnumCategoryEnumFieldUpdateOperationsInput | $Enums.CategoryEnum | null
+    rateTypePreference?: NullableEnumJobTypeFieldUpdateOperationsInput | $Enums.JobType | null
+    experienceLevel?: NullableEnumExperienceLevelFieldUpdateOperationsInput | $Enums.ExperienceLevel | null
+    averageRating?: NullableFloatFieldUpdateOperationsInput | number | null
+    freelancerLevel?: NullableEnumFreelancerLevelFieldUpdateOperationsInput | $Enums.FreelancerLevel | null
+    deliveryTime?: NullableEnumDeliveryTimeFieldUpdateOperationsInput | $Enums.DeliveryTime | null
     portfolio?: PortfolioUncheckedUpdateManyWithoutProfileNestedInput
   }
 
@@ -42791,6 +43253,12 @@ export namespace Prisma {
     individualFocus?: string | null
     organizationPurpose?: string | null
     isPublicFreelancer?: boolean
+    mainCategory?: $Enums.CategoryEnum | null
+    rateTypePreference?: $Enums.JobType | null
+    experienceLevel?: $Enums.ExperienceLevel | null
+    averageRating?: number | null
+    freelancerLevel?: $Enums.FreelancerLevel | null
+    deliveryTime?: $Enums.DeliveryTime | null
     skills?: ProfileSkillCreateNestedManyWithoutProfileInput
     user: UserCreateNestedOneWithoutProfileInput
   }
@@ -42814,6 +43282,12 @@ export namespace Prisma {
     individualFocus?: string | null
     organizationPurpose?: string | null
     isPublicFreelancer?: boolean
+    mainCategory?: $Enums.CategoryEnum | null
+    rateTypePreference?: $Enums.JobType | null
+    experienceLevel?: $Enums.ExperienceLevel | null
+    averageRating?: number | null
+    freelancerLevel?: $Enums.FreelancerLevel | null
+    deliveryTime?: $Enums.DeliveryTime | null
     skills?: ProfileSkillUncheckedCreateNestedManyWithoutProfileInput
   }
 
@@ -42851,6 +43325,12 @@ export namespace Prisma {
     individualFocus?: NullableStringFieldUpdateOperationsInput | string | null
     organizationPurpose?: NullableStringFieldUpdateOperationsInput | string | null
     isPublicFreelancer?: BoolFieldUpdateOperationsInput | boolean
+    mainCategory?: NullableEnumCategoryEnumFieldUpdateOperationsInput | $Enums.CategoryEnum | null
+    rateTypePreference?: NullableEnumJobTypeFieldUpdateOperationsInput | $Enums.JobType | null
+    experienceLevel?: NullableEnumExperienceLevelFieldUpdateOperationsInput | $Enums.ExperienceLevel | null
+    averageRating?: NullableFloatFieldUpdateOperationsInput | number | null
+    freelancerLevel?: NullableEnumFreelancerLevelFieldUpdateOperationsInput | $Enums.FreelancerLevel | null
+    deliveryTime?: NullableEnumDeliveryTimeFieldUpdateOperationsInput | $Enums.DeliveryTime | null
     skills?: ProfileSkillUpdateManyWithoutProfileNestedInput
     user?: UserUpdateOneRequiredWithoutProfileNestedInput
   }
@@ -42874,6 +43354,12 @@ export namespace Prisma {
     individualFocus?: NullableStringFieldUpdateOperationsInput | string | null
     organizationPurpose?: NullableStringFieldUpdateOperationsInput | string | null
     isPublicFreelancer?: BoolFieldUpdateOperationsInput | boolean
+    mainCategory?: NullableEnumCategoryEnumFieldUpdateOperationsInput | $Enums.CategoryEnum | null
+    rateTypePreference?: NullableEnumJobTypeFieldUpdateOperationsInput | $Enums.JobType | null
+    experienceLevel?: NullableEnumExperienceLevelFieldUpdateOperationsInput | $Enums.ExperienceLevel | null
+    averageRating?: NullableFloatFieldUpdateOperationsInput | number | null
+    freelancerLevel?: NullableEnumFreelancerLevelFieldUpdateOperationsInput | $Enums.FreelancerLevel | null
+    deliveryTime?: NullableEnumDeliveryTimeFieldUpdateOperationsInput | $Enums.DeliveryTime | null
     skills?: ProfileSkillUncheckedUpdateManyWithoutProfileNestedInput
   }
 

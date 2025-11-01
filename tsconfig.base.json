@@ -22,6 +22,9 @@
       "@alpha/api/*": ["packages/api/src/*"],
       "@alpha/auth/*": ["packages/auth/src/*"],
       "@alpha/db/*": ["packages/db/src/*"],
+      "@alpha/db/prisma/generated/client": [
+        "packages/db/prisma/generated/client/index.d.ts"
+      ],
       "@alpha/server/*": ["apps/server/src/*"]
     }
   }

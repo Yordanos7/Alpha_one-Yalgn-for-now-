@@ -23,6 +23,9 @@
     "paths": {
       "@/*": ["./src/*"],
       "@Alpha/api/routers": ["../../packages/api/src/routers/index.ts"],
+      "@Alpha/api/src/routers/types": [
+        "../../packages/api/src/routers/types.ts"
+      ], // Added alias
       "@Alpha/db/prisma/generated/client": [
         "../../packages/db/prisma/generated/client/index.d.ts"
       ]

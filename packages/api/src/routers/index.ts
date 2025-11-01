@@ -6,6 +6,7 @@ import { jobRouter } from "./job"; // Import the new jobRouter
 import { listingRouter } from "./listing";
 import { categoryRouter } from "./category";
 import { uploadRouter } from "./upload";
+import { freelancerRouter } from "./freelancer"; // Import the new freelancerRouter
 
 export interface UploadResponse {
   filePath: string;
@@ -28,5 +29,6 @@ export const appRouter = router({
   listing: listingRouter, // Add the listingRouter here
   category: categoryRouter,
   upload: uploadRouter,
+  freelancer: freelancerRouter, // Add the freelancerRouter
 });
 export type AppRouter = typeof appRouter;
