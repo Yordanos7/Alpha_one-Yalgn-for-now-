@@ -1,326 +1,220 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import React, { useState } from "react";
+import { Search, ChevronDown, User } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Card } from "@/components/ui/card";
-import Sidebar from "@/components/sidebar";
-import { trpc } from "@/utils/trpc";
-import { Badge } from "@/components/ui/badge";
-import { useState, useEffect } from "react"; // Keep this import here
-
+import { Button } from "@/components/ui/button";
 import {
-  Search,
-  ShoppingCart,
-  User,
-  ChevronDown,
-  Star,
-  MessageSquare,
-} from "lucide-react";
-import Link from "next/link";
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"; // Assuming this path for Select component
+import { FreelancerFiltersState } from "@/types/freelancer"; // Import the defined types
 
-// Define the type for a user returned by trpc.user.list
-type UserListItem = {
-  id: string;
-  name: string | null;
-  image: string | null;
-  bio: string | null;
-  location: string | null;
-  isOpenToWork: boolean;
-  profile: {
-    headline: string | null;
-    hourlyRate: number | null;
-    currency: string | null; // Assuming Currency enum is string
-    completedJobs: number;
-    successRate: number | null;
-    skills: { skill: { name: string } }[];
-  } | null;
-  verification: {
-    status: "NONE" | "PENDING" | "APPROVED" | "REJECTED" | null;
-  } | null;
-};
-
-interface Freelancer {
-  id: string;
-  name: string;
-  title: string;
-  rating: number;
-  reviews: number;
-  description: string;
-  imageUrl: string;
-  skills: string[];
-  isOpenToWork: boolean;
-  location?: string;
-  hourlyRate?: number;
-  currency?: string;
-  completedJobs?: number;
-  isVerified?: boolean;
+interface FreelancerFiltersProps {
+  onApplyFilters: (filters: FreelancerFiltersState) => void;
+  initialFilters?: FreelancerFiltersState;
 }
 
-const FreelancerCard = ({ freelancer }: { freelancer: Freelancer }) => (
-  <Card className="bg-[#2C2C2C] p-4 rounded-lg flex flex-col items-center relative">
-    {" "}
-    {/* Added relative for badge positioning */}
-    {freelancer.isOpenToWork && (
-      <Badge className="absolute top-2 right-2 bg-green-500 text-white">
-        Open to Work
-      </Badge>
-    )}
-    <Avatar className="h-24 w-24 mb-4">
-      <AvatarImage src={freelancer.imageUrl} alt={freelancer.name} />
-      <AvatarFallback>{freelancer.name.charAt(0)}</AvatarFallback>
-    </Avatar>
-    <p className="text-lg font-semibold text-center mb-1">{freelancer.name}</p>
-    <p className="text-sm text-gray-400 mb-2">{freelancer.title}</p>
-    <div className="flex items-center mb-2">
-      {[...Array(5)].map((_, i) => (
-        <Star
-          key={i}
-          className={
-            i < Math.floor(freelancer.rating)
-              ? "text-yellow-500"
-              : "text-gray-500"
-          }
-          size={16}
-          fill={i < Math.floor(freelancer.rating) ? "currentColor" : "none"}
-        />
-      ))}
-      <span className="text-sm text-gray-400 ml-2">
-        ({freelancer.rating}) ({freelancer.reviews} reviews)
-      </span>
-    </div>
-    <p className="text-sm text-gray-300 text-center mb-4">
-      {freelancer.description}
-    </p>
-    <div className="flex space-x-2 mb-4">
-      {freelancer.skills.map((skill, index) => (
-        <span
-          key={index}
-          className="bg-[#3A3A3A] text-gray-300 text-xs px-2 py-1 rounded-full"
-        >
-          {skill}
-        </span>
-      ))}
-    </div>
-    <div className="flex space-x-4">
-      <Link href={`/individual/profile/${freelancer.id}`}>
-        {" "}
-        {/* Link to individual profile */}
-        <Button className="bg-green-600 hover:bg-green-700 text-white font-semibold rounded-md px-4 py-2">
-          View Profile
-        </Button>
-      </Link>
-      <Button
-        variant="ghost"
-        className="text-gray-400 hover:text-white font-semibold rounded-md px-4 py-2"
-      >
-        Message
-      </Button>
-    </div>
-  </Card>
-);
+export function FreelancerFilters({
+  onApplyFilters,
+  initialFilters,
+}: FreelancerFiltersProps) {
+  const [filters, setFilters] = useState<FreelancerFiltersState>(
+    initialFilters || {
+      search: "",
+      category: null,
+      rateType: null,
+      experiences: null,
+      language: null,
+      rating: null,
+      level: null,
+      estimatedDelivery: null,
+    }
+  );
 
-export default function FreelancersPage() {
-  const {
-    data: freelancersData,
-    isPending: isFreelancersPending,
-    refetch: refetchFreelancers, // Get the refetch function
-  } = trpc.user.list.useQuery();
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFilters((prev) => ({ ...prev, search: e.target.value }));
+  };
 
-  useEffect(() => {
-    refetchFreelancers(); // Refetch data when the component mounts or becomes active
-  }, [refetchFreelancers]);
+  const handleCategoryChange = (value: string) => {
+    setFilters((prev) => ({ ...prev, category: value }));
+  };
 
-  if (isFreelancersPending) {
-    return (
-      <div className="flex min-h-screen bg-[#202020] text-white items-center justify-center">
-        Loading freelancers...
-      </div>
-    );
-  }
+  const handleRateTypeChange = (value: string) => {
+    setFilters((prev) => ({
+      ...prev,
+      rateType: value as FreelancerFiltersState["rateType"],
+    }));
+  };
 
-  // and this is for map the fetched freelancers to the FreelancerCard interface
+  const handleExperiencesChange = (value: string) => {
+    setFilters((prev) => ({
+      ...prev,
+      experiences: value as FreelancerFiltersState["experiences"],
+    }));
+  };
 
-  const freelancers: Freelancer[] =
-    freelancersData?.map((user: UserListItem) => ({
-      id: user.id,
-      name: user.name || "N/A",
-      title: user.profile?.headline || "Freelancer", // Use headline for title
-      rating: user.profile?.successRate || 0, // Use successRate for rating, default to 0
-      reviews: user.profile?.completedJobs || 0, // Use completedJobs for reviews, default to 0
-      description: user.bio || "No bio provided.",
-      imageUrl: user.image || "/placeholder-avatar.jpg",
-      skills:
-        user.profile?.skills?.map(
-          (s: { skill: { name: string } }) => s.skill.name
-        ) || [],
-      isOpenToWork: user.isOpenToWork || false,
-      location: user.location || "N/A",
-      hourlyRate: user.profile?.hourlyRate || 0,
-      currency: user.profile?.currency || "ETB",
-      completedJobs: user.profile?.completedJobs || 0,
-      isVerified: user.verification?.status === "APPROVED",
-    })) || [];
+  const handleLanguageChange = (value: string) => {
+    setFilters((prev) => ({ ...prev, language: value }));
+  };
+
+  const handleRatingChange = (value: string) => {
+    setFilters((prev) => ({
+      ...prev,
+      rating: parseInt(value) as FreelancerFiltersState["rating"],
+    }));
+  };
+
+  const handleLevelChange = (value: string) => {
+    setFilters((prev) => ({
+      ...prev,
+      level: value as FreelancerFiltersState["level"],
+    }));
+  };
+
+  const handleEstimatedDeliveryChange = (value: string) => {
+    setFilters((prev) => ({
+      ...prev,
+      estimatedDelivery: value as FreelancerFiltersState["estimatedDelivery"],
+    }));
+  };
+
+  // This button would trigger the actual filter application
+  const applyFilters = () => {
+    onApplyFilters(filters);
+  };
 
   return (
-    <div className="flex min-h-screen bg-[#202020] text-white">
-      <Sidebar currentPage="freelancers" />
+    <div className="flex items-center space-x-4 mb-8 bg-[#2C2C2C] p-3 rounded-lg">
+      <div className="relative flex-1">
+        <Search
+          className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+          size={20}
+        />
+        <Input
+          type="text"
+          placeholder="Search"
+          className="pl-10 pr-4 py-2 rounded-lg bg-[#3A3A3A] border-none text-white focus:ring-0 focus:outline-none w-full"
+          value={filters.search}
+          onChange={handleSearchChange}
+        />
+      </div>
 
-      {/* Main Content */}
-      <main className="flex-1 p-8 bg-[#202020] flex flex-col">
-        {/* Top Header */}
-        <header className="flex items-center justify-between mb-6">
-          <div className="flex items-center">
-            <img
-              src="/assets/logo.png"
-              alt="Yalegn Marketplace"
-              className="h-8 mr-2"
-            />
-            <span className="text-xl font-bold text-gray-200">
-              Yalegn Marketplace
-            </span>
-          </div>
-          <div className="flex items-center space-x-4">
-            <Link href="/marketplace">
-              <Button className="bg-green-600 hover:bg-green-700 text-white font-semibold rounded-md px-4 py-2">
-                Products
-              </Button>
-            </Link>
-            <Avatar className="h-8 w-8">
-              <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-              <AvatarFallback>CN</AvatarFallback>
-            </Avatar>
-          </div>
-        </header>
+      {/* Category Filter */}
+      <Select
+        onValueChange={handleCategoryChange}
+        value={filters.category || ""}
+      >
+        <SelectTrigger className="w-[180px] bg-[#3A3A3A] border-none text-gray-400 hover:text-white">
+          <SelectValue placeholder="Category" />
+        </SelectTrigger>
+        <SelectContent className="bg-[#3A3A3A] text-white">
+          <SelectItem value="web-development">Web Development</SelectItem>
+          <SelectItem value="mobile-development">Mobile Development</SelectItem>
+          <SelectItem value="design">Design</SelectItem>
+          {/* Add more categories */}
+        </SelectContent>
+      </Select>
 
-        {/* Search and Filter Bar */}
-        <div className="flex items-center space-x-4 mb-8 bg-[#2C2C2C] p-3 rounded-lg">
-          <div className="relative flex-1">
-            <Search
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-              size={20}
-            />
-            <Input
-              type="text"
-              placeholder="Search"
-              className="pl-10 pr-4 py-2 rounded-lg bg-[#3A3A3A] border-none text-white focus:ring-0 focus:outline-none w-full"
-            />
-          </div>
-          <Button
-            variant="ghost"
-            className="text-gray-400 hover:text-white flex items-center"
-          >
-            Category <ChevronDown className="ml-1" size={16} />
-          </Button>
-          <Button
-            variant="ghost"
-            className="text-gray-400 hover:text-white flex items-center"
-          >
-            Rate Type <ChevronDown className="ml-1" size={16} />
-          </Button>
-          <Button
-            variant="ghost"
-            className="text-gray-400 hover:text-white flex items-center"
-          >
-            Experiences <ChevronDown className="ml-1" size={16} />
-          </Button>
-          <Button
-            variant="ghost"
-            className="text-gray-400 hover:text-white flex items-center"
-          >
-            Language <ChevronDown className="ml-1" size={16} />
-          </Button>
-          <Button
-            variant="ghost"
-            className="text-gray-400 hover:text-white flex items-center"
-          >
-            Rating <ChevronDown className="ml-1" size={16} />
-          </Button>
-          <Button
-            variant="ghost"
-            className="text-gray-400 hover:text-white flex items-center"
-          >
-            Level <ChevronDown className="ml-1" size={16} />
-          </Button>
-          <Button
-            variant="ghost"
-            className="text-gray-400 hover:text-white flex items-center"
-          >
-            Estimated Delivery <ChevronDown className="ml-1" size={16} />
-          </Button>
-          <Button className="bg-[#3A3A3A] hover:bg-[#4A4A4A] text-gray-300 font-semibold rounded-lg px-4 py-2 flex items-center">
-            <User className="mr-2" size={16} />
-            Freelancers
-          </Button>
-        </div>
+      {/* Rate Type Filter */}
+      <Select
+        onValueChange={handleRateTypeChange}
+        value={filters.rateType || ""}
+      >
+        <SelectTrigger className="w-[180px] bg-[#3A3A3A] border-none text-gray-400 hover:text-white">
+          <SelectValue placeholder="Rate Type" />
+        </SelectTrigger>
+        <SelectContent className="bg-[#3A3A3A] text-white">
+          <SelectItem value="hourly">Hourly</SelectItem>
+          <SelectItem value="fixed-price">Fixed Price</SelectItem>
+        </SelectContent>
+      </Select>
 
-        {/* Content area for freelancer grid and featured freelancers */}
-        <div className="flex flex-1 space-x-8">
-          {/* Freelancer Grid */}
-          <div className="flex-1 grid grid-cols-3 gap-6">
-            {freelancers.map((freelancer) => (
-              <FreelancerCard key={freelancer.id} freelancer={freelancer} />
-            ))}
-          </div>
+      {/* Experiences Filter */}
+      <Select
+        onValueChange={handleExperiencesChange}
+        value={filters.experiences || ""}
+      >
+        <SelectTrigger className="w-[180px] bg-[#3A3A3A] border-none text-gray-400 hover:text-white">
+          <SelectValue placeholder="Experiences" />
+        </SelectTrigger>
+        <SelectContent className="bg-[#3A3A3A] text-white">
+          <SelectItem value="entry">Entry Level</SelectItem>
+          <SelectItem value="intermediate">Intermediate</SelectItem>
+          <SelectItem value="expert">Expert</SelectItem>
+        </SelectContent>
+      </Select>
 
-          {/* Featured Freelancers Sidebar */}
-          <Card className="w-72 bg-[#2C2C2C] p-4 rounded-lg">
-            <h3 className="text-lg font-semibold mb-4">Featured Freelancers</h3>
-            <div className="space-y-4">
-              {/* You might want to fetch featured freelancers separately or filter from the main list */}
-              {/* For now, keeping the placeholder structure */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <Avatar className="h-10 w-10 mr-3">
-                    <AvatarImage
-                      src="https://github.com/shadcn.png"
-                      alt="@shadcn"
-                    />
-                    <AvatarFallback>GD</AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <p className="font-semibold">Graphic Design</p>
-                    <p className="text-sm text-gray-400">Graphic Designer</p>
-                  </div>
-                </div>
-                <Star className="text-gray-400" size={16} />
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <Avatar className="h-10 w-10 mr-3">
-                    <AvatarImage
-                      src="https://github.com/shadcn.png"
-                      alt="@shadcn"
-                    />
-                    <AvatarFallback>DC</AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <p className="font-semibold">David Chen</p>
-                    <p className="text-sm text-gray-400">Graphic Designer</p>
-                  </div>
-                </div>
-                <Star className="text-gray-400" size={16} />
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center">
-                  <Avatar className="h-10 w-10 mr-3">
-                    <AvatarImage
-                      src="https://github.com/shadcn.png"
-                      alt="@shadcn"
-                    />
-                    <AvatarFallback>DC</AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <p className="font-semibold">David Chen</p>
-                    <p className="text-sm text-gray-400">Web Developer</p>
-                  </div>
-                </div>
-                <Star className="text-gray-400" size={16} />
-              </div>
-            </div>
-          </Card>
-        </div>
-      </main>
+      {/* Language Filter */}
+      <Select
+        onValueChange={handleLanguageChange}
+        value={filters.language || ""}
+      >
+        <SelectTrigger className="w-[180px] bg-[#3A3A3A] border-none text-gray-400 hover:text-white">
+          <SelectValue placeholder="Language" />
+        </SelectTrigger>
+        <SelectContent className="bg-[#3A3A3A] text-white">
+          <SelectItem value="english">English</SelectItem>
+          <SelectItem value="spanish">Spanish</SelectItem>
+          <SelectItem value="french">French</SelectItem>
+          {/* Add more languages */}
+        </SelectContent>
+      </Select>
+
+      {/* Rating Filter */}
+      <Select
+        onValueChange={handleRatingChange}
+        value={filters.rating?.toString() || ""}
+      >
+        <SelectTrigger className="w-[180px] bg-[#3A3A3A] border-none text-gray-400 hover:text-white">
+          <SelectValue placeholder="Rating" />
+        </SelectTrigger>
+        <SelectContent className="bg-[#3A3A3A] text-white">
+          <SelectItem value="5">5 Stars</SelectItem>
+          <SelectItem value="4">4 Stars & Up</SelectItem>
+          <SelectItem value="3">3 Stars & Up</SelectItem>
+          {/* Add more rating options */}
+        </SelectContent>
+      </Select>
+
+      {/* Level Filter */}
+      <Select onValueChange={handleLevelChange} value={filters.level || ""}>
+        <SelectTrigger className="w-[180px] bg-[#3A3A3A] border-none text-gray-400 hover:text-white">
+          <SelectValue placeholder="Level" />
+        </SelectTrigger>
+        <SelectContent className="bg-[#3A3A3A] text-white">
+          <SelectItem value="junior">Junior</SelectItem>
+          <SelectItem value="mid">Mid</SelectItem>
+          <SelectItem value="senior">Senior</SelectItem>
+        </SelectContent>
+      </Select>
+
+      {/* Estimated Delivery Filter */}
+      <Select
+        onValueChange={handleEstimatedDeliveryChange}
+        value={filters.estimatedDelivery || ""}
+      >
+        <SelectTrigger className="w-[180px] bg-[#3A3A3A] border-none text-gray-400 hover:text-white">
+          <SelectValue placeholder="Estimated Delivery" />
+        </SelectTrigger>
+        <SelectContent className="bg-[#3A3A3A] text-white">
+          <SelectItem value="1-3_days">1-3 Days</SelectItem>
+          <SelectItem value="3-7_days">3-7 Days</SelectItem>
+          <SelectItem value="1-2_weeks">1-2 Weeks</SelectItem>
+          <SelectItem value="2-4_weeks">2-4 Weeks</SelectItem>
+        </SelectContent>
+      </Select>
+
+      <Button
+        className="bg-[#3A3A3A] hover:bg-[#4A4A4A] text-gray-300 font-semibold rounded-lg px-4 py-2 flex items-center"
+        onClick={applyFilters}
+      >
+        <User className="mr-2" size={16} />
+        Apply Filters
+      </Button>
     </div>
   );
 }
