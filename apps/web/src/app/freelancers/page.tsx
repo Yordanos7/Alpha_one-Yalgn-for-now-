@@ -20,39 +20,47 @@ import type {
   Rating,
 } from "@/types/freelancer"; // Import refined types
 import { trpc } from "@/utils/trpc"; // Assuming this is your tRPC client setup
-import {
+import type {
   CategoryEnum,
-  ExperienceLevel as PrismaExperienceLevel, // Alias to avoid conflict
-  FreelancerLevel as PrismaFreelancerLevel, // Alias to avoid conflict
-  DeliveryTime as PrismaDeliveryTime, // Alias to avoid conflict
-} from "@Alpha/db/prisma/generated/client"; // Import Prisma enums for UI options (using capital A for alias)
+  ExperienceLevel as PrismaExperienceLevel,
+  FreelancerLevel as PrismaFreelancerLevel,
+  DeliveryTime as PrismaDeliveryTime,
+} from "@alpha/db/prisma/generated/client";
 
 // Define a type for a Freelancer (adjust based on your actual data structure from backend)
 interface Freelancer {
   id: string;
   name: string;
-  bio?: string;
-  location?: string;
+  bio: string | null;
+  location: string | null;
   isVerified: boolean;
   isOpenToWork: boolean;
   languages: string[];
-  profile?: {
+  profile: {
     id: string;
-    headline?: string;
-    hourlyRate?: number;
-    currency?: "ETB" | "USD";
-    mainCategory?: CategoryEnum;
-    rateTypePreference?: "FIXED" | "HOURLY";
-    experienceLevel?: PrismaExperienceLevel;
-    averageRating?: number;
-    freelancerLevel?: PrismaFreelancerLevel;
-    deliveryTime?: PrismaDeliveryTime;
-    skills: { skill: { name: string } }[]; // Assuming skills are nested
-  };
-  // ... other freelancer properties
+    headline: string | null;
+    hourlyRate: number | null;
+    currency: "ETB" | "USD" | null;
+    mainCategory: CategoryEnum | null;
+    rateTypePreference: "FIXED" | "HOURLY" | null;
+    experienceLevel: PrismaExperienceLevel | null;
+    averageRating: number | null;
+    freelancerLevel: PrismaFreelancerLevel | null;
+    deliveryTime: PrismaDeliveryTime | null;
+    skills: { skill: { name: string } }[];
+  } | null;
 }
 
 export default function FreelancersPage() {
+  const { data: categoryData, isLoading: isLoadingCategories } =
+    trpc.category.getAll.useQuery();
+  const { data: experienceData, isLoading: isLoadingExperiences } =
+    trpc.category.getExperienceLevels.useQuery();
+  const { data: levelData, isLoading: isLoadingLevels } =
+    trpc.category.getFreelancerLevels.useQuery();
+  const { data: deliveryData, isLoading: isLoadingDelivery } =
+    trpc.category.getDeliveryTimes.useQuery();
+
   const [filters, setFilters] = useState<FreelancerFiltersState>({
     search: "",
     category: null,
@@ -75,7 +83,7 @@ export default function FreelancersPage() {
   } = trpc.freelancer.getFilteredFreelancers.useQuery(
     {
       search: filters.search || undefined,
-      category: filters.category || undefined,
+      category: filters.category as CategoryEnum | undefined,
       rateType: filters.rateType || undefined,
       experiences: filters.experiences || undefined,
       language: filters.language || undefined,
@@ -103,7 +111,7 @@ export default function FreelancersPage() {
   };
 
   const handleCategoryChange = (value: string) => {
-    setFilters((prev) => ({ ...prev, category: value }));
+    setFilters((prev) => ({ ...prev, category: value as CategoryEnum }));
   };
 
   const handleRateTypeChange = (value: string) => {
@@ -111,7 +119,10 @@ export default function FreelancersPage() {
   };
 
   const handleExperiencesChange = (value: string) => {
-    setFilters((prev) => ({ ...prev, experiences: value as ExperienceLevel }));
+    setFilters((prev) => ({
+      ...prev,
+      experiences: value as ExperienceLevel,
+    }));
   };
 
   const handleLanguageChange = (value: string) => {
@@ -201,11 +212,17 @@ export default function FreelancersPage() {
             <SelectValue placeholder="Category" />
           </SelectTrigger>
           <SelectContent className="bg-[#3A3A3A] text-white">
-            {Object.values(CategoryEnum).map((cat: CategoryEnum) => (
-              <SelectItem key={cat} value={cat}>
-                {cat.replace(/_/g, " ")}
+            {isLoadingCategories ? (
+              <SelectItem value="loading" disabled>
+                Loading...
               </SelectItem>
-            ))}
+            ) : (
+              categoryData?.categories.map((cat) => (
+                <SelectItem key={cat.id} value={cat.id}>
+                  {cat.name}
+                </SelectItem>
+              ))
+            )}
           </SelectContent>
         </Select>
 
@@ -232,12 +249,16 @@ export default function FreelancersPage() {
             <SelectValue placeholder="Experiences" />
           </SelectTrigger>
           <SelectContent className="bg-[#3A3A3A] text-white">
-            {Object.values(PrismaExperienceLevel).map(
-              (exp: PrismaExperienceLevel) => (
-                <SelectItem key={exp} value={exp}>
-                  {exp.replace(/_/g, " ")}
+            {isLoadingExperiences ? (
+              <SelectItem value="loading" disabled>
+                Loading...
+              </SelectItem>
+            ) : (
+              experienceData?.experienceLevels.map((exp) => (
+                <SelectItem key={exp.id} value={exp.id}>
+                  {exp.name}
                 </SelectItem>
-              )
+              ))
             )}
           </SelectContent>
         </Select>
@@ -280,12 +301,16 @@ export default function FreelancersPage() {
             <SelectValue placeholder="Level" />
           </SelectTrigger>
           <SelectContent className="bg-[#3A3A3A] text-white">
-            {Object.values(PrismaFreelancerLevel).map(
-              (lvl: PrismaFreelancerLevel) => (
-                <SelectItem key={lvl} value={lvl}>
-                  {lvl.replace(/_/g, " ")}
+            {isLoadingLevels ? (
+              <SelectItem value="loading" disabled>
+                Loading...
+              </SelectItem>
+            ) : (
+              levelData?.freelancerLevels.map((lvl) => (
+                <SelectItem key={lvl.id} value={lvl.id}>
+                  {lvl.name}
                 </SelectItem>
-              )
+              ))
             )}
           </SelectContent>
         </Select>
@@ -299,12 +324,16 @@ export default function FreelancersPage() {
             <SelectValue placeholder="Estimated Delivery" />
           </SelectTrigger>
           <SelectContent className="bg-[#3A3A3A] text-white">
-            {Object.values(PrismaDeliveryTime).map(
-              (time: PrismaDeliveryTime) => (
-                <SelectItem key={time} value={time}>
-                  {time.replace(/_/g, " ")}
+            {isLoadingDelivery ? (
+              <SelectItem value="loading" disabled>
+                Loading...
+              </SelectItem>
+            ) : (
+              deliveryData?.deliveryTimes.map((time) => (
+                <SelectItem key={time.id} value={time.id}>
+                  {time.name}
                 </SelectItem>
-              )
+              ))
             )}
           </SelectContent>
         </Select>
