@@ -48,7 +48,7 @@ type ProfileWithSkillsAndPortfolio = NonNullable<UserProfile["profile"]> & {
 export default function IndividualProfilePage() {
   const router = useRouter();
   const params = useParams();
-  const userId = typeof params.id === "string" ? params.id : undefined; // Ensure userId is string or undefined
+  const userId = Array.isArray(params.id) ? params.id[0] : params.id; // Ensure userId is a single string
   const { session, isLoading: isSessionLoading } = useSession();
   const [isFormOpen, setIsFormOpen] = useState(false); // State for controlling the listing form modal
   const [isFreelancerPublic, setIsFreelancerPublic] = useState(false); // State for freelancer public status

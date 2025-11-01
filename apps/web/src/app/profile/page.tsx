@@ -55,11 +55,26 @@ export default function ListingDetailPage({
   const router = useRouter();
   const { listingId } = params;
 
+  // If listingId is undefined, we cannot fetch a specific listing
+  if (!listingId) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center py-12 text-red-500">
+        Error: Listing ID not provided. Please navigate to a specific listing
+        page.
+      </div>
+    );
+  }
+
   const {
     data: listingData,
     isPending,
     error,
-  } = trpc.listing.getById.useQuery({ id: listingId });
+  } = trpc.listing.getById.useQuery(
+    { id: listingId },
+    {
+      enabled: !!listingId, // Only run query if listingId is available
+    }
+  );
 
   const listing = listingData as Listing;
 

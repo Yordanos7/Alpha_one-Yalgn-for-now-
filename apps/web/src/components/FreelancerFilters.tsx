@@ -1,5 +1,7 @@
-import React, { useState } from "react";
-import { Search, ChevronDown, User, X } from "lucide-react"; // Added X icon for clear button
+"use client";
+
+import React from "react";
+import { Search, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,52 +11,56 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import type { FreelancerFiltersState } from "@/types/freelancer";
+import type {
+  FreelancerFiltersState,
+  RateType,
+  ExperienceLevel,
+  FreelancerLevel,
+  EstimatedDelivery,
+  Rating,
+} from "@/types/freelancer";
+import { trpc } from "@/utils/trpc";
+import type {
+  CategoryEnum,
+  ExperienceLevel as PrismaExperienceLevel,
+  FreelancerLevel as PrismaFreelancerLevel,
+  DeliveryTime as PrismaDeliveryTime,
+} from "@Alpha/db/prisma/generated/client";
 
 interface FreelancerFiltersProps {
-  onApplyFilters: (filters: FreelancerFiltersState) => void;
-  initialFilters?: FreelancerFiltersState;
+  filters: FreelancerFiltersState;
+  setFilters: React.Dispatch<React.SetStateAction<FreelancerFiltersState>>;
 }
 
-export function FreelancerFilters({
-  onApplyFilters,
-  initialFilters,
+export default function FreelancerFilters({
+  filters,
+  setFilters,
 }: FreelancerFiltersProps) {
-  const [filters, setFilters] = useState<FreelancerFiltersState>(
-    initialFilters || {
-      search: "",
-      category: null,
-      rateType: null,
-      experiences: null,
-      language: null,
-      rating: null,
-      level: null,
-      estimatedDelivery: null,
-      location: null, // Added
-      isVerified: null, // Added
-      isOpenToWork: null, // Added
-    }
-  );
+  const { data: categoryData, isLoading: isLoadingCategories } =
+    trpc.category.getAll.useQuery();
+  const { data: experienceData, isLoading: isLoadingExperiences } =
+    trpc.category.getExperienceLevels.useQuery();
+  const { data: levelData, isLoading: isLoadingLevels } =
+    trpc.category.getFreelancerLevels.useQuery();
+  const { data: deliveryData, isLoading: isLoadingDelivery } =
+    trpc.category.getDeliveryTimes.useQuery();
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFilters((prev) => ({ ...prev, search: e.target.value }));
   };
 
   const handleCategoryChange = (value: string) => {
-    setFilters((prev) => ({ ...prev, category: value }));
+    setFilters((prev) => ({ ...prev, category: value === "" ? null : value }));
   };
 
   const handleRateTypeChange = (value: string) => {
-    setFilters((prev) => ({
-      ...prev,
-      rateType: value as FreelancerFiltersState["rateType"],
-    }));
+    setFilters((prev) => ({ ...prev, rateType: value as RateType }));
   };
 
   const handleExperiencesChange = (value: string) => {
     setFilters((prev) => ({
       ...prev,
-      experiences: value as FreelancerFiltersState["experiences"],
+      experiences: value as ExperienceLevel,
     }));
   };
 
@@ -63,28 +69,30 @@ export function FreelancerFilters({
   };
 
   const handleRatingChange = (value: string) => {
-    setFilters((prev) => ({
-      ...prev,
-      rating: parseInt(value) as FreelancerFiltersState["rating"],
-    }));
+    setFilters((prev) => ({ ...prev, rating: parseInt(value) as Rating }));
   };
 
   const handleLevelChange = (value: string) => {
-    setFilters((prev) => ({
-      ...prev,
-      level: value as FreelancerFiltersState["level"],
-    }));
+    setFilters((prev) => ({ ...prev, level: value as FreelancerLevel }));
   };
 
   const handleEstimatedDeliveryChange = (value: string) => {
     setFilters((prev) => ({
       ...prev,
-      estimatedDelivery: value as FreelancerFiltersState["estimatedDelivery"],
+      estimatedDelivery: value as EstimatedDelivery,
     }));
   };
 
-  const applyFilters = () => {
-    onApplyFilters(filters);
+  const handleLocationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFilters((prev) => ({ ...prev, location: e.target.value }));
+  };
+
+  const handleIsVerifiedChange = (value: boolean) => {
+    setFilters((prev) => ({ ...prev, isVerified: value }));
+  };
+
+  const handleIsOpenToWorkChange = (value: boolean) => {
+    setFilters((prev) => ({ ...prev, isOpenToWork: value }));
   };
 
   const clearFilters = () => {
@@ -97,20 +105,17 @@ export function FreelancerFilters({
       rating: null,
       level: null,
       estimatedDelivery: null,
-      location: null, // Added
-      isVerified: null, // Added
-      isOpenToWork: null, // Added
+      location: null,
+      isVerified: null,
+      isOpenToWork: null,
     };
     setFilters(clearedState);
-    onApplyFilters(clearedState); // Also apply cleared filters to parent
   };
 
   return (
     <div className="flex flex-wrap items-center gap-4 mb-8 bg-[#2C2C2C] p-3 rounded-lg">
       {/* Search Input */}
       <div className="relative flex-1 min-w-[180px] sm:min-w-[200px]">
-        {" "}
-        {/* Added min-w for responsiveness */}
         <Search
           className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
           size={20}
@@ -124,6 +129,17 @@ export function FreelancerFilters({
         />
       </div>
 
+      {/* Location Input */}
+      <div className="relative flex-1 min-w-[180px] sm:min-w-[200px]">
+        <Input
+          type="text"
+          placeholder="Location"
+          className="pl-4 pr-4 py-2 rounded-lg bg-[#3A3A3A] border-none text-white focus:ring-0 focus:outline-none w-full"
+          value={filters.location || ""}
+          onChange={handleLocationChange}
+        />
+      </div>
+
       {/* Category Filter */}
       <Select
         onValueChange={handleCategoryChange}
@@ -133,10 +149,17 @@ export function FreelancerFilters({
           <SelectValue placeholder="Category" />
         </SelectTrigger>
         <SelectContent className="bg-[#3A3A3A] text-white">
-          <SelectItem value="web-development">Web Development</SelectItem>
-          <SelectItem value="mobile-development">Mobile Development</SelectItem>
-          <SelectItem value="design">Design</SelectItem>
-          {/* Add more categories */}
+          {isLoadingCategories ? (
+            <SelectItem value="loading" disabled>
+              Loading...
+            </SelectItem>
+          ) : (
+            categoryData?.categories.map((cat) => (
+              <SelectItem key={cat.id} value={cat.name}>
+                {cat.label}
+              </SelectItem>
+            ))
+          )}
         </SelectContent>
       </Select>
 
@@ -149,8 +172,8 @@ export function FreelancerFilters({
           <SelectValue placeholder="Rate Type" />
         </SelectTrigger>
         <SelectContent className="bg-[#3A3A3A] text-white">
-          <SelectItem value="hourly">Hourly</SelectItem>
-          <SelectItem value="fixed-price">Fixed Price</SelectItem>
+          <SelectItem value="HOURLY">Hourly</SelectItem>
+          <SelectItem value="FIXED">Fixed Price</SelectItem>
         </SelectContent>
       </Select>
 
@@ -163,9 +186,17 @@ export function FreelancerFilters({
           <SelectValue placeholder="Experiences" />
         </SelectTrigger>
         <SelectContent className="bg-[#3A3A3A] text-white">
-          <SelectItem value="entry">Entry Level</SelectItem>
-          <SelectItem value="intermediate">Intermediate</SelectItem>
-          <SelectItem value="expert">Expert</SelectItem>
+          {isLoadingExperiences ? (
+            <SelectItem value="loading" disabled>
+              Loading...
+            </SelectItem>
+          ) : (
+            experienceData?.experienceLevels.map((exp) => (
+              <SelectItem key={exp.id} value={exp.name}>
+                {exp.label}
+              </SelectItem>
+            ))
+          )}
         </SelectContent>
       </Select>
 
@@ -178,10 +209,10 @@ export function FreelancerFilters({
           <SelectValue placeholder="Language" />
         </SelectTrigger>
         <SelectContent className="bg-[#3A3A3A] text-white">
-          <SelectItem value="english">English</SelectItem>
-          <SelectItem value="spanish">Spanish</SelectItem>
-          <SelectItem value="french">French</SelectItem>
-          {/* Add more languages */}
+          <SelectItem value="English">English</SelectItem>
+          <SelectItem value="Amharic">Amharic</SelectItem>
+          <SelectItem value="Spanish">Spanish</SelectItem>
+          {/* Add more languages as needed */}
         </SelectContent>
       </Select>
 
@@ -207,9 +238,17 @@ export function FreelancerFilters({
           <SelectValue placeholder="Level" />
         </SelectTrigger>
         <SelectContent className="bg-[#3A3A3A] text-white">
-          <SelectItem value="junior">Junior</SelectItem>
-          <SelectItem value="mid">Mid</SelectItem>
-          <SelectItem value="senior">Senior</SelectItem>
+          {isLoadingLevels ? (
+            <SelectItem value="loading" disabled>
+              Loading...
+            </SelectItem>
+          ) : (
+            levelData?.freelancerLevels.map((lvl) => (
+              <SelectItem key={lvl.id} value={lvl.name}>
+                {lvl.label}
+              </SelectItem>
+            ))
+          )}
         </SelectContent>
       </Select>
 
@@ -222,21 +261,47 @@ export function FreelancerFilters({
           <SelectValue placeholder="Estimated Delivery" />
         </SelectTrigger>
         <SelectContent className="bg-[#3A3A3A] text-white">
-          <SelectItem value="1-3_days">1-3 Days</SelectItem>
-          <SelectItem value="3-7_days">3-7 Days</SelectItem>
-          <SelectItem value="1-2_weeks">1-2 Weeks</SelectItem>
-          <SelectItem value="2-4_weeks">2-4 Weeks</SelectItem>
+          {isLoadingDelivery ? (
+            <SelectItem value="loading" disabled>
+              Loading...
+            </SelectItem>
+          ) : (
+            deliveryData?.deliveryTimes.map((time) => (
+              <SelectItem key={time.id} value={time.name}>
+                {time.name}
+              </SelectItem>
+            ))
+          )}
         </SelectContent>
       </Select>
 
-      {/* Apply Filters Button */}
-      <Button
-        className="bg-[#3A3A3A] hover:bg-[#4A4A4A] text-gray-300 font-semibold rounded-lg px-4 py-2 flex items-center"
-        onClick={applyFilters}
+      {/* Is Verified Filter (Toggle Button or Select) */}
+      <Select
+        onValueChange={(value) => handleIsVerifiedChange(value === "true")}
+        value={filters.isVerified?.toString() || ""}
       >
-        <User className="mr-2" size={16} />
-        Apply Filters
-      </Button>
+        <SelectTrigger className="w-full sm:w-[160px] bg-[#3A3A3A] border-none text-gray-400 hover:text-white">
+          <SelectValue placeholder="Verified" />
+        </SelectTrigger>
+        <SelectContent className="bg-[#3A3A3A] text-white">
+          <SelectItem value="true">Verified</SelectItem>
+          <SelectItem value="false">Not Verified</SelectItem>
+        </SelectContent>
+      </Select>
+
+      {/* Is Open To Work Filter (Toggle Button or Select) */}
+      <Select
+        onValueChange={(value) => handleIsOpenToWorkChange(value === "true")}
+        value={filters.isOpenToWork?.toString() || ""}
+      >
+        <SelectTrigger className="w-full sm:w-[160px] bg-[#3A3A3A] border-none text-gray-400 hover:text-white">
+          <SelectValue placeholder="Open to Work" />
+        </SelectTrigger>
+        <SelectContent className="bg-[#3A3A3A] text-white">
+          <SelectItem value="true">Open to Work</SelectItem>
+          <SelectItem value="false">Not Open to Work</SelectItem>
+        </SelectContent>
+      </Select>
 
       {/* Clear Filters Button */}
       <Button
