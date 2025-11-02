@@ -1,14 +1,15 @@
 "use client";
 
+import Sidebar from "@/components/sidebar"; // Import Sidebar
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { User } from "lucide-react";
-
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { ListingForm } from "@/components/listing-form";
+import { ProfileEditForm } from "@/components/profile-edit-form"; // Import ProfileEditForm
+import { Switch } from "@/components/ui/switch"; // Import Switch component
 import {
   Mail,
   Phone,
@@ -28,6 +29,7 @@ import {
   Share2,
   Eye,
   Edit,
+  User, // Added User import
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useSession } from "@/hooks/use-session";
@@ -68,11 +70,27 @@ interface Listing {
   createdAt: Date;
 }
 
+// Explicitly define the Session type if not already globally available
+interface CustomSession {
+  user?: {
+    id: string;
+    name?: string | null;
+    email?: string | null;
+    image?: string | null;
+    profileImage?: string | null;
+    accountType?: "INDIVIDUAL" | "ORGANIZATION" | null;
+  };
+  expires: string;
+}
+
 export default function UserProfilePage() {
   const router = useRouter();
-  const { session, isLoading: isSessionLoading } = useSession();
+  const { session, isLoading: isSessionLoading } = useSession() as {
+    session: CustomSession | null;
+    isLoading: boolean;
+  };
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [isFreelancerPublic, setIsFreelancerPublic] = useState(false);
+  const [isFreelancerPublic, setIsFreelancerPublic] = useState(false); // State for freelancer public status
 
   const userId = session?.user?.id;
 
@@ -80,7 +98,7 @@ export default function UserProfilePage() {
     data: userProfile,
     isLoading: isProfileLoading,
     error: profileError,
-    refetch: refetchUserProfile,
+    refetch: refetchUserProfile, // Add refetch to update profile data
   } = trpc.user.getPublicUserProfile.useQuery(
     { userId: userId! },
     {
@@ -109,11 +127,13 @@ export default function UserProfilePage() {
   const togglePublicStatusMutation =
     trpc.user.toggleFreelancerPublicStatus.useMutation({
       onSuccess: (data: { isPublicFreelancer: boolean; message: string }) => {
+        // Explicitly type data
         setIsFreelancerPublic(data.isPublicFreelancer);
         toast.success(data.message);
-        refetchUserProfile();
+        refetchUserProfile(); // Refetch profile to ensure UI is consistent
       },
       onError: (error: any) => {
+        // Explicitly type error
         toast.error("Failed to update freelancer status: " + error.message);
       },
     });
@@ -193,7 +213,7 @@ export default function UserProfilePage() {
   const lastActive = "98%, 3hrs ago"; // Placeholder for now
 
   return (
-    <main className=" mx-auto px-4 py-8 md:py-12 bg-background text-foreground">
+    <main className="container mx-auto px-4 py-8 md:py-12 bg-background text-foreground">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left Column */}
         <div className="lg:col-span-2 space-y-8">
@@ -218,6 +238,33 @@ export default function UserProfilePage() {
                 </div>
               </div>
               <div className="flex items-center space-x-4">
+                {isOwnProfile &&
+                  session?.user?.accountType === "INDIVIDUAL" && (
+                    <div className="flex items-center space-x-2">
+                      <Switch
+                        id="freelancer-public-status"
+                        checked={isFreelancerPublic}
+                        onCheckedChange={(checked) =>
+                          togglePublicStatusMutation.mutate({
+                            userId: userId!,
+                            isPublic: checked,
+                          })
+                        }
+                        disabled={togglePublicStatusMutation.isLoading}
+                      />
+                      <label
+                        htmlFor="freelancer-public-status"
+                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        {isFreelancerPublic
+                          ? "Posted to Freelancer Page"
+                          : "Unposted from Freelancer Page"}
+                      </label>
+                      {togglePublicStatusMutation.isLoading && (
+                        <Loader className="animate-spin ml-2" size={16} />
+                      )}
+                    </div>
+                  )}
                 <div className="relative w-24 h-24">
                   <svg className="w-full h-full" viewBox="0 0 100 100">
                     <circle
@@ -287,9 +334,31 @@ export default function UserProfilePage() {
             </div>
 
             <div className="flex space-x-4">
-              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-md px-6 py-2 flex items-center">
-                <Edit className="mr-2 h-4 w-4" /> Edit Profile
-              </Button>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-md px-6 py-2 flex items-center">
+                    <Edit className="mr-2 h-4 w-4" /> Edit Profile
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="bg-card text-foreground p-6 rounded-lg max-w-3xl">
+                  <ProfileEditForm
+                    userId={userId!}
+                    initialData={{
+                      bio: userProfile.bio || "",
+                      location: userProfile.location || "",
+                      languages:
+                        userProfile.profile?.languages?.join(", ") || "",
+                      mainCategory: userProfile.profile?.mainCategory || null,
+                      imageUrl: userProfile.image || null,
+                    }}
+                    onSuccess={() => {
+                      refetchUserProfile();
+                      // Optionally refetch listings if profile changes affect them
+                    }}
+                    onCancel={() => {}} // Dialog handles closing
+                  />
+                </DialogContent>
+              </Dialog>
               <Button
                 variant="outline"
                 className="font-semibold rounded-md px-6 py-2 flex items-center"
@@ -432,7 +501,7 @@ export default function UserProfilePage() {
                   ?.skills &&
                   (
                     userProfile.profile as ProfileWithSkillsAndPortfolio
-                  ).skills.map((s) => (
+                  ).skills.map((s: { skill: { name: string } }) => (
                     <Badge
                       key={s.skill.name}
                       variant="secondary"
@@ -467,34 +536,42 @@ export default function UserProfilePage() {
                   ?.portfolio &&
                   (
                     userProfile.profile as ProfileWithSkillsAndPortfolio
-                  ).portfolio.map((item) => (
-                    <Card key={item.id} className="bg-muted p-3 rounded-lg">
-                      <div className="relative w-full h-32 mb-2 rounded-md overflow-hidden">
-                        <Image
-                          src={item.media[0] || "/placeholder-image.jpg"}
-                          alt={item.title}
-                          layout="fill"
-                          objectFit="cover"
-                        />
-                      </div>
-                      <h3 className="font-semibold text-foreground mb-1">
-                        {item.title}
-                      </h3>
-                      <p className="text-xs line-clamp-2 mb-2">
-                        {item.description}
-                      </p>
-                      {item.link && (
-                        <a
-                          href={item.link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-primary hover:underline text-sm flex items-center"
-                        >
-                          <LinkIcon className="mr-1 h-4 w-4" /> View Project
-                        </a>
-                      )}
-                    </Card>
-                  ))}
+                  ).portfolio.map(
+                    (item: {
+                      id: string;
+                      media: string[];
+                      title: string;
+                      description: string;
+                      link?: string;
+                    }) => (
+                      <Card key={item.id} className="bg-muted p-3 rounded-lg">
+                        <div className="relative w-full h-32 mb-2 rounded-md overflow-hidden">
+                          <Image
+                            src={item.media[0] || "/placeholder-image.jpg"}
+                            alt={item.title}
+                            layout="fill"
+                            objectFit="cover"
+                          />
+                        </div>
+                        <h3 className="font-semibold text-foreground mb-1">
+                          {item.title}
+                        </h3>
+                        <p className="text-xs line-clamp-2 mb-2">
+                          {item.description}
+                        </p>
+                        {item.link && (
+                          <a
+                            href={item.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-primary hover:underline text-sm flex items-center"
+                          >
+                            <LinkIcon className="mr-1 h-4 w-4" /> View Project
+                          </a>
+                        )}
+                      </Card>
+                    )
+                  )}
               </div>
               <Button variant="outline" className="mt-4 w-full font-semibold">
                 <Plus className="mr-2 h-4 w-4" /> Add to Portfolio

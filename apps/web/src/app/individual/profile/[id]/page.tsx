@@ -300,30 +300,6 @@ export default function IndividualProfilePage() {
               )}
 
             <div className="flex justify-end space-x-4 mt-8">
-              {isOwnProfile && session?.user?.accountType === "INDIVIDUAL" && (
-                <Button
-                  className={`font-semibold rounded-lg px-4 py-2 flex items-center ${
-                    isFreelancerPublic
-                      ? "bg-red-500 hover:bg-red-600"
-                      : "bg-green-600 hover:bg-green-700"
-                  }`}
-                  onClick={() =>
-                    togglePublicStatusMutation.mutate({
-                      userId: userId,
-                      isPublic: !isFreelancerPublic,
-                    })
-                  }
-                  disabled={togglePublicStatusMutation.isLoading}
-                >
-                  {togglePublicStatusMutation.isLoading ? (
-                    <Loader className="mr-2 animate-spin" size={16} />
-                  ) : isFreelancerPublic ? (
-                    "Unpost from Freelancer Page"
-                  ) : (
-                    "Post to Freelancer Page"
-                  )}
-                </Button>
-              )}
               <Button
                 className="bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg px-4 py-2"
                 onClick={() => router.back()}
