@@ -40,9 +40,8 @@ export const protectedProcedure: typeof t.procedure = t.procedure.use(
 // talking about this code file it is for the api and  the main work for this is to create the tRPC router all the procedures over the api calls
 // by the way this project is gone finish this day by the way I am hard to day
 
-// AppRouter types will be defined in ./routers/types.ts to avoid circular dependencies.
-// import { appRouter } from "./routers"; // Removed to avoid circular dependency
+import { appRouter } from "./routers"; // Import appRouter from the main router file
 
-// export type AppRouter = typeof appRouter; // Removed
+export type AppRouter = typeof appRouter;
 export type RouterInputs = inferRouterInputs<AppRouter>;
 export type RouterOutputs = inferRouterOutputs<AppRouter>;

@@ -622,7 +622,7 @@ export default function OnboardingPage() {
       toast.success("Onboarding completed successfully!");
       setTimeout(() => router.push("/profile"), 1000); // Delay to show success message
     },
-    onError: (error) => {
+    onError: (error: any) => { // Explicitly type error
       toast.error(`Failed to save onboarding data: ${error.message}`);
       setIsSubmitting(false);
     },
@@ -743,4 +743,3 @@ export default function OnboardingPage() {
       {renderContent()}
     </div>
   );
-}

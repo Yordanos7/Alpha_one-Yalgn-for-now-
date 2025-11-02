@@ -1,6 +1,6 @@
 import { z } from "zod";
-import type { appRouter } from "./index"; // Import appRouter from the main router file
 import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
+import type { AppRouter } from "../index"; // AppRouter will be defined in ../index.ts
 
 export const ListingCreateInput = z.object({
   title: z.string().min(1, "Title is required"),
@@ -15,7 +15,5 @@ export const ListingCreateInput = z.object({
   isPublished: z.boolean().default(false),
 });
 
-// Define AppRouter here to avoid circular dependencies with packages/api/src/index.ts
-export type AppRouter = typeof appRouter;
 export type RouterInputs = inferRouterInputs<AppRouter>;
 export type RouterOutputs = inferRouterOutputs<AppRouter>;
